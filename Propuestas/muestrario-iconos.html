@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La torre — Muestrario de iconos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --ink:#141816; --muted:#8A938E; }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{
+    background:#F2F6EF; color:var(--ink);
+    font-family:"Space Grotesk",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    padding:36px 22px 60px;
+  }
+  .wrap{ max-width:900px; margin:0 auto; }
+  h1{ font-size:26px; letter-spacing:-.01em; }
+  .intro{ color:#57635C; margin-top:8px; font-size:15px; line-height:1.55; max-width:680px; }
+  h2{ font-size:17px; margin:30px 0 4px; }
+  .note{ font-size:13px; color:#66726B; margin-bottom:14px; }
+  .icons{
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+    gap:14px;
+  }
+  .opt{
+    background:#fff; border-radius:14px; padding:16px 10px 12px;
+    box-shadow:0 8px 20px rgba(31,64,51,.06);
+    display:grid; justify-items:center; gap:9px;
+  }
+  .opt .tile{
+    width:54px; height:54px; border-radius:13px;
+    display:grid; place-items:center;
+  }
+  .opt .tile svg{ width:31px; height:31px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+  .opt b{ font-size:12px; font-weight:600; text-align:center; }
+  .opt small{ font-size:10.5px; color:var(--muted); }
+  .blue { background:#EAF2FC; color:#4A90D9; }
+  .amber{ background:#FDF3DF; color:#E9A23B; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Muestrario de iconos</h1>
+  <p class="intro">Opciones para el icono de cada grupo contraído, todas al mismo tamaño (31px) y con los colores claros elegidos. Dime el número de la que te guste para cada grupo.</p>
+
+  <h2>Cartera priorizada</h2>
+  <p class="note">Azul cielo sobre fondo azul pálido</p>
+  <div class="icons">
+    <div class="opt"><span class="tile blue"><svg viewBox="0 0 24 24"><path d="M3 17l5-6 4 3 6-8"/><path d="M14 6h4v4"/></svg></span><b>C1 · Tendencia</b><small>gráfica subiendo</small></div>
+    <div class="opt"><span class="tile blue"><svg viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-8"/></svg></span><b>C2 · Barras</b><small>comparación</small></div>
+    <div class="opt"><span class="tile blue"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg></span><b>C3 · Diana</b><small>metas y foco</small></div>
+    <div class="opt"><span class="tile blue"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg></span><b>C4 · Documento</b><small>expediente</small></div>
+    <div class="opt"><span class="tile blue"><svg viewBox="0 0 24 24"><path d="M4 6h16a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z"/><path d="M3 10h18"/><path d="M7 15h4"/></svg></span><b>C5 · Tarjeta</b><small>financiero</small></div>
+    <div class="opt"><span class="tile blue"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v9M9.8 9.6c.4-.9 4-1 4.3.5.3 1.7-4.5 1.2-4.3 3 .2 1.6 3.9 1.5 4.4.4"/></svg></span><b>C6 · Moneda</b><small>presupuesto</small></div>
+    <div class="opt"><span class="tile blue"><svg viewBox="0 0 24 24"><path d="M20 7H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1z"/><path d="M8 7V5a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M3 12h18"/><path d="M10.5 12v2h3v-2"/></svg></span><b>C7 · Portafolio fino</b><small>cartera</small></div>
+    <div class="opt"><span class="tile blue"><svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg></span><b>C8 · Cubo</b><small>proyectos</small></div>
+  </div>
+
+  <h2>Paralizadas</h2>
+  <p class="note">Ámbar sobre fondo crema</p>
+  <div class="icons">
+    <div class="opt"><span class="tile amber"><svg viewBox="0 0 24 24"><path d="M12 4l3.5 9H8.5z"/><path d="M6.5 17h11"/><path d="M4.5 20h15"/></svg></span><b>P1 · Cono</b><small>obra en vía</small></div>
+    <div class="opt"><span class="tile amber"><svg viewBox="0 0 24 24"><path d="M12 4L2.5 20h19z"/><path d="M12 10.5v4"/><path d="M12 17.2h.01"/></svg></span><b>P2 · Alerta</b><small>atención</small></div>
+    <div class="opt"><span class="tile amber"><svg viewBox="0 0 24 24"><path d="M7 3h10M7 21h10"/><path d="M8 3c0 5 3.5 5.5 3.5 9S8 16 8 21M16 3c0 5-3.5 5.5-3.5 9s3.5 4 3.5 9"/></svg></span><b>P3 · Reloj de arena</b><small>en espera</small></div>
+    <div class="opt"><span class="tile amber"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><b>P4 · Reloj</b><small>tiempo detenido</small></div>
+    <div class="opt"><span class="tile amber"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/><path d="M12 15v2"/></svg></span><b>P5 · Candado</b><small>bloqueado</small></div>
+    <div class="opt"><span class="tile amber"><svg viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 0 0-5.6 5L4 16.4V20h3.6l4.9-4.9a4 4 0 0 0 5-5.6L14.6 12l-2.6-2.6z"/></svg></span><b>P6 · Herramienta</b><small>en reparación</small></div>
+    <div class="opt"><span class="tile amber"><svg viewBox="0 0 24 24"><path d="M4 21V8l8-5 8 5v13"/><path d="M4 21h16"/><path d="M9 21v-6h6v6"/></svg></span><b>P7 · Obra</b><small>construcción</small></div>
+    <div class="opt"><span class="tile amber"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.8 5.8l12.4 12.4"/></svg></span><b>P8 · Prohibido</b><small>detenido</small></div>
+  </div>
+</div>
+</body>
+</html>

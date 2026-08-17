@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La torre — Galería de menús</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%23A6D3C4'/%3E%3Cpath%20fill='%23141816'%20d='M17%2012h7v6h5v-6h6v6h5v-6h7v12l-5%205v13l5%207v7H17v-7l5-7V29l-5-5z'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --mint:#A6D3C4; --ink:#141816; --muted:#8A938E;
+    --lemon:#F2F97C; --key:#F1F4EE;
+    --sa:#FBFDF8; --sb:#E7F2DE; --sc:#D9EBD4;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{
+    background:#F2F6EF; color:var(--ink);
+    font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    padding:36px 22px 60px;
+  }
+  header{ max-width:1100px; margin:0 auto 28px; }
+  header h1{ font-size:26px; letter-spacing:-.01em; }
+  header p{ color:#57635C; margin-top:8px; font-size:15px; line-height:1.55; max-width:680px; }
+  .grid{
+    max-width:1100px; margin:0 auto;
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(235px,1fr));
+    gap:24px 22px;
+  }
+  figure{ display:grid; gap:10px; align-content:start; }
+  .mock{
+    position:relative; height:320px; border-radius:26px; overflow:hidden;
+    background:linear-gradient(165deg,var(--sa) 0%,var(--sb) 55%,var(--sc) 100%);
+    box-shadow:0 14px 34px rgba(17,56,44,.13);
+  }
+  figcaption{ padding:0 4px; }
+  figcaption strong{ font-size:14px; display:block; }
+  figcaption span{ font-size:12.5px; color:#66726B; line-height:1.45; display:block; margin-top:2px; }
+
+  /* ─ Esqueleto de contenido (solo de fondo) ─ */
+  .sk{ padding:16px 14px; display:grid; gap:10px; }
+  .sk .top{ display:flex; align-items:center; gap:8px; }
+  .sk .dot{ width:26px; height:26px; border-radius:50%; background:#C4DACB; }
+  .sk .ln{ height:8px; width:42%; border-radius:4px; background:#CFE2CE; }
+  .sk .card{ height:76px; border-radius:16px; background:linear-gradient(150deg,#F2F97C,#EAF386); }
+  .sk .row{ height:32px; border-radius:12px; background:#fff; box-shadow:0 6px 14px rgba(31,64,51,.06); }
+
+  /* ─ Base común de los menús ─ */
+  .nv{
+    position:absolute; left:12px; right:12px; bottom:12px;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .nv .b{
+    width:40px; height:40px; border-radius:50%;
+    display:grid; place-items:center; color:var(--muted);
+  }
+  .nv svg{
+    width:19px; height:19px;
+    fill:none; stroke:currentColor; stroke-width:1.8;
+    stroke-linecap:round; stroke-linejoin:round;
+  }
+  .nv i{ font-style:normal; }
+
+  /* 1 · Flotante (actual) */
+  .nv-float{ left:0; right:0; justify-content:center; gap:8px; }
+  .nv-float .b{ background:#fff; color:var(--ink); box-shadow:0 8px 18px rgba(23,54,42,.15); }
+  .nv-float .current{ background:var(--ink); color:#fff; }
+  .nv-float .bot{ width:50px; height:50px; background:var(--ink); color:#fff; }
+
+  /* 2 · Píldora */
+  .nv-pill{ background:#fff; border-radius:999px; padding:6px 9px; box-shadow:0 12px 26px rgba(23,54,42,.16); }
+  .nv-pill .current{ background:var(--key); color:var(--ink); }
+  .nv-pill .bot{ width:50px; height:50px; background:var(--ink); color:#fff; margin-top:-26px; box-shadow:0 10px 20px rgba(23,54,42,.26); }
+
+  /* 3 · Dock oscuro */
+  .nv-dark{ background:var(--ink); border-radius:999px; padding:6px 9px; }
+  .nv-dark .b{ color:#7E8B84; }
+  .nv-dark .current{ color:#fff; background:rgba(255,255,255,.12); }
+  .nv-dark .bot{ width:46px; height:46px; background:var(--lemon); color:var(--ink); }
+
+  /* 4 · Etiquetas */
+  .nv-labels{ background:#fff; border-radius:20px; padding:9px 6px 7px; box-shadow:0 12px 26px rgba(23,54,42,.16); align-items:end; }
+  .nv-labels .b{ width:auto; height:auto; border-radius:0; display:grid; justify-items:center; gap:3px; font-size:8.5px; font-weight:600; }
+  .nv-labels .current{ color:var(--ink); }
+  .nv-labels .fab{ width:42px; height:42px; border-radius:50%; background:var(--ink); color:#fff; display:grid; place-items:center; margin-top:-28px; box-shadow:0 8px 18px rgba(23,54,42,.26); }
+  .nv-labels .bot{ color:var(--ink); font-weight:700; }
+
+  /* 5 · Menta */
+  .nv-mint{ background:var(--mint); border-radius:999px; padding:6px 9px; box-shadow:0 12px 26px rgba(23,54,42,.18); }
+  .nv-mint .b{ color:#3E5A4E; }
+  .nv-mint .current{ background:#fff; color:var(--ink); }
+  .nv-mint .bot{ width:46px; height:46px; background:var(--ink); color:var(--lemon); }
+
+  /* 6 · Acento limón */
+  .nv-lemon{ background:#fff; border-radius:999px; padding:6px 9px; box-shadow:0 12px 26px rgba(23,54,42,.16); }
+  .nv-lemon .current{ background:var(--lemon); color:var(--ink); width:52px; }
+  .nv-lemon .bot{ width:50px; height:50px; background:var(--ink); color:#fff; }
+
+  /* 7 · Minimal */
+  .nv-line{ left:20px; right:20px; }
+  .nv-line .b{ color:#66736C; position:relative; }
+  .nv-line .current{ color:var(--ink); }
+  .nv-line .current::after{ content:""; position:absolute; bottom:1px; left:50%; transform:translateX(-50%); width:4px; height:4px; border-radius:50%; background:var(--ink); }
+  .nv-line .bot{ background:var(--ink); color:#fff; box-shadow:0 10px 20px rgba(23,54,42,.26); }
+
+  /* 8 · Teclas */
+  .nv-keys{ justify-content:center; gap:7px; }
+  .nv-keys .b{ background:#fff; border-radius:13px; color:var(--ink); box-shadow:0 8px 18px rgba(23,54,42,.12); }
+  .nv-keys .current{ background:var(--ink); color:#fff; }
+  .nv-keys .bot{ width:46px; height:46px; border-radius:14px; background:var(--lemon); color:var(--ink); }
+
+  /* 9 · Cristal */
+  .nv-glass{ background:rgba(255,255,255,.5); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,.75); border-radius:999px; padding:6px 9px; }
+  .nv-glass .b{ color:#4A5650; }
+  .nv-glass .current{ background:rgba(255,255,255,.95); color:var(--ink); }
+  .nv-glass .bot{ width:48px; height:48px; background:var(--ink); color:#fff; }
+
+  /* 10 · Activo expandido */
+  .nv-expand{ background:#fff; border-radius:999px; padding:6px 8px; box-shadow:0 12px 26px rgba(23,54,42,.16); }
+  .nv-expand .current{ width:auto; height:38px; padding:0 11px; border-radius:999px; background:var(--sb); color:var(--ink); display:flex; align-items:center; gap:5px; font-size:10px; font-weight:700; }
+  .nv-expand .bot{ width:48px; height:48px; background:var(--ink); color:#fff; }
+
+  /* 11 · Muesca */
+  .nv-notch{ background:#fff; border-radius:999px; padding:6px 9px; box-shadow:0 12px 26px rgba(23,54,42,.16); }
+  .nv-notch .current{ color:var(--ink); }
+  .nv-notch .bot{ width:52px; height:52px; background:var(--ink); color:#fff; margin-top:-30px; border:5px solid var(--sb); }
+
+  /* 12 · Dividido */
+  .nv-split{ gap:7px; }
+  .nv-split .grp{ flex:1; background:#fff; border-radius:999px; padding:5px 7px; display:flex; justify-content:space-around; box-shadow:0 10px 22px rgba(23,54,42,.15); }
+  .nv-split .bot{ width:52px; height:52px; background:var(--ink); color:#fff; box-shadow:0 10px 22px rgba(23,54,42,.26); flex:none; }
+  .nv-split .current{ color:var(--ink); background:var(--key); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Galería de menús — La torre</h1>
+  <p>Doce estilos para el menú inferior, todos con los mismos 5 destinos (Inicio, Inversiones, BOT, Actividades, Búsqueda) y el BOT como botón principal al centro. El fondo es un esqueleto de la pantalla de inicio para juzgar solo el menú; en cada mockup "Inicio" aparece como pestaña activa. Los estilos 2, 3 y 4 también existen como app completa interactiva (menu-a, menu-b y menu-c).</p>
+</header>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5"/><path d="M5.5 8.8V20a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V8.8"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 17l5-6 4 3 6-8"/><path d="M14 6h4v4"/></symbol>
+    <symbol id="i-bot" viewBox="0 0 24 24"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 8V5.2"/><circle cx="12" cy="4" r="1.2"/><path d="M9.5 13h.01M14.5 13h.01"/><path d="M9.6 16c.8.7 4 .7 4.8 0"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+  </defs>
+</svg>
+
+<div class="grid">
+
+  <figure>
+    <div class="mock">
+      <div class="sk"><div class="top"><span class="dot"></span><span class="ln"></span></div><div class="card"></div><div class="row"></div><div class="row"></div><div class="row"></div></div>
+      <nav class="nv nv-float">
+        <span class="b current"><svg><use href="#i-home"/></svg></span>
+        <span class="b"><svg><use href="#i-chart"/></svg></span>
+        <span class="b bot"><svg><use href="#i-bot"/></svg></span>
+        <span class="b"><svg><use href="#i-list"/></svg></span>
+        <span class="b"><svg><use href="#i-search"/></svg></span>
+      </nav>
+    </div>
+    <figcaption><strong>1 · Flotante (actual)</strong><span>Círculos sueltos sin barra. Ligero y aireado; el BOT destaca solo por tamaño.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock">
+      <div class="sk"><div class="top"><span class="dot"></span><span class="ln"></span></div><div class="card"></div><div class="row"></div><div class="row"></div><div class="row"></div></div>
+      <nav class="nv nv-pill">
+        <span class="b current"><svg><use href="#i-home"/></svg></span>
+        <span class="b"><svg><use href="#i-chart"/></svg></span>
+        <span class="b bot"><svg><use href="#i-bot"/></svg></span>
+        <span class="b"><svg><use href="#i-list"/></svg></span>
+        <span class="b"><svg><use href="#i-search"/></svg></span>
+      </nav>
+    </div>
+    <figcaption><strong>2 · Píldora</strong><span>Barra blanca con el BOT sobresaliendo como botón flotante. Estilo fintech clásico.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock">
+      <div class="sk"><div class="top"><span class="dot"></span><span class="ln"></span></div><div class="card"></div><div class="row"></div><div class="row"></div><div class="row"></div></div>
+      <nav class="nv nv-dark">
+        <span class="b current"><svg><use href="#i-home"/></svg></span>
+        <span class="b"><svg><use href="#i-chart"/></svg></span>
+        <span class="b bot"><svg><use href="#i-bot"/></svg></span>
+        <span class="b"><svg><use href="#i-list"/></svg></span>
+        <span class="b"><svg><use href="#i-search"/></svg></span>
+      </nav>
+    </div>
+    <figcaption><strong>3 · Dock oscuro</strong><span>Barra tinta con BOT limón. Máximo contraste; el menú se ve de lejos.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock">
+      <div class="sk"><div class="top"><span class="dot"></span><span class="ln"></span></div><div class="card"></div><div class="row"></div><div class="row"></div><div class="row"></div></div>
+      <nav class="nv nv-labels">
+        <span class="b current"><svg><use href="#i-home"/></svg><i>Inicio</i></span>
+        <span class="b"><svg><use href="#i-chart"/></svg><i>Inversiones</i></span>
+        <span class="b bot"><span class="fab"><svg><use href="#i-bot"/></svg></span><i>BOT</i></span>
+        <span class="b"><svg><use href="#i-list"/></svg><i>Actividades</i></span>
+        <span class="b"><svg><use href="#i-search"/></svg><i>Búsqueda</i></span>
+      </nav>
+    </div>
+    <figcaption><strong>4 · Etiquetas</strong><span>Icono + nombre en cada botón. La más clara para usuarios nuevos.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock">
+      <div class="sk"><div class="top"><span class="dot"></span><span class="ln"></span></div><div class="card"></div><div class="row"></div><div class="row"></div><div class="row"></div></div>
+      <nav class="nv nv-mint">
+        <span class="b current"><svg><use href="#i-home"/></svg></span>
+        <span class="b"><svg><use href="#i-chart"/></svg></span>
+        <span class="b bot"><svg><use href="#i-bot"/></svg></span>
+        <span class="b"><svg><use href="#i-list"/></svg></span>
+        <span class="b"><svg><use href="#i-search"/></svg></span>
+      </nav>
+    </div>
+    <figcaption><strong>5 · Menta</strong><span>Barra en el verde de la marca; el activo se enciende en blanco y el BOT va en tinta con icono limón.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock">
+      <div class="sk"><div class="top"><span class="dot"></span><span class="ln"></span></div><div class="card"></div><div class="row"></div><div class="row"></div><div class="row"></div></div>
+      <nav class="nv nv-lemon">
+        <span class="b current"><svg><use href="#i-home"/></svg></span>
+        <span class="b"><svg><use href="#i-chart"/></svg></span>
+        <span class="b bot"><svg><use href="#i-bot"/></svg></span>
+        <span class="b"><svg><use href="#i-list"/></svg></span>
+        <span class="b"><svg><use href="#i-search"/></svg></span>
+      </nav>
+    </div>
+    <figcaption><strong>6 · Acento limón</strong><span>Barra blanca donde la pestaña activa se marca con una píldora amarilla, igual que la tarjeta de saldo.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock">
+      <div class="sk"><div class="top"><span class="dot"></span><span class="ln"></span></div><div class="card"></div><div class="row"></div><div class="row"></div><div class="row"></div></div>
+      <nav class="nv nv-line">
+        <span class="b current"><svg><use href="#i-home"/></svg></span>
+        <span class="b"><svg><use href="#i-chart"/></svg></span>
+        <span class="b bot"><svg><use href="#i-bot"/></svg></span>
+        <span class="b"><svg><use href="#i-list"/></svg></span>
+        <span class="b"><svg><use href="#i-search"/></svg></span>
+      </nav>
+    </div>
+    <figcaption><strong>7 · Minimal</strong><span>Sin barra: iconos sobre el fondo con un punto bajo el activo. Solo el BOT tiene cuerpo.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock">
+      <div class="sk"><div class="top"><span class="dot"></span><span class="ln"></span></div><div class="card"></div><div class="row"></div><div class="row"></div><div class="row"></div></div>
+      <nav class="nv nv-keys">
+        <span class="b current"><svg><use href="#i-home"/></svg></span>
+        <span class="b"><svg><use href="#i-chart"/></svg></span>
+        <span class="b bot"><svg><use href="#i-bot"/></svg></span>
+        <span class="b"><svg><use href="#i-list"/></svg></span>
+        <span class="b"><svg><use href="#i-search"/></svg></span>
+      </nav>
+    </div>
+    <figcaption><strong>8 · Teclas</strong><span>Botones cuadrados redondeados, a juego con el teclado numérico de la pantalla Pagar.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock">
+      <div class="sk"><div class="top"><span class="dot"></span><span class="ln"></span></div><div class="card"></div><div class="row"></div><div class="row"></div><div class="row"></div></div>
+      <nav class="nv nv-glass">
+        <span class="b current"><svg><use href="#i-home"/></svg></span>
+        <span class="b"><svg><use href="#i-chart"/></svg></span>
+        <span class="b bot"><svg><use href="#i-bot"/></svg></span>
+        <span class="b"><svg><use href="#i-list"/></svg></span>
+        <span class="b"><svg><use href="#i-search"/></svg></span>
+      </nav>
+    </div>
+    <figcaption><strong>9 · Cristal</strong><span>Barra translúcida con desenfoque (estilo iOS); el contenido se intuye detrás al hacer scroll.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock">
+      <div class="sk"><div class="top"><span class="dot"></span><span class="ln"></span></div><div class="card"></div><div class="row"></div><div class="row"></div><div class="row"></div></div>
+      <nav class="nv nv-expand">
+        <span class="b current"><svg><use href="#i-home"/></svg><i>Inicio</i></span>
+        <span class="b"><svg><use href="#i-chart"/></svg></span>
+        <span class="b bot"><svg><use href="#i-bot"/></svg></span>
+        <span class="b"><svg><use href="#i-list"/></svg></span>
+        <span class="b"><svg><use href="#i-search"/></svg></span>
+      </nav>
+    </div>
+    <figcaption><strong>10 · Activo expandido</strong><span>Solo la pestaña activa muestra su nombre, expandiéndose en píldora (estilo Material 3).</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock">
+      <div class="sk"><div class="top"><span class="dot"></span><span class="ln"></span></div><div class="card"></div><div class="row"></div><div class="row"></div><div class="row"></div></div>
+      <nav class="nv nv-notch">
+        <span class="b current"><svg><use href="#i-home"/></svg></span>
+        <span class="b"><svg><use href="#i-chart"/></svg></span>
+        <span class="b bot"><svg><use href="#i-bot"/></svg></span>
+        <span class="b"><svg><use href="#i-list"/></svg></span>
+        <span class="b"><svg><use href="#i-search"/></svg></span>
+      </nav>
+    </div>
+    <figcaption><strong>11 · Muesca</strong><span>Como la píldora, pero el BOT lleva un anillo del color del fondo que simula una muesca en la barra.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock">
+      <div class="sk"><div class="top"><span class="dot"></span><span class="ln"></span></div><div class="card"></div><div class="row"></div><div class="row"></div><div class="row"></div></div>
+      <nav class="nv nv-split">
+        <span class="grp">
+          <span class="b current"><svg><use href="#i-home"/></svg></span>
+          <span class="b"><svg><use href="#i-chart"/></svg></span>
+        </span>
+        <span class="b bot"><svg><use href="#i-bot"/></svg></span>
+        <span class="grp">
+          <span class="b"><svg><use href="#i-list"/></svg></span>
+          <span class="b"><svg><use href="#i-search"/></svg></span>
+        </span>
+      </nav>
+    </div>
+    <figcaption><strong>12 · Dividido</strong><span>Dos medias píldoras con el BOT flotando solo en el centro. El más protagonista de todos.</span></figcaption>
+  </figure>
+
+</div>
+</body>
+</html>

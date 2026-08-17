@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propuestas · UI del buscador</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --mint:#A6D3C4; --lemon:#F2F97C; --lemon-b:#EAF386;
+    --ink:#141816; --muted:#8A938E; --card:#FFFFFF; --key:#F1F4EE;
+    --pos:#1FA23C; --amber:#C98A00; --neg:#BF2E25;
+    --blue:#3D7EF7; --red:#F04438; --purple:#8E5CD9; --green:#33B679;
+    --shadow-card:0 10px 24px rgba(31,64,51,.08);
+    --track:#E9EEEB;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{
+    font-family:"Space Grotesk",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    background:#EAF1ED; color:var(--ink); line-height:1.4; padding:30px 16px 90px;
+  }
+  .wrap{ max-width:1150px; margin:0 auto; }
+  h1{ font-size:26px; font-weight:700; }
+  .lead{ font-size:14px; color:#3d5148; margin-top:8px; max-width:720px; }
+  .lead b{ color:#153b2e; }
+
+  .section{ margin-top:38px; }
+  .section > h2{ font-size:19px; font-weight:700; }
+  .section > h2 span{ color:#2f6b57; }
+  .section > .sdesc{ font-size:13px; color:#3d5148; margin:5px 0 18px; max-width:720px; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; align-items:start; }
+  .opt{ background:#fff; border-radius:16px; padding:16px; box-shadow:var(--shadow-card); }
+  .opt > h3{ font-size:14.5px; font-weight:700; }
+  .opt > h3 b{ color:#2f6b57; }
+  .opt > p{ font-size:12px; color:#5A665F; margin:4px 0 14px; min-height:32px; }
+  .tag-rec{ display:inline-block; background:var(--lemon); color:#3a3d00; font-size:10px; font-weight:700; border-radius:999px; padding:2px 8px; margin-left:6px; vertical-align:middle; }
+
+  /* ── Marco de pantalla (mockup) ── */
+  .screen{ background:var(--mint); border-radius:16px; padding:12px; position:relative; overflow:hidden; }
+  .screen.tall{ min-height:330px; }
+
+  /* elementos base de mockups */
+  .m-search{ position:relative; }
+  .m-search input{ width:100%; border:none; background:#fff; border-radius:12px; padding:10px 12px 10px 34px; font:inherit; font-size:12.5px; color:var(--muted); box-shadow:var(--shadow-card); pointer-events:none; }
+  .m-search .ic{ position:absolute; left:11px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:var(--muted); }
+  .m-search .fic{ position:absolute; right:9px; top:50%; transform:translateY(-50%); width:30px; height:30px; border-radius:9px; background:var(--ink); color:#fff; display:grid; place-items:center; }
+  .m-search .fic svg{ width:15px; height:15px; }
+  .m-icon svg{ width:15px; height:15px; }
+
+  .m-chips{ display:flex; gap:6px; align-items:center; margin-top:9px; }
+  .m-chip{ background:#fff; color:#5A665F; font-size:11px; font-weight:600; border-radius:999px; padding:6px 11px; box-shadow:var(--shadow-card); white-space:nowrap; }
+  .m-chip.on{ background:var(--ink); color:#fff; }
+  .m-fbtn{ margin-left:auto; flex:none; width:34px; height:34px; border-radius:10px; background:var(--ink); color:#fff; display:grid; place-items:center; box-shadow:var(--shadow-card); }
+  .m-fbtn svg{ width:16px; height:16px; }
+  .m-fbtn .dot{ position:absolute; }
+
+  .m-hint{ margin-top:12px; font-size:11px; color:#33564a; font-weight:600; }
+  .m-rows{ margin-top:10px; display:grid; gap:8px; }
+  .m-row{ background:#fff; border-radius:10px; height:34px; box-shadow:var(--shadow-card); display:flex; align-items:center; padding:0 12px; font-size:11px; color:var(--muted); }
+
+  /* botón filtros propio (fila) */
+  .m-topbtn{ display:flex; justify-content:flex-end; margin-top:9px; }
+  .m-topbtn .b{ display:inline-flex; align-items:center; gap:6px; background:#fff; color:var(--ink); font-size:12px; font-weight:600; border-radius:11px; padding:8px 12px; box-shadow:var(--shadow-card); }
+  .m-topbtn .b svg{ width:15px; height:15px; }
+  .m-topbtn .b .n{ background:var(--ink); color:var(--lemon); font-size:10px; font-weight:700; border-radius:999px; padding:1px 6px; }
+
+  /* barra fija abajo */
+  .m-bottombar{ position:absolute; left:12px; right:12px; bottom:12px; background:rgba(20,24,22,.92); color:#fff; border-radius:14px; padding:11px; display:flex; align-items:center; justify-content:center; gap:8px; font-size:12.5px; font-weight:700; }
+  .m-bottombar svg{ width:16px; height:16px; }
+  .m-bottombar .n{ background:var(--lemon); color:#3a3d00; font-size:10px; border-radius:999px; padding:1px 6px; }
+
+  /* ── Mockups de panel de filtros ── */
+  .p-full{ background:#F7FAF6; border-radius:12px; overflow:hidden; display:flex; flex-direction:column; min-height:300px; }
+  .p-head{ display:flex; align-items:center; justify-content:space-between; padding:13px 14px; }
+  .p-head .t{ display:flex; align-items:center; gap:8px; font-size:15px; font-weight:700; }
+  .p-head .t svg{ width:17px; height:17px; }
+  .p-head .lnk{ font-size:12px; color:#33564a; font-weight:600; }
+  .p-body{ padding:2px 14px 10px; flex:1; }
+  .p-sec{ margin-top:14px; }
+  .p-sec h4{ font-size:10.5px; font-weight:700; color:#5A665F; text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; }
+  .p-set{ display:flex; flex-wrap:wrap; gap:6px; }
+  .p-c{ background:#fff; color:#4A5650; font-size:11.5px; font-weight:600; border-radius:999px; padding:6px 11px; box-shadow:0 3px 9px rgba(31,64,51,.06); }
+  .p-c.on{ background:var(--ink); color:#fff; }
+  .p-foot{ padding:11px 14px; border-top:1px solid rgba(20,24,22,.06); display:flex; gap:8px; }
+  .p-foot .ghost{ font-size:12.5px; font-weight:600; color:#33564a; padding:11px 10px; }
+  .p-foot .solid{ flex:1; background:var(--ink); color:#fff; border-radius:12px; padding:11px; text-align:center; font-size:13px; font-weight:700; }
+
+  .p-sheetwrap{ position:relative; background:var(--mint); border-radius:12px; overflow:hidden; min-height:300px; }
+  .p-behind{ padding:12px; filter:saturate(.9); }
+  .p-dim{ position:absolute; inset:0; background:rgba(20,24,22,.32); }
+  .p-sheet{ position:absolute; left:0; right:0; bottom:0; background:#F7FAF6; border-radius:18px 18px 0 0; box-shadow:0 -12px 30px rgba(23,54,42,.2); padding-bottom:10px; }
+  .p-grab{ width:38px; height:4px; border-radius:999px; background:#CBD5CE; margin:9px auto 2px; }
+
+  .p-inline{ background:var(--mint); border-radius:12px; padding:12px; min-height:300px; }
+  .p-acc{ background:#fff; border-radius:12px; margin-top:9px; padding:12px; box-shadow:var(--shadow-card); }
+
+  /* ── Tarjetas ── */
+  .cardstage{ background:var(--mint); border-radius:14px; padding:14px; display:grid; gap:12px; }
+
+  /* v-fila (compacta) */
+  .c-row{ background:#fff; border-radius:12px; box-shadow:var(--shadow-card); padding:11px 13px; display:flex; align-items:center; gap:11px; }
+  .c-row .cbar{ width:4px; align-self:stretch; border-radius:999px; }
+  .c-row .mid{ flex:1; min-width:0; }
+  .c-row .l1{ font-size:11px; color:var(--muted); font-weight:600; }
+  .c-row .l1 b{ color:var(--ink); font-weight:700; letter-spacing:.2px; }
+  .c-row .l2{ font-size:13px; font-weight:700; color:var(--ink); margin:2px 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .c-row .l3{ font-size:10.5px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.4px; }
+  .c-row .rt{ text-align:right; flex:none; }
+  .c-row .pct{ font-size:16px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .c-row .pim{ font-size:11px; color:var(--muted); font-weight:600; font-variant-numeric:tabular-nums; }
+  .c-row .chev{ width:16px; height:16px; color:#C3CCC6; flex:none; }
+
+  /* v-limpia (minimal) */
+  .c-clean{ background:#fff; border-radius:18px; box-shadow:var(--shadow-card); padding:17px; }
+  .c-clean .top{ display:flex; align-items:baseline; justify-content:space-between; }
+  .c-clean .cui{ font-size:15px; font-weight:700; letter-spacing:.2px; }
+  .c-clean .prog{ font-size:11px; font-weight:700; color:var(--muted); }
+  .c-clean .name{ font-size:15px; font-weight:700; margin-top:11px; line-height:1.3; }
+  .c-clean .ubi{ font-size:11px; color:var(--muted); font-weight:500; margin-top:4px; }
+  .c-clean .foot{ display:flex; align-items:flex-end; justify-content:space-between; margin-top:16px; }
+  .c-clean .pct{ font-size:24px; font-weight:700; line-height:1; font-variant-numeric:tabular-nums; }
+  .c-clean .pctlbl{ font-size:9.5px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.5px; margin-top:3px; }
+  .c-clean .pim{ text-align:right; }
+  .c-clean .pim .k{ font-size:9.5px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.5px; }
+  .c-clean .pim .v{ font-size:14px; font-weight:700; margin-top:3px; font-variant-numeric:tabular-nums; }
+  .c-clean .bar{ height:5px; border-radius:999px; background:var(--track); overflow:hidden; margin-top:13px; }
+  .c-clean .bar i{ display:block; height:100%; border-radius:999px; }
+
+  /* v-dashboard */
+  .c-dash{ background:#fff; border-radius:18px; box-shadow:var(--shadow-card); padding:16px; display:flex; gap:14px; align-items:center; }
+  .c-dash .ring{ --p:0; --col:#1FA23C; width:66px; height:66px; border-radius:50%; flex:none; background:conic-gradient(var(--col) calc(var(--p)*1%), var(--track) 0); display:grid; place-items:center; }
+  .c-dash .ring .hole{ width:50px; height:50px; border-radius:50%; background:#fff; display:grid; place-items:center; text-align:center; }
+  .c-dash .ring b{ font-size:15px; font-weight:700; } .c-dash .ring small{ display:block; font-size:7px; color:var(--muted); font-weight:600; letter-spacing:.3px; }
+  .c-dash .info{ flex:1; min-width:0; }
+  .c-dash .name{ font-size:13.5px; font-weight:700; line-height:1.25; }
+  .c-dash .sub{ font-size:11px; color:var(--muted); font-weight:600; margin-top:3px; }
+  .c-dash .est{ display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:600; color:#4A5650; margin-top:7px; }
+  .c-dash .est i{ width:7px; height:7px; border-radius:50%; }
+  .c-dash .pim{ margin-top:8px; padding-top:8px; border-top:1px solid rgba(20,24,22,.07); font-size:12.5px; }
+  .c-dash .pim b{ font-weight:700; font-variant-numeric:tabular-nums; }
+
+  .footer{ margin-top:50px; text-align:center; font-size:12px; color:#3d5148; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>UI del buscador — propuestas</h1>
+  <p class="lead">Tres decisiones de diseño, con opciones para cada una. <b>Elegí una de cada sección</b> (ej.: acceso 1 + panel A + tarjeta ②) y con eso ensamblo el buscador definitivo. Son mockups visuales; el flujo ya funciona en <b>buscador-regional.html</b>.</p>
+
+  <!-- ══════════ 1 · ACCESO A FILTROS ══════════ -->
+  <div class="section">
+    <h2><span>1 ·</span> Acceso a los filtros</h2>
+    <p class="sdesc">Dónde vive el disparador de los filtros en la pantalla principal.</p>
+    <div class="grid">
+
+      <div class="opt">
+        <h3><b>1.1</b> Ícono dentro de la búsqueda <span class="tag-rec">minimal</span></h3>
+        <p>Un ícono de filtro a la derecha del cajón. Todo en una línea, cero ruido.</p>
+        <div class="screen">
+          <div class="m-search">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input value="Buscar obra, CUI, lugar…" readonly>
+            <span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg></span>
+          </div>
+          <div class="m-hint">Amazonas › Bagua · 58 proyectos</div>
+          <div class="m-rows"><div class="m-row">CUI 2401230 · Agua potable — Pusi</div><div class="m-row">CUI 2385617 · Alcantarillado — Juliaca</div></div>
+        </div>
+      </div>
+
+      <div class="opt">
+        <h3><b>1.2</b> Chips rápidos + más filtros</h3>
+        <p>Carteras como chips de acceso directo bajo la búsqueda, y un ícono para el resto de filtros.</p>
+        <div class="screen">
+          <div class="m-search">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input value="Buscar obra, CUI, lugar…" readonly>
+          </div>
+          <div class="m-chips">
+            <span class="m-chip on">Todas</span><span class="m-chip">Prioriz.</span><span class="m-chip">Paraliz.</span>
+            <span class="m-fbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg></span>
+          </div>
+          <div class="m-hint">58 proyectos</div>
+          <div class="m-rows"><div class="m-row">CUI 2401230 · Agua potable — Pusi</div></div>
+        </div>
+      </div>
+
+      <div class="opt">
+        <h3><b>1.3</b> Botón "Filtros" en su fila</h3>
+        <p>Un botón con etiqueta y contador, alineado a la derecha bajo la búsqueda (lo que hay hoy).</p>
+        <div class="screen">
+          <div class="m-search">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input value="Buscar obra, CUI, lugar…" readonly>
+          </div>
+          <div class="m-topbtn"><span class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filtros <span class="n">2</span></span></div>
+          <div class="m-hint">Amazonas › Bagua · 58 proyectos</div>
+          <div class="m-rows"><div class="m-row">CUI 2401230 · Agua potable — Pusi</div></div>
+        </div>
+      </div>
+
+      <div class="opt">
+        <h3><b>1.4</b> Barra fija abajo</h3>
+        <p>Filtros siempre a mano en una barra fija inferior, aunque bajes en la lista.</p>
+        <div class="screen tall">
+          <div class="m-search">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input value="Buscar obra, CUI, lugar…" readonly>
+          </div>
+          <div class="m-hint">Amazonas › Bagua · 58 proyectos</div>
+          <div class="m-rows"><div class="m-row">CUI 2401230 · Agua potable — Pusi</div><div class="m-row">CUI 2385617 · Alcantarillado — Juliaca</div><div class="m-row">CUI 2456101 · PTAR — Chiclayo</div></div>
+          <div class="m-bottombar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filtros <span class="n">2</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════ 2 · PANEL DE FILTROS ══════════ -->
+  <div class="section">
+    <h2><span>2 ·</span> Pantalla de filtros</h2>
+    <p class="sdesc">Cómo aparecen los filtros al abrirlos.</p>
+    <div class="grid">
+
+      <div class="opt">
+        <h3><b>A</b> Pantalla completa <span class="tag-rec">más aire</span></h3>
+        <p>Los filtros ocupan toda la vista, como una pantalla aparte. Amplio y ordenado.</p>
+        <div class="screen">
+          <div class="p-full">
+            <div class="p-head">
+              <span class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>Filtros</span>
+              <span class="lnk">Limpiar</span>
+            </div>
+            <div class="p-body">
+              <div class="p-sec"><h4>Cartera</h4><div class="p-set"><span class="p-c">Todas</span><span class="p-c on">Priorizada</span><span class="p-c">Paralizadas</span><span class="p-c">Obras</span></div></div>
+              <div class="p-sec"><h4>Programa</h4><div class="p-set"><span class="p-c">Todos</span><span class="p-c on">PNSR</span><span class="p-c">PNSU</span><span class="p-c">PMIB</span></div></div>
+              <div class="p-sec"><h4>% Ejecución</h4><div class="p-set"><span class="p-c">Toda</span><span class="p-c">≥60%</span><span class="p-c on">25–59%</span><span class="p-c">&lt;25%</span></div></div>
+            </div>
+            <div class="p-foot"><span class="ghost">Limpiar</span><span class="solid">Ver 58 proyectos</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="opt">
+        <h3><b>B</b> Hoja inferior</h3>
+        <p>Sube desde abajo sobre el contenido. Rápido de abrir y cerrar (lo actual, más pulido).</p>
+        <div class="screen">
+          <div class="p-sheetwrap">
+            <div class="p-behind">
+              <div class="m-search"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input value="Buscar…" readonly></div>
+              <div class="m-rows"><div class="m-row"></div><div class="m-row"></div></div>
+            </div>
+            <div class="p-dim"></div>
+            <div class="p-sheet">
+              <div class="p-grab"></div>
+              <div class="p-head"><span class="t">Filtros</span><span class="lnk">✕</span></div>
+              <div class="p-body">
+                <div class="p-sec"><h4>Cartera</h4><div class="p-set"><span class="p-c">Todas</span><span class="p-c on">Priorizada</span><span class="p-c">Paralizadas</span></div></div>
+                <div class="p-sec"><h4>% Ejecución</h4><div class="p-set"><span class="p-c on">Toda</span><span class="p-c">≥60%</span><span class="p-c">&lt;25%</span></div></div>
+              </div>
+              <div class="p-foot"><span class="solid">Ver 58 proyectos</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="opt">
+        <h3><b>C</b> Desplegable inline</h3>
+        <p>Un acordeón que se abre en la misma pantalla y empuja la lista. Sin overlay ni fondo oscuro.</p>
+        <div class="screen">
+          <div class="p-inline">
+            <div class="m-search"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input value="Buscar…" readonly><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 15l-6-6-6 6"/></svg></span></div>
+            <div class="p-acc">
+              <div class="p-sec" style="margin-top:0"><h4>Cartera</h4><div class="p-set"><span class="p-c">Todas</span><span class="p-c on">Priorizada</span><span class="p-c">Paralizadas</span></div></div>
+              <div class="p-sec"><h4>Programa</h4><div class="p-set"><span class="p-c on">Todos</span><span class="p-c">PNSR</span><span class="p-c">PNSU</span></div></div>
+            </div>
+            <div class="m-hint">58 proyectos</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════ 3 · TARJETA ══════════ -->
+  <div class="section">
+    <h2><span>3 ·</span> Tarjeta de proyecto</h2>
+    <p class="sdesc">Cómo se ve cada proyecto en los resultados. (Cada una con dos ejemplos: avance medio y avance alto.)</p>
+    <div class="grid">
+      <div class="opt">
+        <h3><b>①</b> Fila compacta <span class="tag-rec">menos scroll</span></h3>
+        <p>Filas finas tipo lista: entran muchos más por pantalla. Ideal para listas largas.</p>
+        <div class="cardstage" id="stage-row"></div>
+      </div>
+      <div class="opt">
+        <h3><b>②</b> Tarjeta limpia</h3>
+        <p>Mucho aire, poco color, jerarquía tipográfica. El % y el PIM abajo, con barra fina.</p>
+        <div class="cardstage" id="stage-clean"></div>
+      </div>
+      <div class="opt">
+        <h3><b>③</b> Panel de datos</h3>
+        <p>Medidor de ejecución + estado + PIM, estilo tablero. La más informativa de un vistazo.</p>
+        <div class="cardstage" id="stage-dash"></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="footer">Decime tu combinación (ej.: <b>1.1 + A + ②</b>) y ensamblo el buscador final.</p>
+</div>
+
+<script>
+  var CH = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';
+  function col(n){ return n>=60?"#1FA23C":(n>=25?"#C98A00":"#BF2E25"); }
+  function soles(n){ return "S/ " + n.toLocaleString("es-PE"); }
+  function solesM(n){ return "S/ " + (n/1000000).toFixed(1).replace(".",",") + " M"; }
+
+  var SAMP = [
+    { cui:"2401230", prog:"PNSR", name:"Agua potable rural — Pusi", dep:"Amazonas", prov:"Bagua", dist:"Pusi", pim:9600000, ejec:43, estado:{t:"Priorizado",c:"#3D7EF7"} },
+    { cui:"2385617", prog:"PNSU", name:"Ampliación de alcantarillado — Juliaca", dep:"Puno", prov:"San Román", dist:"Juliaca", pim:12400000, ejec:72, estado:{t:"En ejecución",c:"#33B679"} }
+  ];
+
+  document.getElementById("stage-row").innerHTML = SAMP.map(function(p){
+    return '<div class="c-row">'+
+      '<span class="cbar" style="background:'+p.estado.c+'"></span>'+
+      '<span class="mid">'+
+        '<span class="l1"><b>CUI '+p.cui+'</b> · '+p.prog+'</span>'+
+        '<div class="l2">'+p.name+'</div>'+
+        '<span class="l3">'+p.dep+' · '+p.prov+'</span>'+
+      '</span>'+
+      '<span class="rt"><div class="pct" style="color:'+col(p.ejec)+'">'+p.ejec+'%</div><div class="pim">'+solesM(p.pim)+'</div></span>'+
+      CH+
+    '</div>';
+  }).join("");
+
+  document.getElementById("stage-clean").innerHTML = SAMP.map(function(p){
+    return '<div class="c-clean">'+
+      '<div class="top"><span class="cui">CUI '+p.cui+'</span><span class="prog">'+p.prog+'</span></div>'+
+      '<div class="name">'+p.name+'</div>'+
+      '<div class="ubi">'+p.dep+' · '+p.prov+' · '+p.dist+'</div>'+
+      '<div class="foot">'+
+        '<div><div class="pct" style="color:'+col(p.ejec)+'">'+p.ejec+'%</div><div class="pctlbl">Ejecución 2026</div></div>'+
+        '<div class="pim"><div class="k">PIM 2026</div><div class="v">'+solesM(p.pim)+'</div></div>'+
+      '</div>'+
+      '<div class="bar"><i style="width:'+p.ejec+'%;background:'+col(p.ejec)+'"></i></div>'+
+    '</div>';
+  }).join("");
+
+  document.getElementById("stage-dash").innerHTML = SAMP.map(function(p){
+    return '<div class="c-dash">'+
+      '<div class="ring" style="--p:'+p.ejec+';--col:'+col(p.ejec)+'"><div class="hole"><span><b>'+p.ejec+'%</b><small>EJEC</small></span></div></div>'+
+      '<div class="info">'+
+        '<div class="name">'+p.name+'</div>'+
+        '<div class="sub">CUI '+p.cui+' · '+p.prog+'</div>'+
+        '<div class="est"><i style="background:'+p.estado.c+'"></i>'+p.estado.t+'</div>'+
+        '<div class="pim">PIM 2026 &nbsp;<b>'+soles(p.pim)+'</b></div>'+
+      '</div>'+
+    '</div>';
+  }).join("");
+</script>
+</body>
+</html>

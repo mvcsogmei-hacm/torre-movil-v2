@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La torre — Lista de programas (réplica)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%23A6D3C4'/%3E%3Cpath%20fill='%23141816'%20d='M17%2012h7v6h5v-6h6v6h5v-6h7v12l-5%205v13l5%207v7H17v-7l5-7V29l-5-5z'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --ink:#141816; --muted:#8A938E;
+    --sa:#FBFDF8; --sb:#E7F2DE; --sc:#D9EBD4;
+    --ok:#1FA23C; --pr:#C98A00; --cr:#D24B40;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{
+    background:#F2F6EF; color:var(--ink);
+    font-family:"Space Grotesk",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    padding:36px 22px 60px;
+  }
+  header{ max-width:900px; margin:0 auto 28px; }
+  header h1{ font-size:26px; letter-spacing:-.01em; }
+  header p{ color:#57635C; margin-top:8px; font-size:15px; line-height:1.55; max-width:680px; }
+  .grid{
+    max-width:900px; margin:0 auto;
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+    gap:24px 22px;
+  }
+  figure{ display:grid; gap:10px; align-content:start; }
+  .mock{
+    border-radius:18px; padding:20px 14px;
+    box-shadow:0 14px 34px rgba(17,56,44,.13);
+  }
+  .mock.gray{ background:#F1F1F3; }
+  .mock.brand{ background:linear-gradient(165deg,var(--sa) 0%,var(--sb) 60%,var(--sc) 100%); }
+  figcaption{ padding:0 4px; }
+  figcaption strong{ font-size:14px; display:block; }
+  figcaption span{ font-size:12.5px; color:#66726B; line-height:1.45; display:block; margin-top:2px; }
+
+  .top{ display:flex; align-items:center; justify-content:space-between; padding:0 4px 14px; }
+  .top h2{ font-size:19px; font-weight:700; }
+  .top svg{ width:20px; height:20px; }
+
+  .row{
+    display:flex; align-items:center; gap:13px;
+    background:#fff; border-radius:14px;
+    padding:14px 16px; margin-top:11px;
+  }
+  .row:first-of-type{ margin-top:0; }
+  .mock.gray .row{ box-shadow:0 1px 2px rgba(0,0,0,.03); }
+  .mock.brand .row{ box-shadow:0 10px 24px rgba(31,64,51,.07); }
+  .ic{
+    width:44px; height:44px; border-radius:50%; flex:none;
+    display:grid; place-items:center;
+  }
+  .ic svg{ width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+  .row .info{ flex:1; min-width:0; }
+  .row .name{ font-size:15px; font-weight:700; display:block; }
+  .row .sub{ font-size:12.5px; color:var(--muted); display:block; margin-top:2px; }
+  .row .val{ font-size:15px; font-weight:700; }
+  .val.ok{ color:var(--ok); } .val.pr{ color:var(--pr); } .val.cr{ color:var(--cr); }
+
+  /* pasteles fieles a la referencia */
+  .p-green { background:#DFF3E0; color:#2FA84F; }
+  .p-lav   { background:#E4E1FB; color:#6C5CE7; }
+  .p-amber { background:#FFF3DC; color:#E9A23B; }
+  .p-pink  { background:#FDE7F3; color:#EC6BAE; }
+  .p-blue  { background:#E0EDFB; color:#4A90D9; }
+
+  /* variante marca: degradados de la app, icono blanco */
+  .b-paslc  { background:linear-gradient(140deg,#4E8F6C,#2C5E48); color:#fff; }
+  .b-pnsu   { background:linear-gradient(140deg,#7FA3D6,#48679C); color:#fff; }
+  .b-cofopri{ background:linear-gradient(140deg,#DCA25E,#A96B2C); color:#fff; }
+  .b-pnsr   { background:linear-gradient(140deg,#D98CA4,#A25476); color:#fff; }
+  .b-sencico{ background:linear-gradient(140deg,#A98CD6,#6F54A2); color:#fff; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Lista de programas — réplica de la referencia</h1>
+  <p>El diseño de la imagen (lista de transacciones: tarjeta blanca, icono circular pastel, nombre + subtítulo, valor de color a la derecha) aplicado a los programas de la cartera. A la izquierda la réplica fiel; a la derecha la misma estructura vestida con la identidad de La torre. El % toma el color del estado del programa.</p>
+</header>
+
+<div class="grid">
+
+  <figure>
+    <div class="mock gray">
+      <div class="top">
+        <h2>Cartera priorizada</h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#141816" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>
+      </div>
+      <div class="row">
+        <span class="ic p-green"><svg viewBox="0 0 24 24"><path d="M12 8V5"/><path d="M9 5h6"/><path d="M4 14v-4h8a5 5 0 0 1 5 5v2h-3v-1.5a2.5 2.5 0 0 0-2.5-2.5H4z"/><path d="M15.5 21c-.8 0-1.5-.6-1.5-1.4 0-1 1.5-2.6 1.5-2.6s1.5 1.6 1.5 2.6c0 .8-.7 1.4-1.5 1.4z"/></svg></span>
+        <span class="info"><span class="name">PASLC</span><span class="sub">4 proyectos</span></span>
+        <span class="val ok">71,9%</span>
+      </div>
+      <div class="row">
+        <span class="ic p-lav"><svg viewBox="0 0 24 24"><path d="M12 8V5"/><path d="M9 5h6"/><path d="M4 14v-4h8a5 5 0 0 1 5 5v2h-3v-1.5a2.5 2.5 0 0 0-2.5-2.5H4z"/><path d="M15.5 21c-.8 0-1.5-.6-1.5-1.4 0-1 1.5-2.6 1.5-2.6s1.5 1.6 1.5 2.6c0 .8-.7 1.4-1.5 1.4z"/></svg></span>
+        <span class="info"><span class="name">PNSU</span><span class="sub">9 proyectos</span></span>
+        <span class="val pr">39%</span>
+      </div>
+      <div class="row">
+        <span class="ic p-amber"><svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5"/><path d="M5.5 8.8V20a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V8.8"/></svg></span>
+        <span class="info"><span class="name">COFOPRI</span><span class="sub">1 proyecto</span></span>
+        <span class="val pr">39,5%</span>
+      </div>
+      <div class="row">
+        <span class="ic p-pink"><svg viewBox="0 0 24 24"><path d="M12 8V5"/><path d="M9 5h6"/><path d="M4 14v-4h8a5 5 0 0 1 5 5v2h-3v-1.5a2.5 2.5 0 0 0-2.5-2.5H4z"/><path d="M15.5 21c-.8 0-1.5-.6-1.5-1.4 0-1 1.5-2.6 1.5-2.6s1.5 1.6 1.5 2.6c0 .8-.7 1.4-1.5 1.4z"/></svg></span>
+        <span class="info"><span class="name">PNSR</span><span class="sub">1 proyecto</span></span>
+        <span class="val cr">15,5%</span>
+      </div>
+      <div class="row">
+        <span class="ic p-blue"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="1.5"/><path d="M9 8h.01M15 8h.01M9 12h.01M15 12h.01"/><path d="M10 21v-4h4v4"/></svg></span>
+        <span class="info"><span class="name">SENCICO</span><span class="sub">3 proyectos</span></span>
+        <span class="val pr">33%</span>
+      </div>
+    </div>
+    <figcaption><strong>A · Réplica fiel</strong><span>Fondo gris neutro, iconos en círculos pastel con el trazo del mismo tono, y el porcentaje coloreado por estado (como los montos en rojo de la referencia).</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock brand">
+      <div class="top">
+        <h2>Cartera priorizada</h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#141816" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>
+      </div>
+      <div class="row">
+        <span class="ic b-paslc"><svg viewBox="0 0 24 24"><path d="M12 8V5"/><path d="M9 5h6"/><path d="M4 14v-4h8a5 5 0 0 1 5 5v2h-3v-1.5a2.5 2.5 0 0 0-2.5-2.5H4z"/><path d="M15.5 21c-.8 0-1.5-.6-1.5-1.4 0-1 1.5-2.6 1.5-2.6s1.5 1.6 1.5 2.6c0 .8-.7 1.4-1.5 1.4z"/></svg></span>
+        <span class="info"><span class="name">PASLC</span><span class="sub">4 proyectos</span></span>
+        <span class="val ok">71,9%</span>
+      </div>
+      <div class="row">
+        <span class="ic b-pnsu"><svg viewBox="0 0 24 24"><path d="M12 8V5"/><path d="M9 5h6"/><path d="M4 14v-4h8a5 5 0 0 1 5 5v2h-3v-1.5a2.5 2.5 0 0 0-2.5-2.5H4z"/><path d="M15.5 21c-.8 0-1.5-.6-1.5-1.4 0-1 1.5-2.6 1.5-2.6s1.5 1.6 1.5 2.6c0 .8-.7 1.4-1.5 1.4z"/></svg></span>
+        <span class="info"><span class="name">PNSU</span><span class="sub">9 proyectos</span></span>
+        <span class="val pr">39%</span>
+      </div>
+      <div class="row">
+        <span class="ic b-cofopri"><svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5"/><path d="M5.5 8.8V20a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V8.8"/></svg></span>
+        <span class="info"><span class="name">COFOPRI</span><span class="sub">1 proyecto</span></span>
+        <span class="val pr">39,5%</span>
+      </div>
+      <div class="row">
+        <span class="ic b-pnsr"><svg viewBox="0 0 24 24"><path d="M12 8V5"/><path d="M9 5h6"/><path d="M4 14v-4h8a5 5 0 0 1 5 5v2h-3v-1.5a2.5 2.5 0 0 0-2.5-2.5H4z"/><path d="M15.5 21c-.8 0-1.5-.6-1.5-1.4 0-1 1.5-2.6 1.5-2.6s1.5 1.6 1.5 2.6c0 .8-.7 1.4-1.5 1.4z"/></svg></span>
+        <span class="info"><span class="name">PNSR</span><span class="sub">1 proyecto</span></span>
+        <span class="val cr">15,5%</span>
+      </div>
+      <div class="row">
+        <span class="ic b-sencico"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="1.5"/><path d="M9 8h.01M15 8h.01M9 12h.01M15 12h.01"/><path d="M10 21v-4h4v4"/></svg></span>
+        <span class="info"><span class="name">SENCICO</span><span class="sub">3 proyectos</span></span>
+        <span class="val pr">33%</span>
+      </div>
+    </div>
+    <figcaption><strong>B · Adaptada a La torre</strong><span>La misma estructura sobre el degradado verde de la app, con los iconos en los degradados vivos de Movimientos y la tipografía Space Grotesk.</span></figcaption>
+  </figure>
+
+</div>
+</body>
+</html>

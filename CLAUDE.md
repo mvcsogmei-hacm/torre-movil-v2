@@ -1,0 +1,82 @@
+# La torre — Torre móvil v.2
+
+App móvil tipo fintech ("La torre") para monitoreo de proyectos de inversión pública del Perú (CUI, programas PNSR/PNSU/PMIB, etc.).
+
+## Estructura
+
+- Un solo `index.html` autocontenido (HTML + CSS + JS, sin dependencias externas), más `Data/proyectos.js` con los datos reales.
+- Estética (desde 17-ago-2026): **colores institucionales del sector Vivienda / Estado peruano** — rojo institucional `#C8102E` (degradado a `#A50D23`) como color primario, texto blanco/rosado `#F7C8C2` sobre paneles rojos, fondos neutros cálidos. Fuente Space Grotesk, marco de teléfono en escritorio. OJO: las variables CSS conservan sus nombres históricos (`--lemon` = rojo institucional, `--mint` = rojo profundo del fondo); hay una nueva `--rosa`. El PDF descargable también usa el tema rojo. El tema anterior (menta/limón) sobrevive solo en `Propuestas/`.
+- Carpeta `Propuestas/`: variaciones aisladas (favicon, splash, menús, galerías), documentadas en `Propuestas/LEEME.md`.
+- Carpeta `Data/`: el Excel fuente (`31.07.2026 - Matriz Única de Monitoreo - Consolidado.xlsx`) y el `proyectos.js` generado desde él.
+- Pantallas: Inicio, Inversiones, BOT, Actividades, Búsqueda + ficha de proyecto.
+- La pantalla Búsqueda funciona con **datos reales**: `index.html` carga `data/proyectos.js` (define `window.PROYECTOS`, 21,528 proyectos).
+
+## Importante
+
+Esta app es **totalmente independiente**: NO tiene relación con la carpeta `Desktop\la_torre` ni con sus datos, API o base de datos (aclarado por el usuario el 14-ago-2026). No usar ese proyecto como referencia.
+
+## Buscador con datos reales — estado (16-ago-2026)
+
+Objetivo (acordado 13-ago-2026): hacer funcional el buscador de proyectos con datos reales. **La fase Excel → JSON ya está hecha** (14-ago-2026).
+
+### Fuente de datos real
+
+`Data\31.07.2026 - Matriz Única de Monitoreo - Consolidado.xlsx`: una sola hoja **CONSOLIDADO**, 21,528 proyectos × 29 columnas. Es una **matriz plana consolidada**, no el modelo normalizado que se había diseñado (hoja UNIVERSAL + una hoja por cartera): las carteras vienen como columnas con "-" cuando no aplican, y las transferencias solo como totales 2026 (transferido/ejecutado), **no una fila por transferencia**.
+
+### `Data/proyectos.js` (generado con `Data/generar_proyectos.py`)
+
+- Regenerar con: `py generar_proyectos.py` desde la carpeta `Data/` (openpyxl vía `py`).
+- `window.PROYECTOS = [...]`, UTF-8, 21,528 proyectos, 0 CUIs duplicados.
+- 23 campos comunes por proyecto: `cui, nombre, programa, uei, dep, prov, dist, modalidad, tipo, pobl, cxAgua, cxAlc, ssi, monto, devAc, pim, dev, fisico, estadoET, procSel, ssp, subSsp, fTerm`. Los vacíos ("-" en el Excel) van como `null`; `fisico` en % (el Excel lo guarda como fracción).
+- Objeto `carteras` según **reglas de pertenencia definidas por el usuario (16-ago-2026)**:
+  - `preset` (8,104): ETAPA DE EVALUACIÓN distinta de vacío y distinta de FINANCIADO → `{etapa, estado}`
+  - `obras` (2,864): MODALIDAD = DIRECTA → `{avance}`
+  - `transferencias` (1,150): MONTO TOTAL TRANSFERIDO 2026 > 0 → `{transferido, ejecutado}` (el % de ejecución se calcula en la UI)
+  - `paralizadas` (247): ESTADO SSP = PARALIZADA o PARALIZADO → `{avance, hito, fecha}`
+- Programas: PNSR 10,542 · PMIB 7,541 · PNSU 3,317 · PNC 66 · PASLC 47 · SEDAPAL 9 · PGSU 3 · SENCICO 3.
+
+### Pantalla Inicio y detalle de Pliego (datos reales desde 17-ago-2026)
+
+- **Indicador principal de Inicio**: fila PLIEGO de la hoja `PLIEGO` (`INDICADORES.pliego[0]`): % grande = columna "Todo" **redondeado a entero** (73%), sin línea secundaria y **sin botón de ojo** (eliminado 17-ago-2026). El desglose Actividades/Proyectos con decimales vive solo en el detalle.
+- **Cabecera de Inicio**: se quitaron los botones de notificaciones y estadísticas; queda un solo botón de **Ajustes** (engranaje) que abre `screen-ajustes`, con **funcionalidad real** (persistida en `localStorage` clave `torre-ajustes`): interruptor de Notificaciones; Tamaño de texto Pequeño/Normal/Grande (aplica `zoom` al `.phone` y se recuerda entre sesiones); Idioma (valor fijo); "Datos cargados" expandible con el resumen vivo de la matriz (total y conteo por cartera desde `PROYECTOS`) + botón "Recargar datos"; y "Acerca de" expandible.
+- **Detalle de Pliego** (`screen-pliego`): tarjeta resumen con la fila PLIEGO + **un card por cada fila restante** de la hoja (ADM GENERAL, PNSU, PNSR, PASLC), cada uno con filas Todo/Actividades/Proyectos con barras semáforo (mismos helpers `seccionPct`/`filaPct`).
+- **Entidades adscritas** (cuadrícula 2×2 de Inicio): hoja `ADSCRITAS` (`INDICADORES.adscritas`): nombre, %, barra y monto "S/ N millones".
+
+### Pantalla Actividades
+
+Retitulada de "Movimientos" a "Actividades". Tres pestañas estilo accesos de Inicio: **Títulos de propiedad** (activa), **Bonos** y **Wasiymi**. Las tres comparten estructura y helpers (`filaPct`, `seccionPct`, `indicadorPrincipal`, `segControl`), con datos del Excel exportados como `window.INDICADORES`:
+
+**Bonos** (`INDICADORES.bonos`, hojas `INDICADORES BONOS` / `MODALIDAS BONOS` / `POR REGION BONOS`): indicador diseño 4 (desembolsados÷meta, hoy 25,3% — 8,768 de 34,685) + sub-pestañas **Por modalidad** y **Por región**, ambas con el semáforo estándar de avance (≥60 verde / 25–59 ámbar / <25 rojo) — el usuario pidió el semáforo también para modalidades (16-ago-2026).
+
+**Wasiymi** (`INDICADORES.wasiymi`, hojas `INDICADORES WAYSIMI` / `POR REGION WAYSIMI` — **así escritas en el Excel, con "WAYSIMI"**): indicador diseño 4 (ejecución física÷meta, hoy 4,8% — 309 de 6,399) y, **sin sub-pestañas**, directamente la sección "Wasiymi por región" (14 regiones con semáforo; Piura viene como 1 en el Excel → 100%).
+
+**Títulos** (`INDICADORES.titulos`):
+
+- **Indicador principal (diseño 4 de `Propuestas/galeria-indicador-titulos.html`, elegido 16-ago-2026)**: % grande (entregados÷meta, hoy 44,7%) + barra de avance con extremos "22,265 entregados" / "Meta 49,844". Hoja `INDICADORES TITULOS`.
+- **Sub-pestañas** (control segmentado): **Macro región** (hoja `MACROREGION TITULOS`, sección "Por macro región") y **Por regiones** (hoja `POR REGION TITULOS`, una sección por macro región). Mismo formato que la ficha de proyecto: título `section-head` + tarjeta `detail-card` con filas nombre → % coloreado por la regla ≥60/25/25 y **barra de porcentaje** bajo cada fila (filas `.drb`).
+- El generador normaliza los % de esas hojas (`pct_celda`): texto "52,1%" → 52.1; fracción ≤1 → ×100; número >1 ya es %.
+- El contenido demo fintech de esta pantalla se eliminó (queda demo solo en la pantalla "Pagar").
+
+### Pantalla Inversiones
+
+Las 4 tarjetas originales (Cartera priorizada, Paralizadas, Obras directas, Transferencias 2026) siguen **estáticas** (decisión del usuario, 16-ago-2026). Se añadió una 5.ª tarjeta **PRESET dinámica**: % de proyectos en etapa APTO sobre el total de la cartera, global y por programa, calculado desde `window.PROYECTOS` al cargar (hoy: 10,8% global).
+
+### Ficha de proyecto — módulos
+
+Fijos (todos los proyectos): cabecera con el mismo formato que el indicador principal de Inicio (tarjeta `neu-card` blanca + panel limón centrado) — línea 1: departamento - provincia - distrito, línea 2: CUI, línea 3: título del proyecto, debajo chips de cartera; franja inferior con **2 acciones: "Descargar PDF"** y **"Compartir"** (Web Share API nativa — incluye WhatsApp y correo; si el navegador no la soporta, hoja propia con WhatsApp y Correo). El PDF se **genera a mano en JS** (función `descargarPdf`, sin librerías) y se descarga directo como archivo; diseño de una sola columna en una hoja A4, cabecera limón, títulos de sección en bandas de color y filas cebra sin bordes; adaptativo (aireado por defecto, compacta solo si el proyecto tiene muchas secciones). Las secciones de la ficha y del PDF salen de una única fuente: `fichaDatos(p)`. · Datos generales · Beneficiarios · Información financiera 2026 (con % ejec. financiera = dev/PIM calculado) · **Estado situacional** (antes "Seguimiento"; **se oculta si el proyecto pertenece a PRESET**). Condicionales: una sección por cartera a la que pertenece el CUI (PRESET, Obras directas, Transferencias 2026 con % de ejecución calculado, Paralizadas). Los encabezados de sección van sin punto de color.
+
+### Modelo de datos normalizado (diseño de referencia, para cuando la fuente lo permita)
+
+- **Matriz UNIVERSAL**: una fila por proyecto, CUI como llave única. Solo campos comunes. Nada específico de una cartera.
+- **Una matriz por cartera**: primera columna CUI + solo los campos propios de esa cartera. Pertenencia a una cartera = que el CUI aparezca en su matriz. Un proyecto puede estar en varias carteras.
+- **Transferencias es la única matriz donde el CUI se repite**: una fila por transferencia (fecha, año, monto, dispositivo legal). En las demás matrices un CUI duplicado es error.
+- Los agregados (total, n° de transferencias, subtotal por año) se **calculan**, nunca se escriben en el Excel.
+
+### Fase siguiente: BBDD
+
+Desde cero, sin reutilizar nada previo: tablas `proyectos`, `carteras` (catálogo), `proyecto_cartera` (puente), tablas de detalle por cartera, tabla `transferencias` 1-a-muchos. Mantener una sola capa de acceso (`buscarProyectos()`) para poder cambiar JSON→API sin tocar la UI.
+
+### Pendientes
+
+- **Historial de transferencias**: el Excel consolidado solo trae totales 2026; el historial por fecha/año diseñado para la ficha (agrupado por año con subtotales, opción recomendada) necesita otra fuente.
+- ~~Mayúsculas en la ruta~~: resuelto 17-ago-2026 — el HTML ahora pide `Data/proyectos.js`, igual que la carpeta. Repo: `mvcsogmei-hacm/torre-movil-v2`.

@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La torre — Galería de indicadores</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%23A6D3C4'/%3E%3Cpath%20fill='%23141816'%20d='M17%2012h7v6h5v-6h6v6h5v-6h7v12l-5%205v13l5%207v7H17v-7l5-7V29l-5-5z'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --mint:#A6D3C4; --ink:#141816; --muted:#8A938E;
+    --lemon:#F2F97C; --key:#F1F4EE;
+    --sa:#FBFDF8; --sb:#E7F2DE; --sc:#D9EBD4;
+    --track:rgba(20,24,22,.10);
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{
+    background:#F2F6EF; color:var(--ink);
+    font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    padding:36px 22px 60px;
+  }
+  header{ max-width:1100px; margin:0 auto 28px; }
+  header h1{ font-size:26px; letter-spacing:-.01em; }
+  header p{ color:#57635C; margin-top:8px; font-size:15px; line-height:1.55; max-width:680px; }
+  .grid{
+    max-width:1100px; margin:0 auto;
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:24px 22px;
+  }
+  figure{ display:grid; gap:10px; align-content:start; }
+  .mock{
+    border-radius:26px; padding:20px 16px;
+    background:linear-gradient(165deg,var(--sa) 0%,var(--sb) 60%,var(--sc) 100%);
+    box-shadow:0 14px 34px rgba(17,56,44,.13);
+    display:grid; align-content:center; min-height:220px;
+  }
+  figcaption{ padding:0 4px; }
+  figcaption strong{ font-size:14px; display:block; }
+  figcaption span{ font-size:12.5px; color:#66726B; line-height:1.45; display:block; margin-top:2px; }
+
+  /* ─ Piezas comunes ─ */
+  .card{
+    background:#fff; border-radius:22px; padding:18px;
+    box-shadow:0 10px 24px rgba(31,64,51,.08);
+  }
+  .lbl-row{ display:flex; align-items:center; justify-content:space-between; }
+  .lbl{ font-size:13.5px; font-weight:600; color:#5A665F; }
+  .mini{
+    font:inherit; border:0; cursor:pointer;
+    display:inline-flex; align-items:center; gap:4px;
+    background:var(--key); color:var(--ink);
+    border-radius:999px; padding:6px 12px;
+    font-size:12px; font-weight:600;
+  }
+  .mini svg{ width:12px; height:12px; }
+  .hero{ font-size:46px; font-weight:700; letter-spacing:-.02em; margin-top:8px; }
+  .sub{ font-size:13.5px; color:var(--muted); margin-top:2px; }
+  .meter{
+    height:8px; border-radius:999px; background:var(--track);
+    margin-top:14px; overflow:hidden;
+  }
+  .meter i{ display:block; height:100%; border-radius:999px; background:var(--ink); }
+  .scale{
+    display:flex; justify-content:space-between;
+    font-size:11.5px; color:var(--muted); margin-top:6px;
+  }
+  svg.icon{ fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+
+  /* 2 · anillo */
+  .ring-card{ display:flex; align-items:center; gap:16px; }
+  .ring{ width:96px; height:96px; flex:none; position:relative; }
+  .ring svg{ width:96px; height:96px; transform:rotate(-90deg); }
+  .ring .val{
+    position:absolute; inset:0; display:grid; place-items:center;
+    font-size:22px; font-weight:700;
+  }
+  .ring-card .body{ flex:1; }
+  .ring-card .body .mini{ margin-top:10px; }
+
+  /* 3 · oscura */
+  .card.dark{ background:var(--ink); color:#fff; }
+  .card.dark .lbl{ color:#A9B4AD; }
+  .card.dark .sub{ color:#A9B4AD; }
+  .card.dark .meter{ background:rgba(255,255,255,.16); }
+  .card.dark .meter i{ background:var(--lemon); }
+  .card.dark .scale{ color:#8B968F; }
+  .card.dark .mini{ background:rgba(255,255,255,.14); color:#fff; }
+
+  /* 4 · fila compacta */
+  .row-card{ display:grid; gap:12px; }
+  .row-card .row{ display:flex; align-items:center; gap:12px; }
+  .row-card .bubble{
+    width:44px; height:44px; border-radius:14px; flex:none;
+    background:var(--sb); color:var(--ink);
+    display:grid; place-items:center;
+  }
+  .row-card .bubble svg{ width:20px; height:20px; }
+  .row-card .info{ flex:1; }
+  .row-card .name{ display:block; font-size:15px; font-weight:600; }
+  .row-card .det{ display:block; font-size:12.5px; color:var(--muted); margin-top:2px; }
+  .row-card .pct{ font-size:20px; font-weight:700; }
+  .row-card .chev{ width:16px; height:16px; color:var(--muted); }
+
+  /* 5 · medidor semicircular */
+  .gauge-card{ text-align:center; }
+  .gauge{ width:170px; margin:6px auto 0; position:relative; }
+  .gauge svg{ display:block; width:100%; height:auto; }
+  .gauge .gval{ margin-top:-54px; font-size:34px; font-weight:700; }
+  .gauge-card .sub{ margin-top:2px; }
+  .gauge-card .mini{ margin-top:12px; }
+
+  /* 6 · monto protagonista */
+  .chip{
+    display:inline-block; margin-top:8px;
+    background:var(--lemon); color:var(--ink);
+    border-radius:999px; padding:5px 11px;
+    font-size:12.5px; font-weight:700;
+  }
+
+  /* 7 · barra segmentada */
+  .seg{ display:flex; gap:2px; height:14px; border-radius:999px; overflow:hidden; margin-top:14px; }
+  .seg i{ display:block; height:100%; }
+  .seg .a{ background:var(--ink); border-radius:999px 0 0 999px; }
+  .seg .b{ background:var(--track); border-radius:0 999px 999px 0; }
+  .legend{ display:grid; gap:6px; margin-top:12px; }
+  .legend div{ display:flex; align-items:center; gap:8px; font-size:12.5px; }
+  .legend .sw{ width:9px; height:9px; border-radius:3px; flex:none; }
+  .legend .sw.a{ background:var(--ink); }
+  .legend .sw.b{ background:var(--track); }
+  .legend b{ margin-left:auto; font-weight:700; }
+
+  /* 8 · menta */
+  .card.mintbg{ background:var(--mint); }
+  .card.mintbg .lbl{ color:#33473D; }
+  .card.mintbg .sub{ color:#33473D; }
+  .card.mintbg .meter{ background:rgba(255,255,255,.55); }
+  .card.mintbg .scale{ color:#33473D; }
+  .card.mintbg .mini{ background:rgba(255,255,255,.75); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Galería de indicadores — La torre</h1>
+  <p>Ocho maneras de presentar el indicador <strong>Pliego · 63% · S/ 2,500 millones</strong>, cada una con su botón "Ver detalles". Todas siguen la misma regla: el número grande siempre en tinta (nunca en color), el avance como medidor con pista neutra, y el dato secundario (el PIM de S/ 3,968 M) visible sin estorbar.</p>
+</header>
+
+<div class="grid">
+
+  <figure>
+    <div class="mock">
+      <div class="card">
+        <div class="lbl-row">
+          <span class="lbl">Pliego</span>
+          <button class="mini">Ver detalles <svg class="icon" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+        </div>
+        <div class="hero">63%</div>
+        <div class="sub">S/ 2,500 millones ejecutados</div>
+        <div class="meter"><i style="width:63%"></i></div>
+        <div class="scale"><span>0</span><span>PIM · S/ 3,968 M</span></div>
+      </div>
+    </div>
+    <figcaption><strong>1 · Ficha sobria</strong><span>Tarjeta blanca: porcentaje como protagonista, monto debajo y medidor fino con la escala del PIM.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock">
+      <div class="card ring-card">
+        <div class="ring">
+          <svg viewBox="0 0 96 96">
+            <circle cx="48" cy="48" r="41" fill="none" stroke="rgba(20,24,22,.10)" stroke-width="9"/>
+            <circle cx="48" cy="48" r="41" fill="none" stroke="#141816" stroke-width="9" stroke-linecap="round"
+                    stroke-dasharray="162.3 257.6"/>
+          </svg>
+          <span class="val">63%</span>
+        </div>
+        <div class="body">
+          <span class="lbl">Pliego</span>
+          <div style="font-size:19px;font-weight:700;margin-top:3px;">S/ 2,500 millones</div>
+          <div class="sub">de S/ 3,968 M (PIM)</div>
+          <button class="mini">Ver detalles <svg class="icon" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+        </div>
+      </div>
+    </div>
+    <figcaption><strong>2 · Anillo</strong><span>Medidor circular con el porcentaje al centro y las cifras al lado. El favorito de las apps fintech.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock">
+      <div class="card dark">
+        <div class="lbl-row">
+          <span class="lbl">Pliego</span>
+          <button class="mini">Ver detalles <svg class="icon" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+        </div>
+        <div class="hero">63%</div>
+        <div class="sub">S/ 2,500 millones ejecutados</div>
+        <div class="meter"><i style="width:63%"></i></div>
+        <div class="scale"><span>0</span><span>PIM · S/ 3,968 M</span></div>
+      </div>
+    </div>
+    <figcaption><strong>3 · Tarjeta oscura</strong><span>La misma ficha en tinta con el medidor en limón. Máximo peso visual para el indicador principal.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock">
+      <div class="card row-card">
+        <div class="row">
+          <span class="bubble"><svg class="icon" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg></span>
+          <span class="info">
+            <span class="name">Pliego</span>
+            <span class="det">S/ 2,500 M de S/ 3,968 M</span>
+          </span>
+          <span class="pct">63%</span>
+          <svg class="icon chev" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div class="meter" style="margin-top:0"><i style="width:63%"></i></div>
+      </div>
+    </div>
+    <figcaption><strong>4 · Fila compacta</strong><span>Formato lista: toda la fila es el botón de detalles. Ideal si habrá varios indicadores apilados.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock">
+      <div class="card gauge-card">
+        <span class="lbl">Pliego</span>
+        <div class="gauge">
+          <svg viewBox="0 0 170 96">
+            <path d="M13 88 A72 72 0 0 1 157 88" fill="none" stroke="rgba(20,24,22,.10)" stroke-width="12" stroke-linecap="round"/>
+            <path d="M13 88 A72 72 0 0 1 157 88" fill="none" stroke="#141816" stroke-width="12" stroke-linecap="round"
+                  stroke-dasharray="142.5 226.2"/>
+          </svg>
+          <div class="gval">63%</div>
+        </div>
+        <div class="sub">S/ 2,500 de S/ 3,968 millones</div>
+        <button class="mini">Ver detalles <svg class="icon" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+      </div>
+    </div>
+    <figcaption><strong>5 · Medidor de arco</strong><span>Velocímetro semicircular, lectura tipo tablero de control. Ocupa más alto que las demás.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock">
+      <div class="card">
+        <div class="lbl-row">
+          <span class="lbl">Pliego</span>
+          <button class="mini">Ver detalles <svg class="icon" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+        </div>
+        <div class="hero" style="font-size:34px;">S/ 2,500 M</div>
+        <span class="chip">63% del PIM</span>
+        <div class="meter"><i style="width:63%"></i></div>
+      </div>
+    </div>
+    <figcaption><strong>6 · Monto protagonista</strong><span>Invierte la jerarquía: primero los soles, y el porcentaje como sello limón.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock">
+      <div class="card">
+        <div class="lbl-row">
+          <span class="lbl">Pliego</span>
+          <button class="mini">Ver detalles <svg class="icon" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+        </div>
+        <div class="seg">
+          <i class="a" style="width:63%"></i><i class="b" style="width:37%"></i>
+        </div>
+        <div class="legend">
+          <div><span class="sw a"></span> Ejecutado (63%) <b>S/ 2,500 M</b></div>
+          <div><span class="sw b"></span> Por ejecutar (37%) <b>S/ 1,468 M</b></div>
+        </div>
+      </div>
+    </div>
+    <figcaption><strong>7 · Barra con desglose</strong><span>La barra dividida muestra ejecutado y pendiente con sus montos. La más informativa sin abrir detalles.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock">
+      <div class="card mintbg">
+        <div class="lbl-row">
+          <span class="lbl">Pliego</span>
+          <button class="mini">Ver detalles <svg class="icon" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+        </div>
+        <div class="hero">63%</div>
+        <div class="sub">S/ 2,500 millones ejecutados</div>
+        <div class="meter"><i style="width:63%"></i></div>
+        <div class="scale"><span>0</span><span>PIM · S/ 3,968 M</span></div>
+      </div>
+    </div>
+    <figcaption><strong>8 · Menta</strong><span>La ficha sobria vestida con el verde de la marca, para diferenciarla de las tarjetas blancas de contenido.</span></figcaption>
+  </figure>
+
+</div>
+</body>
+</html>

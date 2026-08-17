@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La torre — Indicador de Títulos: 5 diseños</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%23A6D3C4'/%3E%3Cpath%20fill='%23141816'%20d='M17%2012h7v6h5v-6h6v6h5v-6h7v12l-5%205v13l5%207v7H17v-7l5-7V29l-5-5z'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --mint:#A6D3C4; --ink:#141816; --muted:#8A938E;
+    --lemon:#F2F97C; --lemon-b:#EAF386; --key:#F1F4EE;
+    --sa:#FBFDF8; --sb:#E7F2DE; --sc:#D9EBD4;
+    --oliva:#6E7440;
+    --track:rgba(20,24,22,.12);
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{
+    background:#F2F6EF; color:var(--ink);
+    font-family:"Space Grotesk",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    padding:36px 22px 60px;
+  }
+  header{ max-width:1100px; margin:0 auto 28px; }
+  header h1{ font-size:26px; letter-spacing:-.01em; }
+  header p{ color:#57635C; margin-top:8px; font-size:15px; line-height:1.55; max-width:720px; }
+  .grid{
+    max-width:1100px; margin:0 auto;
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+    gap:26px 22px;
+  }
+  figure{ display:grid; gap:10px; align-content:start; }
+  .mock{
+    border-radius:26px; padding:22px 16px;
+    background:linear-gradient(165deg,var(--sa) 0%,var(--sb) 60%,var(--sc) 100%);
+    box-shadow:0 14px 34px rgba(17,56,44,.13);
+    display:grid; align-content:center; min-height:260px; gap:10px;
+  }
+  figcaption{ padding:0 4px; }
+  figcaption strong{ font-size:14px; display:block; }
+  figcaption span{ font-size:12.5px; color:#66726B; line-height:1.45; display:block; margin-top:2px; }
+
+  /* ─ Piezas comunes (mismas del index) ─ */
+  .neu-card{ background:#fff; border-radius:18px; padding:10px; box-shadow:0 10px 24px rgba(31,64,51,.08); }
+  .neu-top{
+    position:relative; text-align:center;
+    background:linear-gradient(150deg,var(--lemon) 0%,var(--lemon-b) 100%);
+    border-radius:13px; padding:18px 18px 22px;
+  }
+  .cur{ font-size:17px; font-weight:700; }
+  .amount{ font-size:48px; font-weight:700; letter-spacing:-.02em; margin-top:8px; }
+  .oliva{ color:var(--oliva); }
+
+  /* 1 · Franja inferior */
+  .strip{ display:grid; grid-template-columns:1fr 1fr; padding:8px 0 4px; }
+  .strip > div{ position:relative; text-align:center; padding:8px 4px; }
+  .strip > div + div::before{
+    content:""; position:absolute; left:0; top:10px; bottom:10px;
+    width:1px; background:rgba(20,24,22,.08);
+  }
+  .strip .k{ font-size:10.5px; font-weight:700; letter-spacing:.5px; color:var(--muted); text-transform:uppercase; }
+  .strip .v{ font-size:19px; font-weight:700; margin-top:3px; }
+
+  /* 2 · Dos tarjetas debajo */
+  .duo{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .duo .ent{
+    background:#fff; border-radius:12px; padding:16px 14px;
+    box-shadow:0 10px 24px rgba(31,64,51,.08); display:grid; gap:8px;
+  }
+  .duo .k{ font-size:10.5px; font-weight:700; letter-spacing:.5px; color:var(--muted); text-transform:uppercase; }
+  .duo .v{ font-size:20px; font-weight:700; }
+  .meter{ height:7px; border-radius:999px; background:var(--track); overflow:hidden; }
+  .meter i{ display:block; height:100%; width:44.7%; border-radius:999px; background:var(--ink); }
+
+  /* 3 · Chips en el panel */
+  .chips{ display:flex; justify-content:center; gap:8px; margin-top:14px; flex-wrap:wrap; }
+  .chip-d{
+    background:var(--ink); color:#fff; border-radius:999px;
+    padding:7px 14px; font-size:12px; font-weight:600;
+  }
+  .chip-d b{ color:var(--lemon); font-weight:700; }
+
+  /* 4 · Barra con extremos */
+  .barrow{ margin-top:16px; }
+  .barrow .meter{ background:rgba(20,24,22,.14); }
+  .barrow .ends{ display:flex; justify-content:space-between; margin-top:7px; font-size:11.5px; font-weight:600; color:var(--oliva); }
+  .barrow .ends b{ color:var(--ink); font-weight:700; }
+
+  /* 5 · Mitades dentro del panel */
+  .halves{
+    display:grid; grid-template-columns:1fr 1fr;
+    margin-top:16px; border-top:1px solid rgba(20,24,22,.14); padding-top:12px;
+  }
+  .halves > div{ position:relative; }
+  .halves > div + div::before{
+    content:""; position:absolute; left:0; top:4px; bottom:4px;
+    width:1px; background:rgba(20,24,22,.14);
+  }
+  .halves .k{ font-size:10.5px; font-weight:700; letter-spacing:.5px; color:var(--oliva); text-transform:uppercase; }
+  .halves .v{ font-size:18px; font-weight:700; margin-top:2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Indicador de Títulos de propiedad — 5 diseños</h1>
+  <p>El <b>44,7%</b> es siempre la cifra protagonista. Lo que cambia es dónde viven los dos
+  indicadores secundarios: <b>meta 49,844</b> y <b>22,265 entregados</b> (datos reales de la
+  hoja INDICADORES TITULOS). Elige el número del diseño que quieras para la pestaña Títulos.</p>
+</header>
+
+<div class="grid">
+
+  <!-- 1 · Franja inferior -->
+  <figure>
+    <div class="mock">
+      <div class="neu-card">
+        <div class="neu-top">
+          <div class="cur">Títulos de propiedad</div>
+          <div class="amount">44,7%</div>
+        </div>
+        <div class="strip">
+          <div><div class="k">Meta</div><div class="v">49,844</div></div>
+          <div><div class="k">Entregados</div><div class="v">22,265</div></div>
+        </div>
+      </div>
+    </div>
+    <figcaption>
+      <strong>1 · Franja inferior</strong>
+      <span>Los dos secundarios en la parte blanca de la tarjeta, como la franja de accesos
+      de Inicio. Una sola tarjeta, jerarquía clarísima.</span>
+    </figcaption>
+  </figure>
+
+  <!-- 2 · Dos tarjetas debajo -->
+  <figure>
+    <div class="mock">
+      <div class="neu-card">
+        <div class="neu-top">
+          <div class="cur">Títulos de propiedad</div>
+          <div class="amount">44,7%</div>
+        </div>
+      </div>
+      <div class="duo">
+        <div class="ent"><span class="k">Meta</span><span class="v">49,844</span></div>
+        <div class="ent"><span class="k">Entregados</span><span class="v">22,265</span><span class="meter"><i></i></span></div>
+      </div>
+    </div>
+    <figcaption>
+      <strong>2 · Dos tarjetas debajo</strong>
+      <span>Estilo "Entidades adscritas" de Inicio: dos tarjetas blancas independientes,
+      con mini barra de avance en Entregados.</span>
+    </figcaption>
+  </figure>
+
+  <!-- 3 · Chips oscuros -->
+  <figure>
+    <div class="mock">
+      <div class="neu-card">
+        <div class="neu-top">
+          <div class="cur">Títulos de propiedad</div>
+          <div class="amount">44,7%</div>
+          <div class="chips">
+            <span class="chip-d">Meta <b>49,844</b></span>
+            <span class="chip-d">Entregados <b>22,265</b></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <figcaption>
+      <strong>3 · Chips en el panel</strong>
+      <span>Dos píldoras en tinta con las cifras en limón, dentro del panel amarillo.
+      Compacto y con mucho contraste.</span>
+    </figcaption>
+  </figure>
+
+  <!-- 4 · Barra con extremos -->
+  <figure>
+    <div class="mock">
+      <div class="neu-card">
+        <div class="neu-top">
+          <div class="cur">Títulos de propiedad</div>
+          <div class="amount">44,7%</div>
+          <div class="barrow">
+            <div class="meter"><i></i></div>
+            <div class="ends">
+              <span><b>22,265</b> entregados</span>
+              <span>Meta <b>49,844</b></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <figcaption>
+      <strong>4 · Barra de avance con extremos</strong>
+      <span>Una barra muestra el 44,7% recorrido; los secundarios viven en los extremos:
+      lo logrado a la izquierda, la meta a la derecha. El más "de progreso".</span>
+    </figcaption>
+  </figure>
+
+  <!-- 5 · Mitades dentro del panel -->
+  <figure>
+    <div class="mock">
+      <div class="neu-card">
+        <div class="neu-top">
+          <div class="cur">Títulos de propiedad</div>
+          <div class="amount">44,7%</div>
+          <div class="halves">
+            <div><div class="k">Meta</div><div class="v">49,844</div></div>
+            <div><div class="k">Entregados</div><div class="v">22,265</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <figcaption>
+      <strong>5 · Mitades en el panel limón</strong>
+      <span>Todo dentro del amarillo: una línea divide el panel y los secundarios van en dos
+      mitades con rótulos oliva. La tarjeta más unificada.</span>
+    </figcaption>
+  </figure>
+
+</div>
+
+</body>
+</html>

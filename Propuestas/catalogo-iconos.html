@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La torre — Catálogo de iconos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --ink:#141816; --muted:#8A938E; }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{
+    background:#F2F6EF; color:var(--ink);
+    font-family:"Space Grotesk",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    padding:36px 22px 60px;
+  }
+  .wrap{ max-width:960px; margin:0 auto; }
+  h1{ font-size:26px; letter-spacing:-.01em; }
+  .intro{ color:#57635C; margin-top:8px; font-size:15px; line-height:1.55; max-width:700px; }
+  h2{ font-size:17px; margin:30px 0 12px; }
+  .icons{
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(108px,1fr));
+    gap:14px;
+  }
+  .opt{
+    background:#fff; border-radius:14px; padding:14px 8px 11px;
+    box-shadow:0 8px 20px rgba(31,64,51,.06);
+    display:grid; justify-items:center; gap:8px;
+  }
+  .opt .tile{
+    width:54px; height:54px; border-radius:15px;
+    display:grid; place-items:center;
+  }
+  .opt .tile svg{ width:29px; height:29px; fill:#fff; }
+  .opt b{ font-size:11.5px; font-weight:600; text-align:center; line-height:1.25; }
+  .c1{ background:#4B4ED6; } .c2{ background:#F94F6D; } .c3{ background:#2E9BFF; }
+  .c4{ background:#F6A93B; } .c5{ background:#45D0B4; } .c6{ background:#8E5CD9; }
+  .c7{ background:#33B679; } .c8{ background:#FF7043; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Catálogo de iconos</h1>
+  <p class="intro">Todos en el formato que elegiste: placa de color vivo con el dibujo blanco sólido. Los colores son de muestra y se pueden asignar a gusto — lo que eliges aquí es el <strong>dibujo</strong>. Dime el código del que quieras para cada grupo (ej. "A2 para cartera, B7 para paralizadas").</p>
+
+  <h2>A · Avance y finanzas</h2>
+  <div class="icons">
+    <div class="opt"><span class="tile c3"><svg viewBox="0 0 24 24"><rect x="4.5" y="12.5" width="4" height="7" rx="1.3"/><rect x="10" y="6.5" width="4" height="13" rx="1.3"/><rect x="15.5" y="9.5" width="4" height="10" rx="1.3"/></svg></span><b>A1 · Barras</b></div>
+    <div class="opt"><span class="tile c1"><svg viewBox="0 0 24 24"><path d="M4 19v-5.5L9 9l3.5 2.5L18.5 6H15V4h7v7h-2V7.8l-7.2 6.7-3.5-2.5L5 15.6V19h16v2H4z"/></svg></span><b>A2 · Tendencia</b></div>
+    <div class="opt"><span class="tile c4"><svg viewBox="0 0 24 24"><path d="M11 3.5A9 9 0 1 0 20.5 13H11z"/><path d="M13.5 2.5a9 9 0 0 1 8 8h-8z"/></svg></span><b>A3 · Pastel</b></div>
+    <div class="opt"><span class="tile c2"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18zm0 3.6a5.4 5.4 0 1 0 0 10.8 5.4 5.4 0 0 0 0-10.8z"/><circle cx="12" cy="12" r="2.2"/></svg></span><b>A4 · Diana</b></div>
+    <div class="opt"><span class="tile c7"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M3 6.5h18a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg></span><b>A5 · Billete</b></div>
+    <div class="opt"><span class="tile c1"><svg viewBox="0 0 24 24"><path d="M12 2.5l9.5 5V10h-19V7.5z"/><rect x="4.5" y="11.2" width="3" height="6.3" rx="1"/><rect x="10.5" y="11.2" width="3" height="6.3" rx="1"/><rect x="16.5" y="11.2" width="3" height="6.3" rx="1"/><rect x="3" y="18.7" width="18" height="2.6" rx="1.2"/></svg></span><b>A6 · Banco</b></div>
+    <div class="opt"><span class="tile c6"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M9 6V4.5A2.5 2.5 0 0 1 11.5 2h1A2.5 2.5 0 0 1 15 4.5V6h4a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4zm2-1.5V6h2V4.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zM10.8 12h2.4v2.4h-2.4z"/></svg></span><b>A7 · Maletín</b></div>
+    <div class="opt"><span class="tile c3"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M6 2h8.5L19 6.5V22H6zM9 12.2h6v1.7H9zm0 4h4.6v1.7H9z"/></svg></span><b>A8 · Documento</b></div>
+    <div class="opt"><span class="tile c4"><svg viewBox="0 0 24 24"><path d="M3 5.5h6.2l2 2.2H21a1 1 0 0 1 1 1V18a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6.5a1 1 0 0 1 1-1z"/></svg></span><b>A9 · Carpeta</b></div>
+    <div class="opt"><span class="tile c7"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2.5a9.5 9.5 0 1 1 0 19 9.5 9.5 0 0 1 0-19zm4.7 6.4l-1.5-1.5-4.7 4.7-1.9-1.9-1.5 1.5 3.4 3.4z"/></svg></span><b>A10 · Check</b></div>
+    <div class="opt"><span class="tile c2"><svg viewBox="0 0 24 24"><rect x="5" y="2.5" width="2.2" height="19" rx="1.1"/><path d="M9 4h9.5L16 8l2.5 4H9z"/></svg></span><b>A11 · Bandera</b></div>
+    <div class="opt"><span class="tile c5"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M3 7a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2v1h-6.5a3.5 3.5 0 0 0 0 7H20v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zm10.5 3H21a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-7.5a2 2 0 0 1 0-4z"/></svg></span><b>A12 · Billetera</b></div>
+  </div>
+
+  <h2>B · Paralizadas y estado</h2>
+  <div class="icons">
+    <div class="opt"><span class="tile c4"><svg viewBox="0 0 24 24"><path d="M7 3h10a1 1 0 0 1 1 1c0 3.2-2.6 4.8-4.6 6.6a1.9 1.9 0 0 0 0 2.8c2 1.8 4.6 3.4 4.6 6.6a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1c0-3.2 2.6-4.8 4.6-6.6a1.9 1.9 0 0 0 0-2.8C8.6 8.8 6 7.2 6 4a1 1 0 0 1 1-1z"/></svg></span><b>B1 · Reloj de arena</b></div>
+    <div class="opt"><span class="tile c1"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2.5a9.5 9.5 0 1 1 0 19 9.5 9.5 0 0 1 0-19zm-.9 3.5h1.8v6.4l4.1 2.4-.9 1.6-5-3z"/></svg></span><b>B2 · Reloj</b></div>
+    <div class="opt"><span class="tile c2"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm4.2 5h1.9v8H9.2zm3.7 0h1.9v8h-1.9z"/></svg></span><b>B3 · Pausa</b></div>
+    <div class="opt"><span class="tile c6"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M8.2 2.5h7.6L21.5 8.2v7.6l-5.7 5.7H8.2L2.5 15.8V8.2zM8.5 11h7v2h-7z"/></svg></span><b>B4 · Stop</b></div>
+    <div class="opt"><span class="tile c8"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2.8L22.4 21H1.6zM11.1 9.5h1.8v5.2h-1.8zm0 6.7h1.8v1.9h-1.8z"/></svg></span><b>B5 · Alerta</b></div>
+    <div class="opt"><span class="tile c3"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M7 10V7.8a5 5 0 0 1 10 0V10h.8A1.7 1.7 0 0 1 19.5 11.7v7.6A1.7 1.7 0 0 1 17.8 21H6.2a1.7 1.7 0 0 1-1.7-1.7v-7.6A1.7 1.7 0 0 1 6.2 10zm2.2 0h5.6V7.8a2.8 2.8 0 0 0-5.6 0zm1.9 5h1.8v2.8h-1.8z"/></svg></span><b>B6 · Candado</b></div>
+    <div class="opt"><span class="tile c4"><svg viewBox="0 0 24 24"><path d="M12 2.8L16.2 14H7.8z"/><rect x="5.5" y="15.4" width="13" height="2.3" rx="1.1"/><rect x="3.2" y="19" width="17.6" height="2.5" rx="1.2"/></svg></span><b>B7 · Cono</b></div>
+    <div class="opt"><span class="tile c2"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M3 7.5h18a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1zm3.4 1.7l-2.2 3.6h2.5l2.2-3.6zm5.1 0l-2.2 3.6h2.5l2.2-3.6zm5.1 0l-2.2 3.6h2.5l2.2-3.6z"/><rect x="4.8" y="15.5" width="2.2" height="5.5" rx="1.1"/><rect x="17" y="15.5" width="2.2" height="5.5" rx="1.1"/></svg></span><b>B8 · Barrera</b></div>
+    <div class="opt"><span class="tile c5"><svg viewBox="0 0 24 24"><path d="M20.8 7a5.6 5.6 0 0 1-7.2 7L7.2 20.4a2.1 2.1 0 0 1-3-3L10.6 11a5.6 5.6 0 0 1 7-7.2L14 7.5l.8 3.2 3.2.8z"/></svg></span><b>B9 · Llave</b></div>
+    <div class="opt"><span class="tile c6"><svg viewBox="0 0 24 24"><path d="M4.5 14.5a7.5 7.5 0 0 1 15 0v1h-15z"/><rect x="3" y="16.8" width="18" height="2.6" rx="1.3"/><rect x="10.8" y="4" width="2.4" height="4" rx="1"/></svg></span><b>B10 · Casco</b></div>
+  </div>
+
+  <h2>C · Sector e infraestructura</h2>
+  <div class="icons">
+    <div class="opt"><span class="tile c7"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2.8l9.5 7.7V21.5h-19V10.5zM10 14h4v7.5h-4z"/></svg></span><b>C1 · Casa</b></div>
+    <div class="opt"><span class="tile c1"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M5 2.5h14v19H5zM8 6h2.6v2.6H8zm5.4 0H16v2.6h-2.6zM8 11h2.6v2.6H8zm5.4 0H16v2.6h-2.6zM10.4 16.8h3.2v4.7h-3.2z"/></svg></span><b>C2 · Edificio</b></div>
+    <div class="opt"><span class="tile c3"><svg viewBox="0 0 24 24"><path d="M12 2.5S18.5 9.3 18.5 14a6.5 6.5 0 0 1-13 0C5.5 9.3 12 2.5 12 2.5z"/></svg></span><b>C3 · Gota</b></div>
+    <div class="opt"><span class="tile c5"><svg viewBox="0 0 24 24"><path d="M11 4h2.2v2H17v2.2h-3.8v1.5a5.6 5.6 0 0 1 5 5.5v2h-3.2v-1.6a2.6 2.6 0 0 0-2.6-2.6H4V8h7z"/><path d="M15.6 21.5c-.9 0-1.6-.7-1.6-1.5 0-1.1 1.6-2.8 1.6-2.8s1.6 1.7 1.6 2.8c0 .8-.7 1.5-1.6 1.5z"/></svg></span><b>C4 · Caño</b></div>
+    <div class="opt"><span class="tile c8"><svg viewBox="0 0 24 24"><path d="M12 2.5a6.5 6.5 0 0 1 6.5 6.5c0 5 2 6.2 2 6.2h-17s2-1.2 2-6.2A6.5 6.5 0 0 1 12 2.5z"/><path d="M9.8 17.8a2.2 2.2 0 0 0 4.4 0z"/></svg></span><b>C5 · Campana</b></div>
+  </div>
+</div>
+</body>
+</html>

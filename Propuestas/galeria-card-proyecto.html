@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propuestas · Tarjeta de proyecto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --mint:#A6D3C4; --lemon:#F2F97C; --lemon-b:#EAF386;
+    --ink:#141816; --muted:#8A938E; --card:#FFFFFF; --key:#F1F4EE;
+    --pos:#1FA23C; --amber:#C98A00; --neg:#BF2E25;
+    --blue:#3D7EF7; --red:#F04438; --purple:#8E5CD9; --green:#33B679;
+    --shadow-card:0 10px 24px rgba(31,64,51,.08);
+    --track:#E9EEEB;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{
+    font-family:"Space Grotesk",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    background:var(--mint); color:var(--ink);
+    padding:32px 18px 80px; line-height:1.4;
+  }
+  .wrap{ max-width:1100px; margin:0 auto; }
+  header.intro{ margin-bottom:28px; }
+  header.intro h1{ font-size:26px; font-weight:700; }
+  header.intro p{ font-size:14px; color:#3d5148; margin-top:8px; max-width:640px; }
+  .legend{ display:flex; flex-wrap:wrap; gap:14px; margin-top:16px; font-size:12px; color:#3d5148; }
+  .legend span{ display:inline-flex; align-items:center; gap:6px; }
+  .legend i{ width:10px; height:10px; border-radius:50%; }
+
+  .variant{ margin-top:34px; }
+  .variant > h2{ font-size:17px; font-weight:700; }
+  .variant > h2 b{ color:#2f6b57; }
+  .variant > .desc{ font-size:13px; color:#3d5148; margin:5px 0 16px; max-width:680px; }
+  .row{ display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:16px; }
+
+  /* ═══ Base compartida por las tarjetas ═══ */
+  .pc{
+    background:var(--card); border-radius:18px;
+    box-shadow:var(--shadow-card); overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+  .pc .cui{ font-size:16.5px; font-weight:700; letter-spacing:.2px; }
+  .pc .prog{ font-size:10.5px; font-weight:700; letter-spacing:.4px; border-radius:999px; padding:4px 10px; }
+  .pc .name{ font-size:15px; font-weight:700; line-height:1.3; }
+  .pc .ubi{ font-size:10px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.6px; margin-top:5px; }
+  .pc .eye,.pc .chev{ color:#9AA39D; display:inline-grid; place-items:center; }
+  .pc .eye svg{ width:18px; height:18px; } .pc .chev svg{ width:17px; height:17px; }
+  .pc .chip{ display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:600; border-radius:999px; padding:5px 11px; }
+  .pc .chip .dot{ width:7px; height:7px; border-radius:50%; }
+  .k{ font-size:9.5px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.5px; }
+  .v{ font-size:15.5px; font-weight:700; font-variant-numeric:tabular-nums; margin-top:3px; }
+  .meter{ height:7px; border-radius:999px; background:var(--track); overflow:hidden; }
+  .meter i{ display:block; height:100%; border-radius:999px; }
+
+  /* ─── V1 · Barra de estado + medidor ─── */
+  .v1{ position:relative; padding:16px 16px 15px 20px; }
+  .v1::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:6px; background:var(--acc); }
+  .v1 .top{ display:flex; align-items:center; gap:8px; }
+  .v1 .prog{ color:#fff; background:var(--acc); }
+  .v1 .sp{ flex:1; }
+  .v1 .name{ margin-top:12px; }
+  .v1 .chips{ display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; }
+  .v1 .chip{ background:var(--key); color:#4A5650; }
+  .v1 .foot{ margin-top:15px; padding-top:13px; border-top:1px solid rgba(20,24,22,.07); }
+  .v1 .frow{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:8px; }
+
+  /* ─── V2 · Cabecera menta ─── */
+  .v2 .head{ background:linear-gradient(135deg,var(--mint),#BFE0D4); padding:15px 16px 14px; }
+  .v2 .head .top{ display:flex; align-items:center; gap:8px; }
+  .v2 .prog{ background:rgba(20,24,22,.10); color:#153b2e; }
+  .v2 .sp{ flex:1; }
+  .v2 .body{ padding:14px 16px 16px; }
+  .v2 .chips{ display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; }
+  .v2 .chip{ background:var(--key); color:#4A5650; }
+  .v2 .stats{ display:flex; gap:12px; margin-top:15px; padding-top:13px; border-top:1px solid rgba(20,24,22,.07); }
+  .v2 .stats > div{ flex:1; }
+  .v2 .pill{ display:inline-block; margin-top:3px; background:var(--lemon); color:#3a3d00; font-weight:700; font-size:14px; border-radius:999px; padding:3px 12px; }
+
+  /* ─── V3 · Anillo de ejecución ─── */
+  .v3{ padding:16px; }
+  .v3 .top{ display:flex; align-items:center; gap:8px; }
+  .v3 .prog{ color:#fff; background:var(--acc); }
+  .v3 .sp{ flex:1; }
+  .v3 .mid{ display:flex; align-items:center; gap:14px; margin-top:13px; }
+  .v3 .mid .info{ flex:1; min-width:0; }
+  .v3 .ring{ --p:0; width:70px; height:70px; border-radius:50%; flex:none;
+    background:conic-gradient(var(--acc2) calc(var(--p)*1%), var(--track) 0); display:grid; place-items:center; }
+  .v3 .ring .hole{ width:54px; height:54px; border-radius:50%; background:#fff; display:grid; place-items:center; text-align:center; }
+  .v3 .ring b{ font-size:16px; font-weight:700; } .v3 .ring small{ font-size:7.5px; color:var(--muted); font-weight:600; letter-spacing:.4px; display:block; }
+  .v3 .pim{ margin-top:11px; padding-top:12px; border-top:1px solid rgba(20,24,22,.07); }
+
+  /* ─── V4 · Franja de datos en tinta ─── */
+  .v4 .body{ padding:16px 16px 14px; }
+  .v4 .top{ display:flex; align-items:center; gap:8px; }
+  .v4 .prog{ color:#fff; background:var(--acc); }
+  .v4 .sp{ flex:1; }
+  .v4 .chips{ display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; }
+  .v4 .chip{ background:var(--key); color:#4A5650; }
+  .v4 .strip{ background:var(--ink); color:#fff; display:flex; gap:12px; padding:13px 16px; }
+  .v4 .strip > div{ flex:1; }
+  .v4 .strip .k{ color:#9fb0a8; }
+  .v4 .strip .v{ color:#fff; }
+  .v4 .strip .v.hi{ color:var(--lemon); }
+
+  /* ─── V5 · Insignias de cartera + barra ─── */
+  .v5{ padding:16px; }
+  .v5 .top{ display:flex; align-items:center; gap:8px; }
+  .v5 .prog{ background:var(--key); color:#5A665F; }
+  .v5 .sp{ flex:1; }
+  .v5 .badges{ display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+  .v5 .badge{ color:#fff; font-size:10px; font-weight:600; border-radius:999px; padding:4px 10px; }
+  .v5 .stats{ display:flex; justify-content:space-between; align-items:flex-end; margin-top:15px; }
+  .v5 .pct{ font-size:22px; font-weight:700; }
+  .v5 .barwrap{ margin-top:9px; }
+
+  /* ─── V6 · Acento limón (hero %) ─── */
+  .v6{ padding:0; }
+  .v6 .head{ background:linear-gradient(150deg,var(--lemon),var(--lemon-b)); padding:16px; position:relative; }
+  .v6 .head .top{ display:flex; align-items:center; gap:8px; }
+  .v6 .prog{ background:rgba(20,24,22,.12); color:#2a2c00; }
+  .v6 .sp{ flex:1; }
+  .v6 .hero{ display:flex; align-items:flex-end; justify-content:space-between; margin-top:14px; }
+  .v6 .hero .big{ font-size:34px; font-weight:700; line-height:1; }
+  .v6 .hero .lbl{ font-size:10px; font-weight:600; color:#4a4d10; text-transform:uppercase; letter-spacing:.5px; }
+  .v6 .body{ padding:14px 16px 16px; }
+  .v6 .chips{ display:flex; flex-wrap:wrap; gap:7px; margin-top:11px; }
+  .v6 .chip{ background:var(--key); color:#4A5650; }
+  .v6 .pim{ margin-top:14px; padding-top:12px; border-top:1px solid rgba(20,24,22,.07); display:flex; justify-content:space-between; align-items:center; }
+
+  footer{ margin-top:46px; font-size:12px; color:#3d5148; text-align:center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="intro">
+    <h1>Tarjeta de proyecto — 6 propuestas</h1>
+    <p>Seis maneras de mostrar el mismo proyecto en el buscador, con más color y jerarquía. Todas mantienen la fila que pediste: <b>PIM 2026</b> y <b>% de ejecución 2026</b>. El color del avance sigue una sola regla; el estado se deriva de las carteras del proyecto.</p>
+    <div class="legend">
+      <span><i style="background:var(--pos)"></i>≥ 60% óptimo</span>
+      <span><i style="background:var(--amber)"></i>25–59% en proceso</span>
+      <span><i style="background:var(--neg)"></i>&lt; 25% crítico</span>
+      <span><i style="background:var(--red)"></i>Paralizado</span>
+      <span><i style="background:var(--blue)"></i>Priorizado</span>
+    </div>
+  </header>
+
+  <div id="gallery"></div>
+
+  <footer>Datos de muestra · La torre — Torre móvil v.2</footer>
+</div>
+
+<script>
+  /* Ejemplos elegidos para mostrar el rango de color:
+     alto avance (verde), medio (ámbar), y paralizado con PIM 0 (como tu captura). */
+  var SAMPLES = [
+    { cui:"2333412", nombre:"Agua y alcantarillado — Villa El Salvador", prog:"PASLC",
+      dep:"Lima", prov:"Lima", dist:"Villa El Salvador",
+      pim:9600000, ejec:71.9, fase:"En ejecución física",
+      estado:{ txt:"Priorizado", color:"#3D7EF7" }, carteras:["Priorizada","Obras directas"] },
+    { cui:"2456101", nombre:"PTAR y colectores principales — Chiclayo", prog:"PNSU",
+      dep:"Lambayeque", prov:"Chiclayo", dist:"Chiclayo",
+      pim:18300000, ejec:43, fase:"En ejecución física",
+      estado:{ txt:"Priorizado", color:"#3D7EF7" }, carteras:["Priorizada"] },
+    { cui:"2269181", nombre:"San Pedro de Marañón · Singa", prog:"PNSR",
+      dep:"Huánuco", prov:"Huamalíes", dist:"Singa",
+      pim:0, ejec:0, fase:"Expediente técnico",
+      estado:{ txt:"Paralizado", color:"#F04438" }, carteras:["Paralizadas","Transferencias"] }
+  ];
+
+  var PROG_COLORS = { PNSR:"#33B679", PNSU:"#3D7EF7", PMIB:"#8E5CD9", PASLC:"#E8833A" };
+  var CART_COLORS = { "Priorizada":"#3D7EF7", "Paralizadas":"#F04438", "Obras directas":"#33B679", "Transferencias":"#8E5CD9" };
+
+  function execColor(n){ return n >= 60 ? "#1FA23C" : (n >= 25 ? "#C98A00" : "#BF2E25"); }
+  function pct(n){ return String(n).replace(".", ",") + "%"; }
+  function soles(n){ return "S/ " + Number(n||0).toLocaleString("es-PE"); }
+  function progColor(p){ return PROG_COLORS[p] || "#5A7DE0"; }
+
+  var EYE  = '<span class="eye"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span>';
+  var CHEV = '<span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span>';
+  function ubi(p){ return (p.dep+" · "+p.prov+" · "+p.dist); }
+  function execTxt(p){ return p.pim>0 ? pct(p.ejec) : "—"; }
+  function fase(p){ return '<span class="chip">'+p.fase+'</span>'; }
+  function estadoChip(p){ return '<span class="chip"><i class="dot" style="background:'+p.estado.color+'"></i>'+p.estado.txt+'</span>'; }
+
+  /* ── V1 · Barra de estado + medidor ── */
+  function v1(p){ var c=execColor(p.ejec);
+    return '<div class="pc v1" style="--acc:'+p.estado.color+'">'+
+      '<div class="top"><span class="cui">CUI '+p.cui+'</span><span class="prog">'+p.prog+'</span><span class="sp"></span>'+EYE+CHEV+'</div>'+
+      '<div class="name">'+p.nombre+'</div><div class="ubi">'+ubi(p)+'</div>'+
+      '<div class="chips">'+estadoChip(p)+fase(p)+'</div>'+
+      '<div class="foot">'+
+        '<div class="frow"><div><div class="k">PIM 2026</div><div class="v">'+soles(p.pim)+'</div></div>'+
+          '<div style="text-align:right"><div class="k">Ejec. 2026</div><div class="v" style="color:'+(p.pim>0?c:"#8A938E")+'">'+execTxt(p)+'</div></div></div>'+
+        '<div class="meter"><i style="width:'+(p.pim>0?p.ejec:0)+'%;background:'+c+'"></i></div>'+
+      '</div></div>';
+  }
+
+  /* ── V2 · Cabecera menta ── */
+  function v2(p){
+    return '<div class="pc v2">'+
+      '<div class="head"><div class="top"><span class="cui">CUI '+p.cui+'</span><span class="prog">'+p.prog+'</span><span class="sp"></span>'+EYE+CHEV+'</div></div>'+
+      '<div class="body"><div class="name">'+p.nombre+'</div><div class="ubi">'+ubi(p)+'</div>'+
+        '<div class="chips">'+estadoChip(p)+fase(p)+'</div>'+
+        '<div class="stats"><div><div class="k">PIM 2026</div><div class="v">'+soles(p.pim)+'</div></div>'+
+          '<div><div class="k">Ejec. 2026</div><span class="pill">'+execTxt(p)+'</span></div></div>'+
+      '</div></div>';
+  }
+
+  /* ── V3 · Anillo de ejecución ── */
+  function v3(p){ var c=execColor(p.ejec);
+    return '<div class="pc v3" style="--acc:'+progColor(p.prog)+'">'+
+      '<div class="top"><span class="cui">CUI '+p.cui+'</span><span class="prog">'+p.prog+'</span><span class="sp"></span>'+CHEV+'</div>'+
+      '<div class="mid"><div class="info"><div class="name">'+p.nombre+'</div><div class="ubi">'+ubi(p)+'</div>'+
+          '<div class="chips" style="margin-top:10px">'+estadoChip(p)+'</div></div>'+
+        '<div class="ring" style="--p:'+(p.pim>0?p.ejec:0)+';--acc2:'+(p.pim>0?c:"#C9D2CD")+'"><div class="hole"><span><b>'+execTxt(p)+'</b><small>EJEC 2026</small></span></div></div>'+
+      '</div>'+
+      '<div class="pim"><div class="k">PIM 2026</div><div class="v">'+soles(p.pim)+'</div></div>'+
+    '</div>';
+  }
+
+  /* ── V4 · Franja de datos en tinta ── */
+  function v4(p){
+    return '<div class="pc v4" style="--acc:'+progColor(p.prog)+'">'+
+      '<div class="body"><div class="top"><span class="cui">CUI '+p.cui+'</span><span class="prog">'+p.prog+'</span><span class="sp"></span>'+EYE+CHEV+'</div>'+
+        '<div class="name" style="margin-top:12px">'+p.nombre+'</div><div class="ubi">'+ubi(p)+'</div>'+
+        '<div class="chips">'+estadoChip(p)+fase(p)+'</div></div>'+
+      '<div class="strip"><div><div class="k">PIM 2026</div><div class="v">'+soles(p.pim)+'</div></div>'+
+        '<div><div class="k">Ejecución 2026</div><div class="v hi">'+execTxt(p)+'</div></div></div>'+
+    '</div>';
+  }
+
+  /* ── V5 · Insignias de cartera + barra ── */
+  function v5(p){ var c=execColor(p.ejec);
+    var badges = p.carteras.map(function(k){ return '<span class="badge" style="background:'+(CART_COLORS[k]||"#6b7a72")+'">'+k+'</span>'; }).join("");
+    return '<div class="pc v5">'+
+      '<div class="top"><span class="cui">CUI '+p.cui+'</span><span class="prog">'+p.prog+'</span><span class="sp"></span>'+EYE+CHEV+'</div>'+
+      '<div class="name" style="margin-top:12px">'+p.nombre+'</div><div class="ubi">'+ubi(p)+'</div>'+
+      '<div class="badges">'+badges+'</div>'+
+      '<div class="stats"><div><div class="k">PIM 2026</div><div class="v" style="font-size:16px">'+soles(p.pim)+'</div></div>'+
+        '<div style="text-align:right"><div class="k">Ejec. 2026</div><div class="pct" style="color:'+(p.pim>0?c:"#B8C0BB")+'">'+execTxt(p)+'</div></div></div>'+
+      '<div class="barwrap"><div class="meter"><i style="width:'+(p.pim>0?p.ejec:0)+'%;background:'+c+'"></i></div></div>'+
+    '</div>';
+  }
+
+  /* ── V6 · Acento limón (hero %) ── */
+  function v6(p){ var c=execColor(p.ejec);
+    return '<div class="pc v6">'+
+      '<div class="head"><div class="top"><span class="cui">CUI '+p.cui+'</span><span class="prog">'+p.prog+'</span><span class="sp"></span>'+EYE+'</div>'+
+        '<div class="hero"><div><div class="big">'+execTxt(p)+'</div><div class="lbl">Ejecución 2026</div></div>'+CHEV+'</div></div>'+
+      '<div class="body"><div class="name">'+p.nombre+'</div><div class="ubi">'+ubi(p)+'</div>'+
+        '<div class="chips">'+estadoChip(p)+fase(p)+'</div>'+
+        '<div class="pim"><span class="k">PIM 2026</span><span class="v" style="margin-top:0">'+soles(p.pim)+'</span></div>'+
+      '</div></div>';
+  }
+
+  var VARIANTS = [
+    { fn:v1, t:"1 · Barra de estado + medidor", d:"Barra lateral de color según el estado (paralizado, priorizado…), chip de programa en color y un medidor fino del % de ejecución. Sobrio pero con señal de color clara." },
+    { fn:v2, t:"2 · Cabecera menta", d:"CUI y programa sobre una cabecera con degradé menta (la identidad de la app). El % de ejecución va en una píldora limón que resalta sin gritar." },
+    { fn:v3, t:"3 · Anillo de ejecución", d:"El avance como protagonista: un anillo circular coloreado por nivel. Ideal si lo que más importa de un vistazo es cuánto se ejecutó." },
+    { fn:v4, t:"4 · Franja de datos en tinta", d:"Estilo fintech: cuerpo blanco y una franja inferior oscura con el PIM y el % en limón. Máximo contraste para los dos números clave." },
+    { fn:v5, t:"5 · Insignias de cartera + barra", d:"Muestra a qué carteras pertenece (con sus colores) y el % grande a la derecha sobre una barra de avance a lo ancho." },
+    { fn:v6, t:"6 · Acento limón (hero %)", d:"El % de ejecución enorme sobre cabecera limón, como la tarjeta de saldo de la app. El PIM queda como dato secundario abajo." }
+  ];
+
+  document.getElementById("gallery").innerHTML = VARIANTS.map(function(V){
+    return '<section class="variant"><h2>'+V.t.replace(/^(\d+) · /,'<b>$1 · </b>')+'</h2><p class="desc">'+V.d+'</p>'+
+      '<div class="row">'+ SAMPLES.map(V.fn).join("") +'</div></section>';
+  }).join("");
+</script>
+</body>
+</html>

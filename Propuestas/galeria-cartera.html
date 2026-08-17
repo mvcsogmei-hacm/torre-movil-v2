@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La torre — Galería de cartera</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%23A6D3C4'/%3E%3Cpath%20fill='%23141816'%20d='M17%2012h7v6h5v-6h6v6h5v-6h7v12l-5%205v13l5%207v7H17v-7l5-7V29l-5-5z'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --mint:#A6D3C4; --ink:#141816; --muted:#8A938E;
+    --lemon:#F2F97C; --key:#F1F4EE;
+    --sa:#FBFDF8; --sb:#E7F2DE; --sc:#D9EBD4;
+    --track:rgba(20,24,22,.10);
+    --ok-bg:#E2F3D6; --ok-tx:#1F7A33; --ok-dot:#1FA23C;
+    --pr-bg:#FBF3D9; --pr-tx:#8A6D00; --pr-dot:#E0A100;
+    --cr-bg:#FADEDC; --cr-tx:#A32A22; --cr-dot:#BF2E25;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{
+    background:#F2F6EF; color:var(--ink);
+    font-family:"Space Grotesk",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    padding:36px 22px 60px;
+  }
+  header{ max-width:1100px; margin:0 auto 28px; }
+  header h1{ font-size:26px; letter-spacing:-.01em; }
+  header p{ color:#57635C; margin-top:8px; font-size:15px; line-height:1.55; max-width:700px; }
+  .grid{
+    max-width:1100px; margin:0 auto;
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:24px 22px;
+  }
+  figure{ display:grid; gap:10px; align-content:start; }
+  .mock{
+    border-radius:26px; padding:18px 14px;
+    background:linear-gradient(165deg,var(--sa) 0%,var(--sb) 60%,var(--sc) 100%);
+    box-shadow:0 14px 34px rgba(17,56,44,.13);
+  }
+  figcaption{ padding:0 4px; }
+  figcaption strong{ font-size:14px; display:block; }
+  figcaption span{ font-size:12.5px; color:#66726B; line-height:1.45; display:block; margin-top:2px; }
+
+  .card{
+    background:#fff; border-radius:22px; padding:16px;
+    box-shadow:0 10px 24px rgba(31,64,51,.08);
+  }
+  .hd{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px; }
+  .hd h3{ font-size:15px; font-weight:700; }
+  .hd span{ font-size:11.5px; font-weight:600; color:#6E7440; }
+
+  .chip{
+    display:inline-flex; align-items:center; gap:5px;
+    font-size:10.5px; font-weight:600;
+    padding:3px 8px; border-radius:999px;
+  }
+  .chip i{ width:6px; height:6px; border-radius:50%; flex:none; }
+  .chip.ok{ background:var(--ok-bg); color:var(--ok-tx); }   .chip.ok i{ background:var(--ok-dot); }
+  .chip.pr{ background:var(--pr-bg); color:var(--pr-tx); }   .chip.pr i{ background:var(--pr-dot); }
+  .chip.cr{ background:var(--cr-bg); color:var(--cr-tx); }   .chip.cr i{ background:var(--cr-dot); }
+
+  /* 1 · filas (actual) */
+  .prow{ background:var(--key); border-radius:14px; padding:12px 13px; margin-top:9px; display:grid; gap:8px; }
+  .prow .t{ display:flex; justify-content:space-between; align-items:center; }
+  .prow .n{ font-size:13.5px; font-weight:700; }
+  .prow .p{ font-size:16px; font-weight:700; }
+  .meter{ height:6px; border-radius:999px; background:var(--track); overflow:hidden; }
+  .meter i{ display:block; height:100%; border-radius:999px; background:var(--ink); }
+  .prow .f{ display:flex; justify-content:space-between; align-items:center; }
+  .prow .s{ font-size:11px; color:var(--muted); }
+
+  /* 2 · ranking a escala común */
+  .rrow{ display:grid; grid-template-columns:64px 1fr 44px; align-items:center; gap:8px; margin-top:12px; }
+  .rrow .n{ font-size:12px; font-weight:700; }
+  .rrow .p{ font-size:12.5px; font-weight:700; text-align:right; }
+  .rrow .bar{ height:14px; border-radius:7px; background:var(--track); overflow:hidden; }
+  .rrow .bar i{ display:block; height:100%; border-radius:7px; background:var(--ink); }
+  .axis{ display:flex; justify-content:space-between; font-size:9.5px; color:var(--muted); margin:8px 0 0 72px; padding-right:52px; }
+
+  /* 3 · bullet con meta */
+  .brow{ margin-top:12px; display:grid; gap:5px; }
+  .brow .t{ display:flex; justify-content:space-between; font-size:12px; }
+  .brow .n{ font-weight:700; }
+  .brow .p{ font-weight:700; }
+  .bullet{ position:relative; height:12px; border-radius:6px; background:var(--track); }
+  .bullet i{ position:absolute; left:0; top:0; bottom:0; border-radius:6px; background:var(--ink); }
+  .bullet b{ position:absolute; top:-3px; bottom:-3px; width:2px; background:#A32A22; border-radius:1px; }
+  .blegend{ display:flex; gap:12px; font-size:10px; color:var(--muted); margin-top:10px; align-items:center; }
+  .blegend .k1{ width:14px; height:8px; border-radius:4px; background:var(--ink); display:inline-block; }
+  .blegend .k2{ width:2px; height:12px; background:#A32A22; display:inline-block; }
+
+  /* 4 · anillos */
+  .rings{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:8px; }
+  .ring-c{ background:var(--key); border-radius:16px; padding:12px 8px; display:grid; justify-items:center; gap:6px; }
+  .ring{ width:64px; height:64px; position:relative; }
+  .ring svg{ width:64px; height:64px; transform:rotate(-90deg); }
+  .ring em{ position:absolute; inset:0; display:grid; place-items:center; font-style:normal; font-size:13px; font-weight:700; }
+  .ring-c .n{ font-size:11.5px; font-weight:700; }
+
+  /* 5 · agrupado por estado */
+  .glabel{ display:flex; align-items:center; gap:6px; font-size:11px; font-weight:700; margin-top:12px; }
+  .glabel i{ width:7px; height:7px; border-radius:50%; }
+  .glabel.cr{ color:var(--cr-tx); } .glabel.cr i{ background:var(--cr-dot); }
+  .glabel.pr{ color:var(--pr-tx); } .glabel.pr i{ background:var(--pr-dot); }
+  .glabel.ok{ color:var(--ok-tx); } .glabel.ok i{ background:var(--ok-dot); }
+  .grow{ background:var(--key); border-radius:12px; padding:10px 12px; margin-top:6px; display:grid; grid-template-columns:1fr auto; gap:2px 8px; align-items:center; }
+  .grow .n{ font-size:12.5px; font-weight:700; }
+  .grow .p{ font-size:14px; font-weight:700; grid-row:span 2; align-self:center; }
+  .grow .s{ font-size:10.5px; color:var(--muted); }
+
+  /* 6 · mosaico de estado */
+  .tiles{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:8px; }
+  .tile{ border-radius:16px; padding:13px 13px 12px; display:grid; gap:3px; }
+  .tile.ok{ background:var(--ok-bg); } .tile.pr{ background:var(--pr-bg); } .tile.cr{ background:var(--cr-bg); }
+  .tile .n{ font-size:12px; font-weight:700; }
+  .tile .p{ font-size:23px; font-weight:700; letter-spacing:-.01em; }
+  .tile .s{ font-size:10.5px; color:#5A665F; }
+  .tile .meter{ margin-top:6px; background:rgba(255,255,255,.7); }
+
+  /* 7 · lista densa */
+  .drow{ display:grid; grid-template-columns:1fr auto; gap:4px 10px; padding:9px 2px; border-bottom:1px solid #EEF1EA; align-items:center; }
+  .drow:last-of-type{ border-bottom:0; }
+  .drow .n{ font-size:12.5px; font-weight:600; display:flex; align-items:center; gap:6px; }
+  .drow .n i{ width:7px; height:7px; border-radius:50%; flex:none; }
+  .drow .n i.ok{ background:var(--ok-dot); } .drow .n i.pr{ background:var(--pr-dot); } .drow .n i.cr{ background:var(--cr-dot); }
+  .drow .p{ font-size:12.5px; font-weight:700; }
+  .drow .meter{ grid-column:1 / -1; height:4px; }
+
+  /* 8 · carrusel */
+  .carousel{ display:flex; gap:10px; overflow:hidden; margin-top:8px; }
+  .slide{ flex:0 0 72%; background:var(--key); border-radius:16px; padding:14px; display:grid; gap:8px; }
+  .slide .n{ font-size:13px; font-weight:700; }
+  .slide .p{ font-size:30px; font-weight:700; letter-spacing:-.01em; }
+  .slide .s{ font-size:11px; color:var(--muted); }
+  .dots{ display:flex; gap:5px; justify-content:center; margin-top:10px; }
+  .dots i{ width:5px; height:5px; border-radius:50%; background:var(--track); }
+  .dots i:first-child{ background:var(--ink); }
+
+  /* 9 · lollipop */
+  .lrow{ display:grid; grid-template-columns:64px 1fr 44px; align-items:center; gap:8px; margin-top:18px; }
+  .lrow .n{ font-size:12px; font-weight:700; }
+  .lrow .p{ font-size:12.5px; font-weight:700; text-align:right; }
+  .lrow .line{ position:relative; height:3px; border-radius:2px; background:var(--track); }
+  .lrow .line em{ position:absolute; left:0; top:0; bottom:0; border-radius:2px; background:rgba(20,24,22,.30); }
+  .lrow .line i{ position:absolute; top:50%; transform:translate(-50%,-50%); width:11px; height:11px; border-radius:50%; background:var(--ink); box-shadow:0 0 0 2px #fff; }
+
+  /* 10 · columnas */
+  .cols{ display:flex; justify-content:space-around; align-items:end; margin-top:14px; }
+  .colu{ display:grid; justify-items:center; gap:6px; }
+  .colu .p{ font-size:11.5px; font-weight:700; }
+  .colu .bar{ width:26px; height:92px; border-radius:9px; background:var(--track); display:flex; align-items:flex-end; overflow:hidden; }
+  .colu .bar i{ width:100%; border-radius:9px; background:var(--ink); }
+  .colu .n{ font-size:10.5px; font-weight:700; }
+  .colu .dot{ width:7px; height:7px; border-radius:50%; }
+  .dot.ok{ background:var(--ok-dot); } .dot.pr{ background:var(--pr-dot); } .dot.cr{ background:var(--cr-dot); }
+
+  /* 11 · termómetros */
+  .therms{ display:flex; justify-content:space-around; margin-top:14px; }
+  .therm{ display:grid; justify-items:center; gap:6px; }
+  .therm .p{ font-size:11.5px; font-weight:700; }
+  .therm .tube{ width:12px; height:96px; border-radius:999px; background:var(--track); display:flex; align-items:flex-end; overflow:hidden; }
+  .therm .tube i{ width:100%; border-radius:999px; }
+  .therm .tube i.ok{ background:var(--ok-dot); }
+  .therm .tube i.pr{ background:var(--pr-dot); }
+  .therm .tube i.cr{ background:var(--cr-dot); }
+  .therm .n{ font-size:10.5px; font-weight:700; }
+
+  /* 12 · delta mensual */
+  .delrow{ display:flex; align-items:center; gap:8px; padding:12px 2px; border-bottom:1px solid #EEF1EA; }
+  .delrow:last-of-type{ border-bottom:0; }
+  .delrow .n{ flex:1; font-size:12.5px; font-weight:700; }
+  .delrow .p{ font-size:14px; font-weight:700; }
+  .up{ color:#1F7A33; font-size:11px; font-weight:700; }
+  .down{ color:#A32A22; font-size:11px; font-weight:700; }
+
+  /* 13 · pasos de 20 */
+  .srow{ margin-top:14px; display:grid; gap:5px; }
+  .srow .t{ display:flex; justify-content:space-between; font-size:12px; }
+  .srow .t .n{ font-weight:700; } .srow .t .p{ font-weight:700; }
+  .steps{ display:flex; gap:3px; }
+  .steps b{ flex:1; height:10px; border-radius:5px; background:var(--track); overflow:hidden; display:block; }
+  .steps b i{ display:block; height:100%; background:var(--ink); }
+
+  /* 14 · sparklines */
+  .sprow{ display:grid; grid-template-columns:64px 1fr 44px; gap:8px; align-items:center; margin-top:14px; }
+  .sprow .n{ font-size:12px; font-weight:700; }
+  .sprow .p{ font-size:12.5px; font-weight:700; text-align:right; }
+  .sprow svg{ width:100%; height:24px; display:block; }
+  .sprow polyline{ fill:none; stroke:#141816; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+  .sprow circle{ fill:#141816; }
+
+  /* 15 · waffle de puntos */
+  .wrow{ display:grid; grid-template-columns:64px 1fr 44px; gap:8px; align-items:center; margin-top:16px; }
+  .wrow .n{ font-size:12px; font-weight:700; }
+  .wrow .p{ font-size:12.5px; font-weight:700; text-align:right; }
+  .wdots{ display:flex; gap:4px; }
+  .wdots i{ width:10px; height:10px; border-radius:50%; background:var(--track); }
+  .wdots i.f{ background:var(--ink); }
+
+  /* 16 · resumen ejecutivo */
+  .sumlbl{ font-size:11.5px; color:var(--muted); margin-top:8px; }
+  .sumbig{ font-size:38px; font-weight:700; letter-spacing:-.02em; }
+  .alert{ display:flex; align-items:center; gap:10px; background:var(--cr-bg); border-radius:14px; padding:12px 13px; margin-top:14px; }
+  .alert .ic{ width:30px; height:30px; border-radius:50%; background:#fff; display:grid; place-items:center; color:var(--cr-tx); font-weight:700; font-size:15px; flex:none; }
+  .alert .tx{ flex:1; font-size:12px; color:var(--cr-tx); font-weight:600; line-height:1.35; }
+  .alert svg{ width:14px; height:14px; color:var(--cr-tx); flex:none; }
+  .foldrow{ display:flex; justify-content:space-between; align-items:center; padding:12px 2px 2px; font-size:12px; color:var(--muted); }
+
+  /* 17 · dos años */
+  .yrow{ margin-top:13px; display:grid; gap:4px; }
+  .yrow .t{ display:flex; justify-content:space-between; font-size:12px; }
+  .yrow .t .n{ font-weight:700; } .yrow .t .p{ font-weight:700; }
+  .ybar{ height:9px; border-radius:5px; background:var(--track); overflow:hidden; }
+  .ybar i{ display:block; height:100%; border-radius:5px; background:var(--ink); }
+  .ybar.prev i{ background:#B9C1BB; }
+  .ylegend{ display:flex; gap:14px; margin-top:12px; font-size:10px; color:var(--muted); align-items:center; }
+  .ylegend i{ width:12px; height:8px; border-radius:4px; display:inline-block; }
+
+  /* 18 · velocímetros */
+  .gauges{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:8px; }
+  .gaug{ background:var(--key); border-radius:16px; padding:12px 8px 10px; display:grid; justify-items:center; }
+  .gaug svg{ width:80px; height:46px; display:block; }
+  .gaug .p{ font-size:14px; font-weight:700; margin-top:-18px; }
+  .gaug .n{ font-size:11px; font-weight:700; margin-top:4px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Galería de cartera — La torre</h1>
+  <p>Dieciocho patrones móviles para la <strong>Cartera priorizada</strong> (PASLC 71,9% · PNSU 39% · COFOPRI 39,5% · PNSR 15,5%). Lo que dice la investigación: para avance-contra-meta funcionan mejor las barras con marcador de meta (bullet); para comparar programas entre sí, barras a escala común; el estado siempre en rojo/ámbar/verde con etiqueta, nunca solo color; y en móvil, regla 5-3-1 — 5 s para escanear, 3 s para entender cada métrica, 1 acción.</p>
+</header>
+
+<div class="grid">
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><h3>Cartera priorizada</h3><span>% Ejec. 2026</span></div>
+      <div class="prow"><div class="t"><span class="n">PASLC</span><span class="p">71,9%</span></div><div class="meter"><i style="width:71.9%"></i></div><div class="f"><span class="s">4 proyectos</span><span class="chip ok"><i></i>Óptimo</span></div></div>
+      <div class="prow"><div class="t"><span class="n">PNSU</span><span class="p">39%</span></div><div class="meter"><i style="width:39%"></i></div><div class="f"><span class="s">9 proyectos</span><span class="chip pr"><i></i>En proceso</span></div></div>
+      <div class="prow"><div class="t"><span class="n">COFOPRI</span><span class="p">39,5%</span></div><div class="meter"><i style="width:39.5%"></i></div><div class="f"><span class="s">1 proyecto</span><span class="chip pr"><i></i>En proceso</span></div></div>
+      <div class="prow"><div class="t"><span class="n">PNSR</span><span class="p">15,5%</span></div><div class="meter"><i style="width:15.5%"></i></div><div class="f"><span class="s">1 proyecto</span><span class="chip cr"><i></i>Crítico</span></div></div>
+    </div></div>
+    <figcaption><strong>1 · Filas con barra (actual)</strong><span>La referencia: cada programa autocontenido. Buena lectura individual, comparación regular.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><h3>Cartera priorizada</h3><span>ranking</span></div>
+      <div class="rrow"><span class="n">PASLC</span><span class="bar"><i style="width:71.9%"></i></span><span class="p">71,9%</span></div>
+      <div class="rrow"><span class="n">COFOPRI</span><span class="bar"><i style="width:39.5%"></i></span><span class="p">39,5%</span></div>
+      <div class="rrow"><span class="n">PNSU</span><span class="bar"><i style="width:39%"></i></span><span class="p">39%</span></div>
+      <div class="rrow"><span class="n">PNSR</span><span class="bar"><i style="width:15.5%"></i></span><span class="p">15,5%</span></div>
+      <div class="axis"><span>0</span><span>50</span><span>100</span></div>
+    </div></div>
+    <figcaption><strong>2 · Ranking a escala común</strong><span>Ordenado de mayor a menor sobre un mismo eje 0–100. La forma más honesta de comparar programas.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><h3>Cartera priorizada</h3><span>vs. meta</span></div>
+      <div class="brow"><div class="t"><span class="n">PASLC</span><span class="p">71,9%</span></div><div class="bullet"><i style="width:71.9%"></i><b style="left:58%"></b></div></div>
+      <div class="brow"><div class="t"><span class="n">PNSU</span><span class="p">39%</span></div><div class="bullet"><i style="width:39%"></i><b style="left:58%"></b></div></div>
+      <div class="brow"><div class="t"><span class="n">COFOPRI</span><span class="p">39,5%</span></div><div class="bullet"><i style="width:39.5%"></i><b style="left:58%"></b></div></div>
+      <div class="brow"><div class="t"><span class="n">PNSR</span><span class="p">15,5%</span></div><div class="bullet"><i style="width:15.5%"></i><b style="left:58%"></b></div></div>
+      <div class="blegend"><span class="k1"></span> Ejecutado <span class="k2"></span> Meta a agosto (58%)</div>
+    </div></div>
+    <figcaption><strong>3 · Bullet con meta</strong><span>Cada barra lleva el marcador de la meta esperada a la fecha: se ve al instante quién va adelantado o atrasado. La favorita de la literatura de KPIs.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><h3>Cartera priorizada</h3><span>% Ejec. 2026</span></div>
+      <div class="rings">
+        <div class="ring-c"><span class="ring"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(20,24,22,.10)" stroke-width="7"/><circle cx="32" cy="32" r="26" fill="none" stroke="#141816" stroke-width="7" stroke-linecap="round" stroke-dasharray="117.4 163.4"/></svg><em>71,9%</em></span><span class="n">PASLC</span><span class="chip ok"><i></i>Óptimo</span></div>
+        <div class="ring-c"><span class="ring"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(20,24,22,.10)" stroke-width="7"/><circle cx="32" cy="32" r="26" fill="none" stroke="#141816" stroke-width="7" stroke-linecap="round" stroke-dasharray="63.7 163.4"/></svg><em>39%</em></span><span class="n">PNSU</span><span class="chip pr"><i></i>En proceso</span></div>
+        <div class="ring-c"><span class="ring"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(20,24,22,.10)" stroke-width="7"/><circle cx="32" cy="32" r="26" fill="none" stroke="#141816" stroke-width="7" stroke-linecap="round" stroke-dasharray="64.5 163.4"/></svg><em>39,5%</em></span><span class="n">COFOPRI</span><span class="chip pr"><i></i>En proceso</span></div>
+        <div class="ring-c"><span class="ring"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(20,24,22,.10)" stroke-width="7"/><circle cx="32" cy="32" r="26" fill="none" stroke="#141816" stroke-width="7" stroke-linecap="round" stroke-dasharray="25.3 163.4"/></svg><em>15,5%</em></span><span class="n">PNSR</span><span class="chip cr"><i></i>Crítico</span></div>
+      </div>
+    </div></div>
+    <figcaption><strong>4 · Anillos 2×2</strong><span>Estética muy "app fintech". Bonita pero débil para comparar valores cercanos (39% vs 39,5% se ven iguales).</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><h3>Cartera priorizada</h3><span>por estado</span></div>
+      <div class="glabel cr"><i></i>CRÍTICO · 1</div>
+      <div class="grow"><span class="n">PNSR</span><span class="p">15,5%</span><span class="s">1 proyecto</span></div>
+      <div class="glabel pr"><i></i>EN PROCESO · 2</div>
+      <div class="grow"><span class="n">PNSU</span><span class="p">39%</span><span class="s">9 proyectos</span></div>
+      <div class="grow"><span class="n">COFOPRI</span><span class="p">39,5%</span><span class="s">1 proyecto</span></div>
+      <div class="glabel ok"><i></i>ÓPTIMO · 1</div>
+      <div class="grow"><span class="n">PASLC</span><span class="p">71,9%</span><span class="s">4 proyectos</span></div>
+    </div></div>
+    <figcaption><strong>5 · Agrupado por estado</strong><span>Lo crítico primero: patrón de triaje para gestión. Ideal si la pregunta del usuario es "¿dónde está el problema?".</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><h3>Cartera priorizada</h3><span>% Ejec. 2026</span></div>
+      <div class="tiles">
+        <div class="tile ok"><span class="n">PASLC</span><span class="p">71,9%</span><span class="s">4 proyectos · Óptimo</span><span class="meter"><i style="width:71.9%"></i></span></div>
+        <div class="tile pr"><span class="n">PNSU</span><span class="p">39%</span><span class="s">9 proyectos · En proceso</span><span class="meter"><i style="width:39%"></i></span></div>
+        <div class="tile pr"><span class="n">COFOPRI</span><span class="p">39,5%</span><span class="s">1 proyecto · En proceso</span><span class="meter"><i style="width:39.5%"></i></span></div>
+        <div class="tile cr"><span class="n">PNSR</span><span class="p">15,5%</span><span class="s">1 proyecto · Crítico</span><span class="meter"><i style="width:15.5%"></i></span></div>
+      </div>
+    </div></div>
+    <figcaption><strong>6 · Mosaico semáforo</strong><span>Tarjetas 2×2 teñidas por estado: el "mapa de calor" de la cartera de un vistazo. El color manda; el texto confirma.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><h3>Cartera priorizada</h3><span>% Ejec. 2026</span></div>
+      <div class="drow"><span class="n"><i class="ok"></i>PASLC · 4 proy.</span><span class="p">71,9%</span><span class="meter"><i style="width:71.9%"></i></span></div>
+      <div class="drow"><span class="n"><i class="pr"></i>PNSU · 9 proy.</span><span class="p">39%</span><span class="meter"><i style="width:39%"></i></span></div>
+      <div class="drow"><span class="n"><i class="pr"></i>COFOPRI · 1 proy.</span><span class="p">39,5%</span><span class="meter"><i style="width:39.5%"></i></span></div>
+      <div class="drow"><span class="n"><i class="cr"></i>PNSR · 1 proy.</span><span class="p">15,5%</span><span class="meter"><i style="width:15.5%"></i></span></div>
+    </div></div>
+    <figcaption><strong>7 · Lista densa</strong><span>Máxima información en mínimo alto, estilo ajustes de iOS. Escala bien si la cartera crece a 10–20 programas.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><h3>Cartera priorizada</h3><span>deslizar →</span></div>
+      <div class="carousel">
+        <div class="slide"><span class="n">PASLC</span><span class="p">71,9%</span><span class="meter"><i style="width:71.9%"></i></span><span class="s">4 proyectos · S/ 14 M</span><span class="chip ok" style="justify-self:start"><i></i>Óptimo</span></div>
+        <div class="slide"><span class="n">PNSU</span><span class="p">39%</span><span class="meter"><i style="width:39%"></i></span><span class="s">9 proyectos · S/ 34 M</span><span class="chip pr" style="justify-self:start"><i></i>En proceso</span></div>
+      </div>
+      <div class="dots"><i></i><i></i><i></i><i></i></div>
+    </div></div>
+    <figcaption><strong>8 · Carrusel</strong><span>Una tarjeta grande por programa, deslizable. Protagonismo máximo por programa, pero oculta la visión de conjunto.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><h3>Cartera priorizada</h3><span>% Ejec. 2026</span></div>
+      <div class="lrow"><span class="n">PASLC</span><span class="line"><em style="width:71.9%"></em><i style="left:71.9%"></i></span><span class="p">71,9%</span></div>
+      <div class="lrow"><span class="n">COFOPRI</span><span class="line"><em style="width:39.5%"></em><i style="left:39.5%"></i></span><span class="p">39,5%</span></div>
+      <div class="lrow"><span class="n">PNSU</span><span class="line"><em style="width:39%"></em><i style="left:39%"></i></span><span class="p">39%</span></div>
+      <div class="lrow"><span class="n">PNSR</span><span class="line"><em style="width:15.5%"></em><i style="left:15.5%"></i></span><span class="p">15,5%</span></div>
+      <div class="axis"><span>0</span><span>50</span><span>100</span></div>
+    </div></div>
+    <figcaption><strong>9 · Lollipop</strong><span>Variante minimalista del ranking: el punto marca el valor sobre una guía fina. Elegante y muy liviana.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><h3>Cartera priorizada</h3><span>% Ejec. 2026</span></div>
+      <div class="cols">
+        <div class="colu"><span class="p">71,9%</span><span class="bar"><i style="height:71.9%"></i></span><span class="n">PASLC</span><span class="dot ok"></span></div>
+        <div class="colu"><span class="p">39%</span><span class="bar"><i style="height:39%"></i></span><span class="n">PNSU</span><span class="dot pr"></span></div>
+        <div class="colu"><span class="p">39,5%</span><span class="bar"><i style="height:39.5%"></i></span><span class="n">COFOPRI</span><span class="dot pr"></span></div>
+        <div class="colu"><span class="p">15,5%</span><span class="bar"><i style="height:15.5%"></i></span><span class="n">PNSR</span><span class="dot cr"></span></div>
+      </div>
+    </div></div>
+    <figcaption><strong>10 · Columnas</strong><span>Comparación clásica vertical. Funciona con 4 programas; con 8 o más las etiquetas se aprietan en móvil.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><h3>Cartera priorizada</h3><span>% Ejec. 2026</span></div>
+      <div class="therms">
+        <div class="therm"><span class="p">71,9%</span><span class="tube"><i class="ok" style="height:71.9%"></i></span><span class="n">PASLC</span></div>
+        <div class="therm"><span class="p">39%</span><span class="tube"><i class="pr" style="height:39%"></i></span><span class="n">PNSU</span></div>
+        <div class="therm"><span class="p">39,5%</span><span class="tube"><i class="pr" style="height:39.5%"></i></span><span class="n">COFOPRI</span></div>
+        <div class="therm"><span class="p">15,5%</span><span class="tube"><i class="cr" style="height:15.5%"></i></span><span class="n">PNSR</span></div>
+      </div>
+    </div></div>
+    <figcaption><strong>11 · Termómetros</strong><span>Tubos finos donde el relleno lleva el color del estado: avance y semáforo en un solo trazo.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><h3>Cartera priorizada</h3><span>vs. julio</span></div>
+      <div class="delrow"><span class="n">PASLC</span><span class="up">▲ +6,3 pts</span><span class="p">71,9%</span></div>
+      <div class="delrow"><span class="n">PNSU</span><span class="up">▲ +2,1 pts</span><span class="p">39%</span></div>
+      <div class="delrow"><span class="n">COFOPRI</span><span class="down">▼ −0,8 pts</span><span class="p">39,5%</span></div>
+      <div class="delrow"><span class="n">PNSR</span><span class="up">▲ +0,5 pts</span><span class="p">15,5%</span></div>
+    </div></div>
+    <figcaption><strong>12 · Delta mensual</strong><span>Además del nivel, el ritmo: cuánto avanzó cada programa desde el mes pasado (deltas de ejemplo). Detecta a los estancados.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><h3>Cartera priorizada</h3><span>tramos de 20 pts</span></div>
+      <div class="srow"><div class="t"><span class="n">PASLC</span><span class="p">71,9%</span></div><div class="steps"><b><i style="width:100%"></i></b><b><i style="width:100%"></i></b><b><i style="width:100%"></i></b><b><i style="width:59.5%"></i></b><b></b></div></div>
+      <div class="srow"><div class="t"><span class="n">PNSU</span><span class="p">39%</span></div><div class="steps"><b><i style="width:100%"></i></b><b><i style="width:95%"></i></b><b></b><b></b><b></b></div></div>
+      <div class="srow"><div class="t"><span class="n">COFOPRI</span><span class="p">39,5%</span></div><div class="steps"><b><i style="width:100%"></i></b><b><i style="width:97.5%"></i></b><b></b><b></b><b></b></div></div>
+      <div class="srow"><div class="t"><span class="n">PNSR</span><span class="p">15,5%</span></div><div class="steps"><b><i style="width:77.5%"></i></b><b></b><b></b><b></b><b></b></div></div>
+    </div></div>
+    <figcaption><strong>13 · Tramos de 20</strong><span>La barra partida en 5 niveles, lectura tipo videojuego. Vistosa, aunque menos precisa que la barra continua.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><h3>Cartera priorizada</h3><span>ene–ago</span></div>
+      <div class="sprow"><span class="n">PASLC</span><svg viewBox="0 0 84 24"><polyline points="2,16 13,14.4 24,13 35,11.6 46,10.4 57,9.4 68,8.4 79,7.6"/><circle cx="79" cy="7.6" r="2.4"/></svg><span class="p">71,9%</span></div>
+      <div class="sprow"><span class="n">PNSU</span><svg viewBox="0 0 84 24"><polyline points="2,19.6 13,18.8 24,18 35,17 46,16.2 57,15.4 68,14.8 79,14.2"/><circle cx="79" cy="14.2" r="2.4"/></svg><span class="p">39%</span></div>
+      <div class="sprow"><span class="n">COFOPRI</span><svg viewBox="0 0 84 24"><polyline points="2,18.4 13,17.6 24,16.4 35,15.4 46,14.8 57,14.4 68,13.9 79,14.1"/><circle cx="79" cy="14.1" r="2.4"/></svg><span class="p">39,5%</span></div>
+      <div class="sprow"><span class="n">PNSR</span><svg viewBox="0 0 84 24"><polyline points="2,21.2 13,20.8 24,20.4 35,20 46,19.8 57,19.4 68,19.2 79,18.9"/><circle cx="79" cy="18.9" r="2.4"/></svg><span class="p">15,5%</span></div>
+    </div></div>
+    <figcaption><strong>14 · Sparklines</strong><span>La trayectoria mensual de cada programa en miniatura (curvas de ejemplo). Muestra tendencia, no solo el corte actual.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><h3>Cartera priorizada</h3><span>1 punto = 10 pts</span></div>
+      <div class="wrow"><span class="n">PASLC</span><span class="wdots"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i><i></i></span><span class="p">71,9%</span></div>
+      <div class="wrow"><span class="n">PNSU</span><span class="wdots"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="p">39%</span></div>
+      <div class="wrow"><span class="n">COFOPRI</span><span class="wdots"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="p">39,5%</span></div>
+      <div class="wrow"><span class="n">PNSR</span><span class="wdots"><i class="f"></i><i class="f"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="p">15,5%</span></div>
+    </div></div>
+    <figcaption><strong>15 · Puntos de avance</strong><span>Cada punto lleno equivale a 10 pts de ejecución. Lúdico y muy táctil, con precisión limitada.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><h3>Cartera priorizada</h3><span>resumen</span></div>
+      <div class="sumlbl">Avance promedio de la cartera</div>
+      <div class="sumbig">41,5%</div>
+      <div class="meter"><i style="width:41.5%"></i></div>
+      <div class="alert">
+        <span class="ic">!</span>
+        <span class="tx">PNSR en estado crítico — 15,5% de ejecución con 1 proyecto</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+      <div class="foldrow"><span>Ver los 4 programas</span><span>›</span></div>
+    </div></div>
+    <figcaption><strong>16 · Resumen ejecutivo</strong><span>La portada gerencial: un solo número para la cartera y, debajo, únicamente lo que exige acción. El detalle queda a un toque.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><h3>Cartera priorizada</h3><span>2025 vs 2026</span></div>
+      <div class="yrow"><div class="t"><span class="n">PASLC</span><span class="p">71,9%</span></div><div class="ybar"><i style="width:71.9%"></i></div><div class="ybar prev"><i style="width:64%"></i></div></div>
+      <div class="yrow"><div class="t"><span class="n">PNSU</span><span class="p">39%</span></div><div class="ybar"><i style="width:39%"></i></div><div class="ybar prev"><i style="width:41%"></i></div></div>
+      <div class="yrow"><div class="t"><span class="n">COFOPRI</span><span class="p">39,5%</span></div><div class="ybar"><i style="width:39.5%"></i></div><div class="ybar prev"><i style="width:33%"></i></div></div>
+      <div class="yrow"><div class="t"><span class="n">PNSR</span><span class="p">15,5%</span></div><div class="ybar"><i style="width:15.5%"></i></div><div class="ybar prev"><i style="width:22%"></i></div></div>
+      <div class="ylegend"><span><i style="background:#141816"></i> 2026</span><span><i style="background:#B9C1BB"></i> mismo mes 2025</span></div>
+    </div></div>
+    <figcaption><strong>17 · Interanual</strong><span>Cada programa contra su propio avance del año pasado a la misma fecha (2025 de ejemplo). Contexto que el % solo no da.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><h3>Cartera priorizada</h3><span>% Ejec. 2026</span></div>
+      <div class="gauges">
+        <div class="gaug"><svg viewBox="0 0 80 46"><path d="M8 42 A32 32 0 0 1 72 42" fill="none" stroke="rgba(20,24,22,.10)" stroke-width="8" stroke-linecap="round"/><path d="M8 42 A32 32 0 0 1 72 42" fill="none" stroke="#141816" stroke-width="8" stroke-linecap="round" stroke-dasharray="72.3 100.6"/></svg><span class="p">71,9%</span><span class="n">PASLC</span></div>
+        <div class="gaug"><svg viewBox="0 0 80 46"><path d="M8 42 A32 32 0 0 1 72 42" fill="none" stroke="rgba(20,24,22,.10)" stroke-width="8" stroke-linecap="round"/><path d="M8 42 A32 32 0 0 1 72 42" fill="none" stroke="#141816" stroke-width="8" stroke-linecap="round" stroke-dasharray="39.2 100.6"/></svg><span class="p">39%</span><span class="n">PNSU</span></div>
+        <div class="gaug"><svg viewBox="0 0 80 46"><path d="M8 42 A32 32 0 0 1 72 42" fill="none" stroke="rgba(20,24,22,.10)" stroke-width="8" stroke-linecap="round"/><path d="M8 42 A32 32 0 0 1 72 42" fill="none" stroke="#141816" stroke-width="8" stroke-linecap="round" stroke-dasharray="39.7 100.6"/></svg><span class="p">39,5%</span><span class="n">COFOPRI</span></div>
+        <div class="gaug"><svg viewBox="0 0 80 46"><path d="M8 42 A32 32 0 0 1 72 42" fill="none" stroke="rgba(20,24,22,.10)" stroke-width="8" stroke-linecap="round"/><path d="M8 42 A32 32 0 0 1 72 42" fill="none" stroke="#141816" stroke-width="8" stroke-linecap="round" stroke-dasharray="15.6 100.6"/></svg><span class="p">15,5%</span><span class="n">PNSR</span></div>
+      </div>
+    </div></div>
+    <figcaption><strong>18 · Velocímetros</strong><span>Arcos tipo tablero de auto en 2×2. Familiares para cualquier gerente, aunque ocupan bastante espacio por dato.</span></figcaption>
+  </figure>
+
+</div>
+</body>
+</html>

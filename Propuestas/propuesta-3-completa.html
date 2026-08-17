@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#A6D3C4">
+<title>La torre — Propuesta 3: favicon + splash</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%23A6D3C4'/%3E%3Cpath%20fill='%23141816'%20d='M17%2012h7v6h5v-6h6v6h5v-6h7v12l-5%205v13l5%207v7H17v-7l5-7V29l-5-5z'/%3E%3C/svg%3E">
+<style>
+  /* ─ Tokens (del shot de Nixtio) ─────────────────────────────── */
+  :root{
+    --mint:      #A6D3C4;   /* fondo detrás del teléfono           */
+    --screen-a:  #FBFDF8;   /* degradado de pantalla, arriba       */
+    --screen-b:  #E7F2DE;
+    --screen-c:  #D9EBD4;   /* degradado de pantalla, abajo        */
+    --lemon:     #F2F97C;   /* tarjeta de saldo                    */
+    --lemon-b:   #EAF386;
+    --ink:       #141816;
+    --muted:     #8A938E;
+    --card:      #FFFFFF;
+    --key:       #F1F4EE;
+    --pos:       #1FA23C;
+    --neg:       #BF2E25;
+    --shadow-card: 0 10px 24px rgba(31,64,51,.08);
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ height:100%; overscroll-behavior:none; }
+  body{
+    background:var(--mint);
+    font-family:-apple-system,"SF Pro Rounded","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    color:var(--ink);
+    display:grid; place-items:center;
+    min-height:100dvh;
+  }
+  button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; }
+
+  /* ─ Marco de teléfono (solo visible en pantallas grandes) ───── */
+  .phone{
+    position:relative;
+    width:min(100vw,412px);
+    height:100dvh; max-height:892px;
+    background:linear-gradient(165deg,var(--screen-a) 0%,var(--screen-b) 55%,var(--screen-c) 100%);
+    overflow:hidden;
+    box-shadow:0 34px 80px rgba(17,56,44,.30);
+    border-radius:44px;
+  }
+  @media (max-width:440px), (max-height:900px){
+    .phone{ max-height:none; border-radius:0; box-shadow:none; }
+  }
+
+  /* ─ Pantallas ────────────────────────────────────────────────── */
+  .screen{
+    position:absolute; inset:0;
+    overflow-y:auto; scrollbar-width:none;
+    padding:max(22px,env(safe-area-inset-top)) 20px 130px;
+    opacity:0; transform:translateX(26px);
+    pointer-events:none;
+    transition:opacity .28s ease, transform .28s ease;
+  }
+  .screen::-webkit-scrollbar{ display:none; }
+  .screen.active{ opacity:1; transform:none; pointer-events:auto; }
+  @media (prefers-reduced-motion:reduce){
+    .screen{ transition:none; }
+  }
+
+  /* ─ Barra superior ───────────────────────────────────────────── */
+  .topbar{
+    display:grid; grid-template-columns:44px 1fr 44px;
+    align-items:center; margin-bottom:18px;
+  }
+  .topbar h1{ text-align:center; font-size:17px; font-weight:600; }
+  .icon-btn{
+    width:44px; height:44px; border-radius:50%;
+    display:grid; place-items:center; position:relative;
+  }
+  .icon-btn:active{ background:rgba(20,24,22,.06); }
+  .icon-btn:focus-visible, button:focus-visible, input:focus-visible{
+    outline:2px solid var(--ink); outline-offset:2px;
+  }
+  .icon-btn svg{ width:22px; height:22px; }
+  .dot{
+    position:absolute; top:11px; right:10px;
+    width:7px; height:7px; border-radius:50%; background:#F4587A;
+  }
+
+  /* ─ Avatares e iconos de marca ──────────────────────────────── */
+  .avatar{
+    width:46px; height:46px; border-radius:50%; flex:none;
+    display:grid; place-items:center;
+    color:#fff; font-size:15px; font-weight:700; letter-spacing:.02em;
+  }
+  .brand{
+    width:46px; height:46px; border-radius:14px; flex:none;
+    display:grid; place-items:center; color:#fff;
+  }
+  .brand svg{ width:22px; height:22px; }
+  .av-leandro{ background:linear-gradient(140deg,#4E8F6C,#2C5E48); }
+  .av-eva    { background:linear-gradient(140deg,#D98CA4,#A25476); }
+  .av-henrik { background:linear-gradient(140deg,#7FA3D6,#48679C); }
+  .av-matteo { background:linear-gradient(140deg,#DCA25E,#A96B2C); }
+  .av-emilia { background:linear-gradient(140deg,#A98CD6,#6F54A2); }
+  .br-binance{ background:#171717; color:#F3BA2F; }
+  .br-multiplex{ background:#C22B23; font-weight:800; font-size:18px; }
+  .br-nike{ background:#111; }
+  .br-megogo{ background:#123F3C; font-weight:800; font-size:18px; }
+
+  /* ═ INICIO ════════════════════════════════════════════════════ */
+  .home-head{ display:flex; align-items:center; gap:12px; margin-bottom:20px; }
+  .home-head .avatar{ width:44px; height:44px; }
+  .home-head .hi{ font-size:17px; font-weight:600; flex:1; }
+  .home-head .actions{ display:flex; gap:2px; }
+
+  .balance-card{
+    background:linear-gradient(150deg,var(--lemon) 0%,var(--lemon-b) 100%);
+    border-radius:26px;
+    padding:22px 22px 26px;
+    text-align:center; position:relative;
+    box-shadow:0 18px 30px rgba(150,160,40,.18);
+  }
+  .balance-card .cur{ font-size:17px; font-weight:700; }
+  .balance-card .rate{ font-size:12px; color:#6E7440; margin-top:2px; }
+  .balance-card .amount{
+    font-size:44px; font-weight:700; letter-spacing:-.02em;
+    margin-top:10px; font-variant-numeric:tabular-nums;
+  }
+  .balance-card .delta{ font-size:16px; font-weight:600; margin-top:4px; }
+  .eye{ position:absolute; top:16px; right:16px; width:40px; height:40px;
+        display:grid; place-items:center; border-radius:50%; }
+  .eye svg{ width:21px; height:21px; }
+
+  .action-row{
+    display:grid; grid-template-columns:1fr 1fr 1fr;
+    background:var(--card); border-radius:20px;
+    margin-top:14px; box-shadow:var(--shadow-card);
+  }
+  .action-row button{
+    padding:14px 4px 12px;
+    display:grid; justify-items:center; gap:5px;
+    font-size:13.5px; font-weight:600;
+  }
+  .action-row button + button{ border-left:1px solid #EEF1EA; }
+  .action-row svg{ width:21px; height:21px; }
+  .action-row button:active{ background:#FAFBF7; border-radius:20px; }
+
+  .section-head{
+    display:flex; align-items:baseline; justify-content:space-between;
+    margin:22px 2px 12px;
+  }
+  .section-head h2{ font-size:16.5px; font-weight:700; }
+  .section-head .link{ font-size:13.5px; color:var(--muted); font-weight:500; }
+
+  /* fila de transacción (compartida) */
+  .tx{
+    display:flex; align-items:center; gap:12px;
+    background:var(--card); border-radius:20px;
+    padding:12px 16px 12px 12px;
+    box-shadow:var(--shadow-card);
+    width:100%; text-align:left;
+  }
+  .tx .info{ flex:1; min-width:0; }
+  .tx .name{ font-size:15.5px; font-weight:600; }
+  .tx .sub{
+    font-size:12.5px; color:var(--muted); margin-top:2px;
+    display:flex; align-items:center; gap:5px;
+  }
+  .tx .sub svg{ width:12px; height:12px; }
+  .tx .amt{ font-size:15.5px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .amt.pos{ color:var(--pos); } .amt.neg{ color:var(--neg); }
+
+  .currency-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+  .cur-card{
+    background:var(--card); border-radius:20px;
+    padding:16px 14px; display:grid; gap:20px; justify-items:start;
+    box-shadow:var(--shadow-card);
+  }
+  .cur-card .bubble{
+    width:38px; height:38px; border-radius:50%;
+    display:grid; place-items:center; font-size:17px; font-weight:700;
+  }
+  .bubble.eur{ background:#E2F3D6; color:#3F9A46; }
+  .bubble.gbp{ background:#DCEAFA; color:#4E7DC0; }
+  .cur-card .lbl{ font-size:12.5px; color:var(--muted); }
+  .cur-card .val{ font-size:17px; font-weight:700; margin-top:2px; }
+  .cur-card.add{ background:var(--ink); color:#fff; }
+  .cur-card.add .bubble{ background:transparent; color:#fff; font-size:24px; font-weight:400; }
+  .cur-card.add .lbl{ color:#fff; font-size:14px; font-weight:600; line-height:1.3; }
+
+  /* ─ Navegación flotante ─────────────────────────────────────── */
+  .bottom-nav{
+    position:absolute; left:0; right:0;
+    bottom:max(20px,env(safe-area-inset-bottom));
+    display:flex; justify-content:center; gap:16px;
+    pointer-events:none;
+  }
+  .bottom-nav button{
+    pointer-events:auto;
+    width:56px; height:56px; border-radius:50%;
+    background:var(--card); display:grid; place-items:center;
+    box-shadow:0 12px 26px rgba(23,54,42,.18);
+  }
+  .bottom-nav button svg{ width:23px; height:23px; }
+  .bottom-nav .nav-home{ background:var(--ink); color:#fff; }
+  .bottom-nav button:active{ transform:scale(.94); }
+
+  /* ═ TRANSACCIONES ════════════════════════════════════════════ */
+  .card-pill{
+    margin:2px auto 6px; display:flex; align-items:center; gap:8px;
+    background:var(--ink); color:#fff;
+    border-radius:999px; padding:9px 16px 9px 12px;
+    font-size:14px; font-weight:600; width:max-content;
+  }
+  .mc{ display:flex; }
+  .mc i{ width:15px; height:15px; border-radius:50%; display:block; }
+  .mc i:first-child{ background:#EB001B; }
+  .mc i:last-child{ background:#F79E1B; margin-left:-6px; mix-blend-mode:screen; }
+  .card-pill svg{ width:14px; height:14px; opacity:.85; }
+
+  .group-label{
+    text-align:center; color:var(--muted);
+    font-size:13px; font-weight:500; margin:18px 0 10px;
+  }
+  .tx-list{ display:grid; gap:10px; }
+
+  /* ═ PAGAR ═════════════════════════════════════════════════════ */
+  .payee{
+    display:flex; align-items:center; gap:12px; margin:18px 2px 6px;
+  }
+  .payee .avatar{ width:44px; height:44px; }
+  .payee .who{ flex:1; }
+  .payee .who .name{ font-size:15.5px; font-weight:600; }
+  .payee .who .acct{ font-size:12.5px; color:var(--muted); margin-top:2px; }
+  .payee .change{ font-size:13.5px; color:var(--muted); font-weight:500; }
+
+  .pay-amount{
+    text-align:center; margin:26px 0 4px;
+    font-size:46px; font-weight:700; letter-spacing:-.02em;
+    font-variant-numeric:tabular-nums;
+  }
+  .pay-balance{ text-align:center; font-size:13.5px; color:var(--muted); }
+
+  .note-field{
+    display:flex; align-items:center; gap:9px;
+    background:#EFF3EB; border-radius:999px;
+    padding:13px 18px; margin:26px 0 18px;
+  }
+  .note-field svg{ width:17px; height:17px; color:var(--muted); flex:none; }
+  .note-field input{
+    border:0; background:transparent; font:inherit; font-size:16px; /* ≥16px evita el zoom automático de iOS al enfocar */
+    width:100%; color:var(--ink);
+  }
+  .note-field input::placeholder{ color:var(--muted); }
+  .note-field input:focus{ outline:none; }
+
+  .keypad{
+    display:grid; grid-template-columns:repeat(3,1fr);
+    gap:9px 10px; margin-bottom:16px;
+  }
+  .keypad button{
+    background:var(--key); border-radius:14px;
+    height:52px; font-size:19px; font-weight:600;
+    font-variant-numeric:tabular-nums;
+  }
+  .keypad button:active{ background:#E4E9DF; }
+  .keypad .ghost{ background:transparent; pointer-events:none; }
+  .keypad svg{ width:22px; height:22px; }
+
+  .send-btn{
+    display:block; width:100%;
+    background:var(--ink); color:#fff;
+    border-radius:999px; padding:17px;
+    font-size:16px; font-weight:600;
+  }
+  .send-btn:active{ transform:scale(.985); }
+
+  /* ─ Confirmación de envío ───────────────────────────────────── */
+  .toast{
+    position:absolute; inset:0; z-index:10;
+    display:grid; place-items:center;
+    background:rgba(20,24,22,.35);
+    opacity:0; pointer-events:none; transition:opacity .25s ease;
+  }
+  .toast.show{ opacity:1; pointer-events:auto; }
+  .toast .box{
+    background:var(--card); border-radius:26px;
+    padding:30px 34px; text-align:center; display:grid; gap:12px;
+    justify-items:center; box-shadow:0 24px 60px rgba(0,0,0,.25);
+    transform:translateY(10px); transition:transform .25s ease;
+  }
+  .toast.show .box{ transform:none; }
+  .toast .check{
+    width:56px; height:56px; border-radius:50%;
+    background:var(--lemon); display:grid; place-items:center;
+  }
+  .toast .check svg{ width:26px; height:26px; }
+  .toast .t1{ font-size:17px; font-weight:700; }
+  .toast .t2{ font-size:13.5px; color:var(--muted); }
+
+  /* ─ Splash de bienvenida ────────────────────────────────────── */
+  .splash{
+    position:absolute; inset:0; z-index:20;
+    display:grid; place-items:center; align-content:center; gap:16px;
+    background:linear-gradient(165deg,var(--screen-a) 0%,var(--screen-b) 55%,var(--screen-c) 100%);
+    animation:splash-out .55s ease 1.5s forwards;
+  }
+  .splash .logo{
+    width:88px; height:88px; border-radius:24px;
+    background:var(--mint); display:grid; place-items:center;
+    box-shadow:0 18px 34px rgba(31,64,51,.18);
+    animation:splash-in .6s cubic-bezier(.2,.9,.3,1.2) both;
+  }
+  .splash .logo svg{ width:52px; height:52px; }
+  .splash .name{
+    font-size:30px; font-weight:700; letter-spacing:-.02em;
+    animation:splash-in .6s ease .15s both;
+  }
+  @keyframes splash-in{
+    from{ opacity:0; transform:translateY(14px) scale(.92); }
+    to  { opacity:1; transform:none; }
+  }
+  @keyframes splash-out{
+    to{ opacity:0; visibility:hidden; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .splash{ animation:splash-out .01s linear .8s forwards; }
+    .splash .logo, .splash .name{ animation:none; }
+  }
+
+  /* (las propuestas se pueden ver también en escritorio) */
+  .desktop-msg{ display:none; }
+</style>
+</head>
+<body>
+
+<div class="desktop-msg" role="note">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18.5h2"/></svg>
+  <h1>La torre es una experiencia móvil</h1>
+  <p>Esta página está diseñada exclusivamente para teléfonos. Ábrela desde el navegador de tu móvil para usarla.</p>
+</div>
+
+<div class="phone" id="app">
+
+  <!-- ═══ SPLASH ═══ -->
+  <div class="splash" aria-hidden="true">
+    <span class="logo">
+      <svg viewBox="0 0 64 64" fill="none"><path fill="#141816" d="M17 12h7v6h5v-6h6v6h5v-6h7v12l-5 5v13l5 7v7H17v-7l5-7V29l-5-5z"/></svg>
+    </span>
+    <span class="name">La torre</span>
+  </div>
+
+  <!-- ═══ INICIO ═══ -->
+  <section class="screen active" id="screen-home" aria-label="Inicio">
+    <header class="home-head">
+      <span class="avatar av-leandro">L</span>
+      <span class="hi">¡Hola, Leandro!</span>
+      <span class="actions">
+        <button class="icon-btn" aria-label="Notificaciones">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/></svg>
+          <span class="dot"></span>
+        </button>
+        <button class="icon-btn" aria-label="Estadísticas">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-6 4 3 6-8"/><path d="M14 6h4v4"/></svg>
+        </button>
+      </span>
+    </header>
+
+    <div class="balance-card">
+      <div class="cur">USD</div>
+      <div class="rate">1 USD = EUR 0.95 = GBP 0.79</div>
+      <div class="amount" id="balance">$26,887.09</div>
+      <div class="delta" id="balance-delta">+$421.03</div>
+      <button class="eye" id="eye-toggle" aria-label="Ocultar saldo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.4 10.4 0 0 1 12 20C5 20 1 12 1 12a19.8 19.8 0 0 1 5.06-5.94M9.9 4.24A9.9 9.9 0 0 1 12 4c7 0 11 8 11 8a19.9 19.9 0 0 1-3.22 4.31"/><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M2 2l20 20"/></svg>
+      </button>
+    </div>
+
+    <div class="action-row">
+      <button data-go="screen-pay">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v9M9.8 9.6c.4-.9 4-1 4.3.5.3 1.7-4.5 1.2-4.3 3 .2 1.6 3.9 1.5 4.4.4"/></svg>
+        Pagar
+      </button>
+      <button data-go="screen-pay">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M9 7h8v8"/><path d="M4 12l3 5"/></svg>
+        Transferir
+      </button>
+      <button data-go="screen-transactions">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-7 7M8.5 10v5.5H14"/></svg>
+        Recibir
+      </button>
+    </div>
+
+    <div class="section-head">
+      <h2>Últimos movimientos</h2>
+      <button class="link" data-go="screen-transactions">Ver todo</button>
+    </div>
+    <button class="tx" data-go="screen-transactions">
+      <span class="brand br-megogo">M</span>
+      <span class="info">
+        <span class="name">Megogo</span>
+        <span class="sub">hace 1 min</span>
+      </span>
+      <span class="amt neg">-$24.99</span>
+    </button>
+
+    <div class="section-head"><h2>Divisas</h2></div>
+    <div class="currency-grid">
+      <div class="cur-card">
+        <span class="bubble eur">€</span>
+        <span><span class="lbl">Euro</span><br><span class="val">0.97</span></span>
+      </div>
+      <div class="cur-card">
+        <span class="bubble gbp">£</span>
+        <span><span class="lbl">Libra esterlina</span><br><span class="val">0.82</span></span>
+      </div>
+      <button class="cur-card add">
+        <span class="bubble">+</span>
+        <span class="lbl">Añadir<br>divisa</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══ TRANSACCIONES ═══ -->
+  <section class="screen" id="screen-transactions" aria-label="Movimientos">
+    <header class="topbar">
+      <button class="icon-btn" data-go="screen-home" aria-label="Atrás">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <h1>Movimientos</h1>
+      <button class="icon-btn" aria-label="Buscar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      </button>
+    </header>
+
+    <div class="card-pill">
+      <span class="mc"><i></i><i></i></span>
+      **** 2872
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+
+    <div class="group-label">Hoy</div>
+    <div class="tx-list">
+      <div class="tx">
+        <span class="avatar av-eva">EN</span>
+        <span class="info"><span class="name">Eva Novak</span>
+          <span class="sub">Recibido
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2"/></svg>
+          </span></span>
+        <span class="amt pos">+$5,710.20</span>
+      </div>
+      <div class="tx">
+        <span class="brand br-binance">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.5l2.6 2.6L12 8.7 9.4 6.1 12 3.5zM6.1 9.4L8.7 12l-2.6 2.6L3.5 12l2.6-2.6zm11.8 0l2.6 2.6-2.6 2.6L15.3 12l2.6-2.6zM12 9.4l2.6 2.6-2.6 2.6L9.4 12 12 9.4zm0 5.9l2.6 2.6L12 20.5l-2.6-2.6 2.6-2.6z"/></svg>
+        </span>
+        <span class="info"><span class="name">Binance</span>
+          <span class="sub">Recibido
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2"/></svg>
+          </span></span>
+        <span class="amt pos">+$714.00</span>
+      </div>
+    </div>
+
+    <div class="group-label">Ayer</div>
+    <div class="tx-list">
+      <div class="tx">
+        <span class="avatar av-henrik">HJ</span>
+        <span class="info"><span class="name">Henrik Jansen</span>
+          <span class="sub">Recibido
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2"/></svg>
+          </span></span>
+        <span class="amt pos">+$428.00</span>
+      </div>
+      <div class="tx">
+        <span class="brand br-multiplex">M</span>
+        <span class="info"><span class="name">Multiplex</span>
+          <span class="sub">Pagado
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2"/></svg>
+          </span></span>
+        <span class="amt neg">-$124.55</span>
+      </div>
+      <div class="tx">
+        <span class="brand br-nike">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.2 6.9L7.6 17.3c-1.6 1.2-3.2 1.6-4.3.9-1-.7-1-2.1-.1-3.7l1.9-3.2c.2 1.7 1.4 2.6 3.2 2.2.6-.1 1.3-.4 2.1-.9l10.8-5.7z"/></svg>
+        </span>
+        <span class="info"><span class="name">Nike</span>
+          <span class="sub">Pagado
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2"/></svg>
+          </span></span>
+        <span class="amt neg">-$328.96</span>
+      </div>
+    </div>
+
+    <div class="group-label">19 de noviembre</div>
+    <div class="tx-list">
+      <div class="tx">
+        <span class="avatar av-matteo">MR</span>
+        <span class="info"><span class="name">Matteo Ricci</span>
+          <span class="sub">Recibido
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2"/></svg>
+          </span></span>
+        <span class="amt pos">+$548.00</span>
+      </div>
+      <div class="tx">
+        <span class="brand br-megogo">M</span>
+        <span class="info"><span class="name">Megogo</span>
+          <span class="sub">Pagado
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2"/></svg>
+          </span></span>
+        <span class="amt neg">-$847.20</span>
+      </div>
+      <div class="tx">
+        <span class="avatar av-emilia">EC</span>
+        <span class="info"><span class="name">Emilia Costa</span>
+          <span class="sub">Recibido
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2"/></svg>
+          </span></span>
+        <span class="amt pos">+$147.00</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ PAGAR ═══ -->
+  <section class="screen" id="screen-pay" aria-label="Pagar">
+    <header class="topbar">
+      <button class="icon-btn" data-go="screen-home" aria-label="Atrás">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <h1>Pagar</h1>
+      <button class="icon-btn" aria-label="Contactos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="8" r="3.5"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.6a3.5 3.5 0 0 1 0 6.8"/></svg>
+      </button>
+    </header>
+
+    <div class="card-pill">
+      <span class="mc"><i></i><i></i></span>
+      **** 2872
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+
+    <div class="payee">
+      <span class="avatar av-matteo">MR</span>
+      <span class="who">
+        <span class="name">Matteo Ricci</span><br>
+        <span class="acct">1111 *** **** 1720</span>
+      </span>
+      <button class="change">Cambiar</button>
+    </div>
+
+    <div class="pay-amount" id="pay-amount" aria-live="polite">$2,101.70</div>
+    <div class="pay-balance">Saldo: $126,887.09</div>
+
+    <label class="note-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <input type="text" id="note" placeholder="Nota" autocomplete="off">
+    </label>
+
+    <div class="keypad" id="keypad">
+      <button data-key="1">1</button><button data-key="2">2</button><button data-key="3">3</button>
+      <button data-key="4">4</button><button data-key="5">5</button><button data-key="6">6</button>
+      <button data-key="7">7</button><button data-key="8">8</button><button data-key="9">9</button>
+      <button class="ghost" tabindex="-1" aria-hidden="true"></button>
+      <button data-key="0">0</button>
+      <button data-key="del" aria-label="Borrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4H8l-6 8 6 8h13a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1z"/><path d="M17 9.5l-5 5M12 9.5l5 5"/></svg>
+      </button>
+    </div>
+
+    <button class="send-btn" id="send">Enviar</button>
+  </section>
+
+  <!-- ═══ NAV INFERIOR ═══ -->
+  <nav class="bottom-nav" aria-label="Principal">
+    <button data-go="screen-pay" aria-label="Pagar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 15.5l7-7M10 8.5h5.5V14"/></svg>
+    </button>
+    <button class="nav-home" data-go="screen-home" aria-label="Inicio">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5.5 8.8V20a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V8.8"/></svg>
+    </button>
+    <button data-go="screen-transactions" aria-label="Movimientos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-7 7M8.5 10v5.5H14"/></svg>
+    </button>
+  </nav>
+
+  <!-- ═══ CONFIRMACIÓN ═══ -->
+  <div class="toast" id="toast" role="status">
+    <div class="box">
+      <span class="check">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </span>
+      <span class="t1" id="toast-title">¡Enviado!</span>
+      <span class="t2" id="toast-sub">a Matteo Ricci</span>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ── Navegación entre pantallas ── */
+  var screens = document.querySelectorAll(".screen");
+  document.addEventListener("click", function(e){
+    var t = e.target.closest("[data-go]");
+    if(!t) return;
+    var id = t.getAttribute("data-go");
+    screens.forEach(function(s){ s.classList.toggle("active", s.id === id); });
+    var active = document.getElementById(id);
+    if(active) active.scrollTop = 0;
+  });
+
+  /* ── Ocultar / mostrar saldo ── */
+  var balance = document.getElementById("balance");
+  var delta   = document.getElementById("balance-delta");
+  var eye     = document.getElementById("eye-toggle");
+  var hidden  = false;
+  var balanceText = balance.textContent;
+  var deltaText   = delta.textContent;
+  eye.addEventListener("click", function(){
+    hidden = !hidden;
+    balance.textContent = hidden ? "$ ••••••" : balanceText;
+    delta.textContent   = hidden ? "••••"      : deltaText;
+    eye.setAttribute("aria-label", hidden ? "Mostrar saldo" : "Ocultar saldo");
+  });
+
+  /* ── Teclado numérico (entrada estilo cajero: centavos) ── */
+  var cents = 210170;                 /* $2,101.70 como en el diseño */
+  var amountEl = document.getElementById("pay-amount");
+  function render(){
+    var s = (cents/100).toFixed(2).split(".");
+    amountEl.textContent = "$" + Number(s[0]).toLocaleString("en-US") + "." + s[1];
+  }
+  document.getElementById("keypad").addEventListener("click", function(e){
+    var b = e.target.closest("button[data-key]");
+    if(!b) return;
+    var k = b.getAttribute("data-key");
+    if(k === "del"){ cents = Math.floor(cents/10); }
+    else if(cents < 9999999999){ cents = cents*10 + Number(k); }
+    render();
+  });
+
+  /* ── Enviar ── */
+  var toast = document.getElementById("toast");
+  document.getElementById("send").addEventListener("click", function(){
+    if(cents === 0) return;
+    document.getElementById("toast-sub").textContent =
+      amountEl.textContent + " a Matteo Ricci";
+    toast.classList.add("show");
+    setTimeout(function(){
+      toast.classList.remove("show");
+      cents = 0; render();
+      document.getElementById("note").value = "";
+    }, 1800);
+  });
+  toast.addEventListener("click", function(){ toast.classList.remove("show"); });
+})();
+</script>
+
+</body>
+</html>

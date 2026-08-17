@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La torre — Galería de grupos minimizados</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%23A6D3C4'/%3E%3Cpath%20fill='%23141816'%20d='M17%2012h7v6h5v-6h6v6h5v-6h7v12l-5%205v13l5%207v7H17v-7l5-7V29l-5-5z'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --mint:#A6D3C4; --ink:#141816; --muted:#8A938E;
+    --lemon:#F2F97C; --key:#F1F4EE;
+    --sa:#FBFDF8; --sb:#E7F2DE; --sc:#D9EBD4;
+    --track:rgba(20,24,22,.10);
+    --ok:#1FA23C; --pr:#E0A100; --cr:#BF2E25;
+    --ok-bg:#E2F3D6; --ok-tx:#1F7A33;
+    --pr-bg:#FBF3D9; --pr-tx:#8A6D00;
+    --cr-bg:#FADEDC; --cr-tx:#A32A22;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{
+    background:#F2F6EF; color:var(--ink);
+    font-family:"Space Grotesk",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    padding:36px 22px 60px;
+  }
+  header{ max-width:1100px; margin:0 auto 28px; }
+  header h1{ font-size:26px; letter-spacing:-.01em; }
+  header p{ color:#57635C; margin-top:8px; font-size:15px; line-height:1.55; max-width:700px; }
+  .grid{
+    max-width:1100px; margin:0 auto;
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:24px 22px;
+  }
+  figure{ display:grid; gap:10px; align-content:start; }
+  .mock{
+    border-radius:26px; padding:22px 14px;
+    background:linear-gradient(165deg,var(--sa) 0%,var(--sb) 60%,var(--sc) 100%);
+    box-shadow:0 14px 34px rgba(17,56,44,.13);
+    display:grid; align-content:center; min-height:150px;
+  }
+  figcaption{ padding:0 4px; }
+  figcaption strong{ font-size:14px; display:block; }
+  figcaption span{ font-size:12.5px; color:#66726B; line-height:1.45; display:block; margin-top:2px; }
+
+  .card{
+    background:#fff; border-radius:22px; padding:15px 16px;
+    box-shadow:0 10px 24px rgba(31,64,51,.08);
+  }
+  .hd{ display:flex; align-items:center; gap:8px; }
+  .hd .t{ font-size:15.5px; font-weight:700; flex:1; }
+  .hd .tag{ font-size:12px; font-weight:600; color:#6E7440; }
+  .hd .caret{ width:15px; height:15px; color:var(--muted); transform:rotate(-90deg); }
+  .caret-svg{ fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+  /* 1 · franja + promedio (actual) */
+  .sum1{ display:flex; align-items:center; gap:10px; margin-top:10px; }
+  .sum1 .strip{ flex:1; display:flex; gap:2px; height:8px; border-radius:4px; overflow:hidden; }
+  .sum1 .strip i{ height:100%; }
+  .sum1 .txt{ font-size:11.5px; color:var(--muted); white-space:nowrap; }
+  .sum1 .avg{ font-size:16px; font-weight:700; }
+  .i-ok{ background:var(--ok); } .i-pr{ background:var(--pr); } .i-cr{ background:var(--cr); }
+
+  /* 2 · contadores por estado */
+  .sum2{ display:flex; align-items:center; gap:6px; margin-top:10px; flex-wrap:wrap; }
+  .sum2 .avg{ margin-left:auto; font-size:16px; font-weight:700; }
+  .cnt{ display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700; padding:4px 9px; border-radius:999px; }
+  .cnt i{ width:6px; height:6px; border-radius:50%; }
+  .cnt.ok{ background:var(--ok-bg); color:var(--ok-tx); } .cnt.ok i{ background:var(--ok); }
+  .cnt.pr{ background:var(--pr-bg); color:var(--pr-tx); } .cnt.pr i{ background:var(--pr); }
+  .cnt.cr{ background:var(--cr-bg); color:var(--cr-tx); } .cnt.cr i{ background:var(--cr); }
+
+  /* 3 · solo alerta */
+  .sum3{ display:flex; align-items:center; gap:8px; margin-top:10px; }
+  .alertpill{
+    display:inline-flex; align-items:center; gap:6px;
+    background:var(--cr-bg); color:var(--cr-tx);
+    font-size:11.5px; font-weight:700; padding:5px 11px; border-radius:999px;
+  }
+  .alertpill b{ width:15px; height:15px; border-radius:50%; background:#fff; display:grid; place-items:center; font-size:10px; }
+  .sum3 .rest{ font-size:11.5px; color:var(--muted); }
+  .sum3 .avg{ margin-left:auto; font-size:16px; font-weight:700; }
+
+  /* 4 · anillo mini */
+  .c4{ display:flex; align-items:center; gap:12px; }
+  .c4 .lhs{ flex:1; }
+  .c4 .sub{ font-size:11.5px; color:var(--muted); margin-top:3px; }
+  .ringm{ width:44px; height:44px; position:relative; flex:none; }
+  .ringm svg{ width:44px; height:44px; transform:rotate(-90deg); }
+  .ringm em{ position:absolute; inset:0; display:grid; place-items:center; font-style:normal; font-size:10.5px; font-weight:700; }
+
+  /* 5 · mini barras */
+  .sum5{ display:flex; align-items:flex-end; gap:10px; margin-top:10px; }
+  .sbars{ display:flex; align-items:flex-end; gap:3px; height:26px; }
+  .sbars i{ width:9px; border-radius:3px 3px 0 0; }
+  .sum5 .txt{ font-size:11.5px; color:var(--muted); }
+  .sum5 .avg{ margin-left:auto; font-size:16px; font-weight:700; }
+
+  /* 6 · monograms apilados */
+  .sum6{ display:flex; align-items:center; gap:10px; margin-top:10px; }
+  .stack{ display:flex; }
+  .stack b{
+    width:26px; height:26px; border-radius:50%;
+    display:grid; place-items:center;
+    font-size:9.5px; font-weight:700; color:#fff;
+    border:2px solid #fff; margin-left:-7px;
+  }
+  .stack b:first-child{ margin-left:0; }
+  .sum6 .txt{ font-size:11.5px; color:var(--muted); }
+  .sum6 .avg{ margin-left:auto; font-size:16px; font-weight:700; }
+
+  /* 7 · medidor con meta */
+  .sum7{ display:flex; align-items:center; gap:10px; margin-top:12px; }
+  .sum7 .meter{ position:relative; flex:1; height:8px; border-radius:4px; background:var(--track); }
+  .sum7 .meter i{ position:absolute; left:0; top:0; bottom:0; border-radius:4px; background:var(--ink); }
+  .sum7 .meter b{ position:absolute; top:-3px; bottom:-3px; width:2px; border-radius:1px; background:var(--cr); }
+  .sum7 .avg{ font-size:16px; font-weight:700; }
+
+  /* 8 · dato grande + tendencia */
+  .c8{ display:flex; align-items:center; gap:12px; }
+  .c8 .lhs{ flex:1; }
+  .c8 .strip{ display:flex; gap:2px; height:6px; border-radius:3px; overflow:hidden; margin-top:8px; }
+  .c8 .strip i{ height:100%; }
+  .c8 .rhs{ text-align:right; flex:none; }
+  .c8 .big{ font-size:24px; font-weight:700; letter-spacing:-.01em; }
+  .c8 .delta{ font-size:10.5px; font-weight:700; color:var(--ok-tx); }
+
+  /* 9 · tinta */
+  .card.dark{ background:var(--ink); color:#fff; box-shadow:0 12px 28px rgba(17,40,31,.35); }
+  .card.dark .tag{ color:var(--lemon); }
+  .card.dark .caret{ color:#8B968F; }
+  .card.dark .sum1 .txt{ color:#A9B4AD; }
+
+  /* 10 · limón */
+  .card.lemon{ background:linear-gradient(150deg,var(--lemon) 0%,#EAF386 100%); box-shadow:0 12px 26px rgba(150,160,40,.25); }
+  .card.lemon .tag{ color:#6E7440; }
+  .card.lemon .sum1 .txt{ color:#6E7440; }
+  .card.lemon .sum1 .strip{ background:rgba(20,24,22,.10); }
+
+  /* 11 · menta */
+  .card.mintc{ background:var(--mint); box-shadow:0 12px 26px rgba(60,110,90,.28); }
+  .card.mintc .tag{ color:#33473D; }
+  .card.mintc .sum1 .txt{ color:#33473D; }
+  .card.mintc .sum1 .strip{ background:rgba(255,255,255,.45); }
+
+  /* 12 · lomo de estado */
+  .card.spine{ border-left:6px solid var(--cr); border-radius:14px 22px 22px 14px; }
+
+  /* 13 · cápsula */
+  .pill-card{
+    background:#fff; border-radius:999px; padding:13px 18px;
+    box-shadow:0 10px 24px rgba(31,64,51,.08);
+    display:flex; align-items:center; gap:10px;
+  }
+  .pill-card .t{ font-size:14px; font-weight:700; white-space:nowrap; }
+  .pill-card .strip{ flex:1; display:flex; gap:2px; height:7px; border-radius:4px; overflow:hidden; }
+  .pill-card .strip i{ height:100%; }
+  .pill-card .avg{ font-size:15px; font-weight:700; }
+  .pill-card .caret{ width:14px; height:14px; color:var(--muted); transform:rotate(-90deg); flex:none; }
+
+  /* 14 · ticket */
+  .ticket{
+    background:#fff; border-radius:16px; padding:14px 16px;
+    box-shadow:0 10px 24px rgba(31,64,51,.08);
+    display:flex; align-items:center; gap:12px;
+    -webkit-mask:
+      radial-gradient(circle 9px at calc(100% - 78px) 0, transparent 8px, #000 9px) top / 100% 51% no-repeat,
+      radial-gradient(circle 9px at calc(100% - 78px) 100%, transparent 8px, #000 9px) bottom / 100% 51% no-repeat;
+    mask:
+      radial-gradient(circle 9px at calc(100% - 78px) 0, transparent 8px, #000 9px) top / 100% 51% no-repeat,
+      radial-gradient(circle 9px at calc(100% - 78px) 100%, transparent 8px, #000 9px) bottom / 100% 51% no-repeat;
+  }
+  .ticket .lhs{ flex:1; }
+  .ticket .sub{ font-size:11px; color:var(--muted); margin-top:4px; display:block; }
+  .ticket .stub{
+    border-left:1.5px dashed #CBD3C8; padding-left:14px; margin-left:2px;
+    text-align:center; flex:none; width:66px;
+  }
+  .ticket .stub .avg{ font-size:17px; font-weight:700; display:block; }
+  .ticket .stub small{ font-size:9px; color:var(--muted); letter-spacing:.05em; }
+
+  /* 15 · contorno */
+  .card.ghost{ background:transparent; border:1.5px solid rgba(20,24,22,.4); box-shadow:none; }
+
+  /* 16 · cristal */
+  .mock.busy{
+    background:
+      radial-gradient(circle 90px at 15% 20%, rgba(242,249,124,.9), transparent 70%),
+      radial-gradient(circle 110px at 85% 85%, rgba(78,143,108,.5), transparent 70%),
+      linear-gradient(165deg,var(--sa) 0%,var(--sb) 60%,var(--sc) 100%);
+  }
+  .card.glass{
+    background:rgba(255,255,255,.45);
+    -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.7);
+  }
+
+  /* 17 · baraja */
+  .deck{ position:relative; }
+  .deck::before{
+    content:""; position:absolute; left:12px; right:12px; bottom:-7px; height:16px;
+    background:rgba(255,255,255,.6); border-radius:0 0 18px 18px; z-index:-1;
+  }
+  .deck::after{
+    content:""; position:absolute; left:24px; right:24px; bottom:-13px; height:16px;
+    background:rgba(255,255,255,.32); border-radius:0 0 18px 18px; z-index:-1;
+  }
+
+  /* 18 · brutalista */
+  .card.brut{
+    border:2px solid var(--ink); border-radius:14px;
+    box-shadow:5px 5px 0 var(--ink);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Grupos minimizados — propuestas</h1>
+  <p>Dieciocho diseños para la tarjeta de grupo cuando está plegada, usando los datos de <strong>Paralizadas · Meta 2026</strong> (5 programas: 1 completo, 3 en proceso, 1 sin avance · promedio 41,2%). La idea: aun cerrado, el grupo debe contar su historia de un vistazo.</p>
+</header>
+
+<div class="grid">
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><span class="t">Paralizadas</span><span class="tag">Meta 2026</span><svg class="caret caret-svg" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="sum1">
+        <span class="strip"><i class="i-ok" style="width:20%"></i><i class="i-pr" style="width:60%"></i><i class="i-cr" style="width:20%"></i></span>
+        <span class="txt">5 programas · prom.</span>
+        <span class="avg">41,2%</span>
+      </div>
+    </div></div>
+    <figcaption><strong>1 · Franja + promedio (actual)</strong><span>Franja semáforo proporcional, conteo y promedio. Equilibrada entre densidad y limpieza.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><span class="t">Paralizadas</span><span class="tag">Meta 2026</span><svg class="caret caret-svg" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="sum2">
+        <span class="cnt ok"><i></i>1</span>
+        <span class="cnt pr"><i></i>3</span>
+        <span class="cnt cr"><i></i>1</span>
+        <span class="avg">41,2%</span>
+      </div>
+    </div></div>
+    <figcaption><strong>2 · Contadores de estado</strong><span>Chips con el número de programas en cada estado. Los números exactos, sin interpretar proporciones.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><span class="t">Paralizadas</span><span class="tag">Meta 2026</span><svg class="caret caret-svg" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="sum3">
+        <span class="alertpill"><b>!</b>1 sin avance</span>
+        <span class="rest">4 al día</span>
+        <span class="avg">41,2%</span>
+      </div>
+    </div></div>
+    <figcaption><strong>3 · Solo la alerta</strong><span>Enfoque de gestión: destaca únicamente lo que exige acción. Si no hay problemas, la fila queda limpia.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card c4">
+      <span class="lhs">
+        <span class="hd" style="padding:0"><span class="t">Paralizadas</span><span class="tag">Meta 2026</span><svg class="caret caret-svg" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+        <span class="sub">5 programas · 1 sin avance</span>
+      </span>
+      <span class="ringm">
+        <svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="17" fill="none" stroke="rgba(20,24,22,.10)" stroke-width="5"/><circle cx="22" cy="22" r="17" fill="none" stroke="#141816" stroke-width="5" stroke-linecap="round" stroke-dasharray="44 106.8"/></svg>
+        <em>41%</em>
+      </span>
+    </div></div>
+    <figcaption><strong>4 · Anillo mini</strong><span>El promedio como anillo compacto a la derecha. Muy visual; válido aquí porque es un solo dato por grupo.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><span class="t">Paralizadas</span><span class="tag">Meta 2026</span><svg class="caret caret-svg" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="sum5">
+        <span class="sbars">
+          <i class="i-ok" style="height:100%"></i>
+          <i class="i-cr" style="height:12%"></i>
+          <i class="i-pr" style="height:40%"></i>
+          <i class="i-pr" style="height:33%"></i>
+          <i class="i-pr" style="height:33%"></i>
+        </span>
+        <span class="txt">5 programas</span>
+        <span class="avg">41,2%</span>
+      </div>
+    </div></div>
+    <figcaption><strong>5 · Mini barras</strong><span>Una barrita por programa, coloreada por estado y con la altura de su avance. La radiografía completa en 30px.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><span class="t">Paralizadas</span><span class="tag">Meta 2026</span><svg class="caret caret-svg" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="sum6">
+        <span class="stack">
+          <b style="background:#4E8F6C">PA</b>
+          <b style="background:#C9A227">PN</b>
+          <b style="background:#C9A227">PN</b>
+          <b style="background:#C9A227">SE</b>
+          <b style="background:#B2554E">PM</b>
+        </span>
+        <span class="txt">5 programas</span>
+        <span class="avg">41,2%</span>
+      </div>
+    </div></div>
+    <figcaption><strong>6 · Monogramas apilados</strong><span>Los programas como fichas superpuestas (estilo "miembros del grupo"), teñidas por estado.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card">
+      <div class="hd"><span class="t">Paralizadas</span><span class="tag">Meta 2026</span><svg class="caret caret-svg" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="sum7">
+        <span class="meter"><i style="width:41.2%"></i><b style="left:58%"></b></span>
+        <span class="avg">41,2%</span>
+      </div>
+    </div></div>
+    <figcaption><strong>7 · Medidor con meta</strong><span>El promedio del grupo como barra contra la meta a la fecha (marca roja). Solo responde "¿el grupo va bien?".</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card c8">
+      <span class="lhs">
+        <span class="hd" style="padding:0"><span class="t">Paralizadas</span><svg class="caret caret-svg" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+        <span class="strip"><i class="i-ok" style="width:20%"></i><i class="i-pr" style="width:60%"></i><i class="i-cr" style="width:20%"></i></span>
+      </span>
+      <span class="rhs">
+        <span class="big">41,2%</span><br>
+        <span class="delta">▲ +2,4 vs jul</span>
+      </span>
+    </div></div>
+    <figcaption><strong>8 · Dato grande + tendencia</strong><span>El promedio en grande con su variación mensual (delta de ejemplo), y la franja semáforo debajo del título.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card dark">
+      <div class="hd"><span class="t">Paralizadas</span><span class="tag">Meta 2026</span><svg class="caret caret-svg" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="sum1">
+        <span class="strip"><i class="i-ok" style="width:20%"></i><i class="i-pr" style="width:60%"></i><i class="i-cr" style="width:20%"></i></span>
+        <span class="txt">5 programas · prom.</span>
+        <span class="avg">41,2%</span>
+      </div>
+    </div></div>
+    <figcaption><strong>9 · Tinta</strong><span>La tarjeta plegada en oscuro con la etiqueta en limón. Contraste máximo; ideal si los grupos cerrados deben "pesar" en la pantalla.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card lemon">
+      <div class="hd"><span class="t">Paralizadas</span><span class="tag">Meta 2026</span><svg class="caret caret-svg" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="sum1">
+        <span class="strip"><i class="i-ok" style="width:20%"></i><i class="i-pr" style="width:60%"></i><i class="i-cr" style="width:20%"></i></span>
+        <span class="txt">5 programas · prom.</span>
+        <span class="avg">41,2%</span>
+      </div>
+    </div></div>
+    <figcaption><strong>10 · Limón</strong><span>El amarillo de la marca, emparentando los grupos con el indicador principal de la portada.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card mintc">
+      <div class="hd"><span class="t">Paralizadas</span><span class="tag">Meta 2026</span><svg class="caret caret-svg" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="sum1">
+        <span class="strip"><i class="i-ok" style="width:20%"></i><i class="i-pr" style="width:60%"></i><i class="i-cr" style="width:20%"></i></span>
+        <span class="txt">5 programas · prom.</span>
+        <span class="avg">41,2%</span>
+      </div>
+    </div></div>
+    <figcaption><strong>11 · Menta</strong><span>El verde institucional de fondo. Se funde con la identidad de La torre sin gritar.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card spine">
+      <div class="hd"><span class="t">Paralizadas</span><span class="tag">Meta 2026</span><svg class="caret caret-svg" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="sum2">
+        <span class="cnt ok"><i></i>1</span>
+        <span class="cnt pr"><i></i>3</span>
+        <span class="cnt cr"><i></i>1</span>
+        <span class="avg">41,2%</span>
+      </div>
+    </div></div>
+    <figcaption><strong>12 · Lomo de estado</strong><span>Borde izquierdo grueso teñido con el peor estado del grupo (rojo si hay críticos). El patrón de las bandejas de correo.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="pill-card">
+      <span class="t">Paralizadas</span>
+      <span class="strip"><i class="i-ok" style="width:20%"></i><i class="i-pr" style="width:60%"></i><i class="i-cr" style="width:20%"></i></span>
+      <span class="avg">41,2%</span>
+      <svg class="caret caret-svg" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+    </div></div>
+    <figcaption><strong>13 · Cápsula</strong><span>Píldora de una sola línea, ultra compacta. Con muchos grupos, la pantalla parece una lista de "chips" apilables.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="ticket">
+      <span class="lhs">
+        <span class="hd" style="padding:0"><span class="t">Paralizadas</span><svg class="caret caret-svg" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+        <span class="sub">5 programas · 1 sin avance</span>
+      </span>
+      <span class="stub"><small>PROM.</small><span class="avg">41,2%</span><small>META 2026</small></span>
+    </div></div>
+    <figcaption><strong>14 · Ticket</strong><span>Forma de boleto con muescas y talón punteado donde vive el promedio. La forma más distintiva del lote.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card ghost">
+      <div class="hd"><span class="t">Paralizadas</span><span class="tag">Meta 2026</span><svg class="caret caret-svg" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="sum1">
+        <span class="strip"><i class="i-ok" style="width:20%"></i><i class="i-pr" style="width:60%"></i><i class="i-cr" style="width:20%"></i></span>
+        <span class="txt">5 programas · prom.</span>
+        <span class="avg">41,2%</span>
+      </div>
+    </div></div>
+    <figcaption><strong>15 · Contorno</strong><span>Sin relleno ni sombra, solo el trazo: lo cerrado se ve "vacío" y lo abierto (blanco sólido) gana protagonismo por contraste.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock busy"><div class="card glass">
+      <div class="hd"><span class="t">Paralizadas</span><span class="tag">Meta 2026</span><svg class="caret caret-svg" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="sum1">
+        <span class="strip"><i class="i-ok" style="width:20%"></i><i class="i-pr" style="width:60%"></i><i class="i-cr" style="width:20%"></i></span>
+        <span class="txt">5 programas · prom.</span>
+        <span class="avg">41,2%</span>
+      </div>
+    </div></div>
+    <figcaption><strong>16 · Cristal</strong><span>Translúcida con desenfoque, a juego con el menú inferior de cristal que ya tiene la app.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card deck">
+      <div class="hd"><span class="t">Paralizadas</span><span class="tag">Meta 2026</span><svg class="caret caret-svg" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="sum1">
+        <span class="strip"><i class="i-ok" style="width:20%"></i><i class="i-pr" style="width:60%"></i><i class="i-cr" style="width:20%"></i></span>
+        <span class="txt">5 programas · prom.</span>
+        <span class="avg">41,2%</span>
+      </div>
+    </div></div>
+    <figcaption><strong>17 · Baraja</strong><span>Dos "cartas" asomando por debajo insinúan el contenido plegado: se entiende sin explicación que ahí hay más.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock"><div class="card brut">
+      <div class="hd"><span class="t">Paralizadas</span><span class="tag">Meta 2026</span><svg class="caret caret-svg" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="sum1">
+        <span class="strip"><i class="i-ok" style="width:20%"></i><i class="i-pr" style="width:60%"></i><i class="i-cr" style="width:20%"></i></span>
+        <span class="txt">5 programas · prom.</span>
+        <span class="avg">41,2%</span>
+      </div>
+    </div></div>
+    <figcaption><strong>18 · Brutalista</strong><span>Borde grueso y sombra dura desplazada. Rompe por completo con el estilo suave actual — para un rediseño con carácter.</span></figcaption>
+  </figure>
+
+</div>
+</body>
+</html>

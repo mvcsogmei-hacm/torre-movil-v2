@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propuestas · Lista de regiones (drill-down)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --mint:#A6D3C4; --lemon:#F2F97C; --ink:#141816; --muted:#8A938E;
+    --card:#FFFFFF; --key:#F1F4EE; --track:#E9EEEB; --green:#2f6b57;
+    --shadow-card:0 8px 20px rgba(31,64,51,.08);
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ font-family:"Space Grotesk",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    background:#EAF1ED; color:var(--ink); line-height:1.4; padding:30px 16px 90px; }
+  .wrap{ max-width:1150px; margin:0 auto; }
+  h1{ font-size:26px; font-weight:700; }
+  .lead{ font-size:14px; color:#3d5148; margin-top:8px; max-width:720px; }
+  .lead b{ color:#153b2e; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; margin-top:26px; align-items:start; }
+  .opt{ background:#fff; border-radius:16px; padding:16px; box-shadow:var(--shadow-card); }
+  .opt > h3{ font-size:14.5px; font-weight:700; }
+  .opt > h3 b{ color:var(--green); }
+  .opt > p{ font-size:12px; color:#5A665F; margin:4px 0 14px; min-height:32px; }
+  .stage{ background:var(--mint); border-radius:14px; padding:14px; }
+  .stage .bc{ font-size:11px; color:#2f6b57; font-weight:600; margin-bottom:10px; }
+  .chev{ width:16px; height:16px; color:#C3CCC6; flex:none; }
+  .footer{ margin-top:44px; text-align:center; font-size:12px; color:#3d5148; }
+
+  /* V1 · Barra de ranking */
+  .v1 .r{ background:#fff; border-radius:12px; box-shadow:var(--shadow-card); padding:12px 14px; margin-bottom:9px; cursor:pointer; }
+  .v1 .r:last-child{ margin-bottom:0; }
+  .v1 .top{ display:flex; align-items:center; gap:10px; }
+  .v1 .nm{ flex:1; font-size:14px; font-weight:600; }
+  .v1 .ct{ font-size:14px; font-weight:700; color:var(--green); font-variant-numeric:tabular-nums; }
+  .v1 .bar{ height:6px; border-radius:999px; background:var(--track); margin-top:9px; overflow:hidden; }
+  .v1 .bar i{ display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,#8FC7B4,#5FB49B); }
+
+  /* V2 · Relleno proporcional en la fila */
+  .v2 .r{ position:relative; display:flex; align-items:center; gap:10px; background:#fff; border-radius:12px; box-shadow:var(--shadow-card); padding:14px 15px; margin-bottom:9px; overflow:hidden; cursor:pointer; }
+  .v2 .r:last-child{ margin-bottom:0; }
+  .v2 .fill{ position:absolute; left:0; top:0; bottom:0; background:rgba(143,199,180,.34); }
+  .v2 .nm{ position:relative; flex:1; font-size:14px; font-weight:600; }
+  .v2 .ct{ position:relative; font-size:14px; font-weight:700; color:var(--ink); font-variant-numeric:tabular-nums; }
+  .v2 .chev{ position:relative; }
+
+  /* V3 · Píldoras */
+  .v3{ display:flex; flex-wrap:wrap; gap:8px; }
+  .v3 .p{ background:#fff; border-radius:999px; box-shadow:var(--shadow-card); padding:9px 14px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px; }
+  .v3 .p b{ color:var(--green); font-weight:700; font-variant-numeric:tabular-nums; }
+
+  /* V4 · Mini-tarjetas (2 columnas) */
+  .v4{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .v4 .c{ background:#fff; border-radius:14px; box-shadow:var(--shadow-card); padding:14px; cursor:pointer; position:relative; }
+  .v4 .n{ font-size:23px; font-weight:700; color:var(--ink); line-height:1; font-variant-numeric:tabular-nums; }
+  .v4 .lbl{ font-size:9px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.4px; margin-top:2px; }
+  .v4 .nm{ font-size:12.5px; font-weight:700; color:#2f4a40; margin-top:10px; }
+  .v4 .chev{ position:absolute; top:13px; right:12px; }
+
+  /* V5 · Tabla dividida */
+  .v5{ background:#fff; border-radius:14px; box-shadow:var(--shadow-card); overflow:hidden; }
+  .v5 .r{ display:flex; align-items:center; gap:10px; padding:13px 15px; border-top:1px solid #EDF1EE; cursor:pointer; }
+  .v5 .r:first-child{ border-top:none; }
+  .v5 .nm{ flex:1; font-size:14px; font-weight:600; }
+  .v5 .ct{ font-size:12px; font-weight:700; color:var(--green); background:#EAF3EE; border-radius:999px; padding:3px 10px; font-variant-numeric:tabular-nums; }
+
+  /* V6 · Ranking numerado */
+  .v6 .r{ display:flex; align-items:center; gap:12px; background:#fff; border-radius:12px; box-shadow:var(--shadow-card); padding:12px 14px; margin-bottom:9px; cursor:pointer; }
+  .v6 .r:last-child{ margin-bottom:0; }
+  .v6 .pos{ width:23px; height:23px; border-radius:50%; background:var(--key); color:#39584c; font-size:11px; font-weight:700; display:grid; place-items:center; flex:none; }
+  .v6 .r:first-child .pos{ background:var(--ink); color:var(--lemon); }
+  .v6 .nm{ flex:1; font-size:14px; font-weight:600; }
+  .v6 .ct{ font-size:14px; font-weight:700; color:var(--green); font-variant-numeric:tabular-nums; }
+
+  /* V7 · Lista simple (divisores) */
+  .v7{ background:#fff; border-radius:12px; box-shadow:var(--shadow-card); overflow:hidden; }
+  .v7 .r{ display:flex; align-items:center; gap:10px; padding:14px 15px; border-top:1px solid #EEF2EF; cursor:pointer; }
+  .v7 .r:first-child{ border-top:none; }
+  .v7 .nm{ flex:1; font-size:14px; font-weight:500; }
+  .v7 .ct{ font-size:13px; color:var(--muted); font-weight:600; font-variant-numeric:tabular-nums; }
+
+  /* V8 · Con inicial (avatar) */
+  .v8 .r{ display:flex; align-items:center; gap:11px; background:#fff; border-radius:12px; box-shadow:var(--shadow-card); padding:11px 13px; margin-bottom:8px; cursor:pointer; }
+  .v8 .r:last-child{ margin-bottom:0; }
+  .v8 .av{ width:34px; height:34px; border-radius:50%; background:var(--key); color:#39584c; font-weight:700; font-size:14px; display:grid; place-items:center; flex:none; }
+  .v8 .nm{ flex:1; font-size:14px; font-weight:600; }
+  .v8 .ct{ font-size:13px; color:var(--green); font-weight:700; font-variant-numeric:tabular-nums; }
+
+  /* V9 · Dos líneas */
+  .v9 .r{ display:flex; align-items:center; gap:10px; background:#fff; border-radius:12px; box-shadow:var(--shadow-card); padding:12px 14px; margin-bottom:8px; cursor:pointer; }
+  .v9 .r:last-child{ margin-bottom:0; }
+  .v9 .mid{ flex:1; }
+  .v9 .nm{ font-size:14.5px; font-weight:700; }
+  .v9 .sub{ font-size:11px; color:var(--muted); font-weight:600; margin-top:2px; }
+
+  /* V10 · Contador tipo badge */
+  .v10 .r{ display:flex; align-items:center; gap:10px; background:#fff; border-radius:12px; box-shadow:var(--shadow-card); padding:13px 15px; margin-bottom:8px; cursor:pointer; }
+  .v10 .r:last-child{ margin-bottom:0; }
+  .v10 .nm{ flex:1; font-size:14px; font-weight:600; }
+  .v10 .b{ background:var(--ink); color:#fff; font-size:12px; font-weight:700; border-radius:999px; min-width:28px; height:22px; padding:0 8px; display:grid; place-items:center; font-variant-numeric:tabular-nums; }
+
+  /* V11 · Rejilla 3 columnas */
+  .v11{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+  .v11 .c{ background:#fff; border-radius:12px; box-shadow:var(--shadow-card); padding:11px 8px; text-align:center; cursor:pointer; }
+  .v11 .n{ font-size:18px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .v11 .nm{ font-size:10.5px; font-weight:600; color:#4A5650; margin-top:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+  /* V12 · Filas con borde */
+  .v12 .r{ display:flex; align-items:center; gap:10px; background:none; border:1.5px solid #CFE0D8; border-radius:12px; padding:12px 14px; margin-bottom:8px; cursor:pointer; }
+  .v12 .r:last-child{ margin-bottom:0; }
+  .v12 .nm{ flex:1; font-size:14px; font-weight:600; }
+  .v12 .ct{ font-size:13px; font-weight:700; color:var(--green); font-variant-numeric:tabular-nums; }
+
+  /* V13 · Zebra (filas alternadas) */
+  .v13{ background:#fff; border-radius:12px; box-shadow:var(--shadow-card); overflow:hidden; }
+  .v13 .r{ display:flex; align-items:center; gap:10px; padding:13px 15px; cursor:pointer; }
+  .v13 .r:nth-child(even){ background:#F2F7F4; }
+  .v13 .nm{ flex:1; font-size:14px; font-weight:600; }
+  .v13 .ct{ font-size:13px; font-weight:700; color:var(--green); font-variant-numeric:tabular-nums; }
+
+  /* V14 · Acento lateral */
+  .v14 .r{ position:relative; overflow:hidden; display:flex; align-items:center; gap:10px; background:#fff; border-radius:12px; box-shadow:var(--shadow-card); padding:12px 14px; margin-bottom:8px; cursor:pointer; }
+  .v14 .r:last-child{ margin-bottom:0; }
+  .v14 .r::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:#5FB49B; }
+  .v14 .nm{ flex:1; font-size:14px; font-weight:600; padding-left:5px; }
+  .v14 .ct{ font-size:13px; font-weight:700; color:var(--green); font-variant-numeric:tabular-nums; }
+
+  /* V15 · Mapa de calor */
+  .v15 .r{ display:flex; align-items:center; gap:10px; border-radius:12px; padding:13px 15px; margin-bottom:8px; cursor:pointer; }
+  .v15 .r:last-child{ margin-bottom:0; }
+  .v15 .nm{ flex:1; font-size:14px; font-weight:600; color:#123c2e; }
+  .v15 .ct{ font-size:13px; font-weight:700; color:#123c2e; font-variant-numeric:tabular-nums; }
+  .v15 .chev{ color:#3f6b5c; }
+
+  /* V16 · Con ícono de carpeta */
+  .v16 .r{ display:flex; align-items:center; gap:11px; background:#fff; border-radius:12px; box-shadow:var(--shadow-card); padding:12px 14px; margin-bottom:8px; cursor:pointer; }
+  .v16 .r:last-child{ margin-bottom:0; }
+  .v16 .ic{ width:20px; height:20px; color:#5FB49B; flex:none; }
+  .v16 .nm{ flex:1; font-size:14px; font-weight:600; }
+  .v16 .ct{ font-size:13px; color:var(--muted); font-weight:600; font-variant-numeric:tabular-nums; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Lista de regiones — propuestas</h1>
+  <p class="lead">Seis formas de mostrar el nivel del drill-down (departamentos → provincias → distritos) con su cantidad de proyectos. Todas son <b>tocables</b> para bajar al siguiente nivel. Elegí una y la aplico al buscador.</p>
+
+  <div class="grid" id="gallery"></div>
+  <p class="footer">Decime el número (ej.: <b>V4</b>) y reemplazo la lista actual por esa.</p>
+</div>
+
+<script>
+  var REGS = [
+    { name:"Amazonas", n:288 }, { name:"Puno", n:151 }, { name:"Cusco", n:132 },
+    { name:"Lima", n:118 }, { name:"Loreto", n:96 }
+  ];
+  var MAX = 288;
+  var CH = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';
+  var BC = '<div class="bc">Inicio › (regiones)</div>';
+
+  function v1(){ return '<div class="stage v1">'+BC+ REGS.map(function(r){
+    return '<div class="r"><div class="top"><span class="nm">'+r.name+'</span><span class="ct">'+r.n+'</span>'+CH+'</div>'+
+      '<div class="bar"><i style="width:'+Math.round(r.n/MAX*100)+'%"></i></div></div>';
+  }).join("")+'</div>'; }
+
+  function v2(){ return '<div class="stage v2">'+BC+ REGS.map(function(r){
+    return '<div class="r"><span class="fill" style="width:'+Math.round(r.n/MAX*100)+'%"></span>'+
+      '<span class="nm">'+r.name+'</span><span class="ct">'+r.n+'</span>'+CH+'</div>';
+  }).join("")+'</div>'; }
+
+  function v3(){ return '<div class="stage"><div class="bc">Inicio › (regiones)</div><div class="v3">'+ REGS.map(function(r){
+    return '<span class="p">'+r.name+' <b>'+r.n+'</b></span>';
+  }).join("")+'</div></div>'; }
+
+  function v4(){ return '<div class="stage"><div class="bc">Inicio › (regiones)</div><div class="v4">'+ REGS.map(function(r){
+    return '<div class="c">'+CH+'<div class="n">'+r.n+'</div><div class="lbl">proyectos</div><div class="nm">'+r.name+'</div></div>';
+  }).join("")+'</div></div>'; }
+
+  function v5(){ return '<div class="stage"><div class="bc">Inicio › (regiones)</div><div class="v5">'+ REGS.map(function(r){
+    return '<div class="r"><span class="nm">'+r.name+'</span><span class="ct">'+r.n+'</span>'+CH+'</div>';
+  }).join("")+'</div></div>'; }
+
+  function v6(){ return '<div class="stage v6">'+BC+ REGS.map(function(r,i){
+    return '<div class="r"><span class="pos">'+(i+1)+'</span><span class="nm">'+r.name+'</span><span class="ct">'+r.n+'</span>'+CH+'</div>';
+  }).join("")+'</div>'; }
+
+  function v7(){ return '<div class="stage"><div class="bc">Inicio › (regiones)</div><div class="v7">'+ REGS.map(function(r){
+    return '<div class="r"><span class="nm">'+r.name+'</span><span class="ct">'+r.n+'</span>'+CH+'</div>';
+  }).join("")+'</div></div>'; }
+
+  function v8(){ return '<div class="stage v8">'+BC+ REGS.map(function(r){
+    return '<div class="r"><span class="av">'+r.name.charAt(0)+'</span><span class="nm">'+r.name+'</span><span class="ct">'+r.n+'</span>'+CH+'</div>';
+  }).join("")+'</div>'; }
+
+  function v9(){ return '<div class="stage v9">'+BC+ REGS.map(function(r){
+    return '<div class="r"><span class="mid"><div class="nm">'+r.name+'</div><div class="sub">'+r.n+' proyectos</div></span>'+CH+'</div>';
+  }).join("")+'</div>'; }
+
+  function v10(){ return '<div class="stage v10">'+BC+ REGS.map(function(r){
+    return '<div class="r"><span class="nm">'+r.name+'</span><span class="b">'+r.n+'</span>'+CH+'</div>';
+  }).join("")+'</div>'; }
+
+  function v11(){ return '<div class="stage"><div class="bc">Inicio › (regiones)</div><div class="v11">'+ REGS.map(function(r){
+    return '<div class="c"><div class="n">'+r.n+'</div><div class="nm">'+r.name+'</div></div>';
+  }).join("")+'</div></div>'; }
+
+  function v12(){ return '<div class="stage v12">'+BC+ REGS.map(function(r){
+    return '<div class="r"><span class="nm">'+r.name+'</span><span class="ct">'+r.n+'</span>'+CH+'</div>';
+  }).join("")+'</div>'; }
+
+  function v13(){ return '<div class="stage"><div class="bc">Inicio › (regiones)</div><div class="v13">'+ REGS.map(function(r){
+    return '<div class="r"><span class="nm">'+r.name+'</span><span class="ct">'+r.n+'</span>'+CH+'</div>';
+  }).join("")+'</div></div>'; }
+
+  function v14(){ return '<div class="stage v14">'+BC+ REGS.map(function(r){
+    return '<div class="r"><span class="nm">'+r.name+'</span><span class="ct">'+r.n+'</span>'+CH+'</div>';
+  }).join("")+'</div>'; }
+
+  function v15(){ return '<div class="stage v15">'+BC+ REGS.map(function(r){
+    var a = (0.12 + 0.62*r.n/MAX).toFixed(2);
+    return '<div class="r" style="background:rgba(95,180,155,'+a+')"><span class="nm">'+r.name+'</span><span class="ct">'+r.n+'</span>'+CH+'</div>';
+  }).join("")+'</div>'; }
+
+  var FOLDER = '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>';
+  function v16(){ return '<div class="stage v16">'+BC+ REGS.map(function(r){
+    return '<div class="r">'+FOLDER+'<span class="nm">'+r.name+'</span><span class="ct">'+r.n+'</span>'+CH+'</div>';
+  }).join("")+'</div>'; }
+
+  var VARIANTS = [
+    { fn:v1, t:"V1 · Barra de ranking", d:"Nombre + cantidad, y una barra fina que compara el volumen entre regiones de un vistazo." },
+    { fn:v2, t:"V2 · Relleno proporcional", d:"La fila se rellena de menta según cuántos proyectos tiene. Es la barra y la fila en una sola cosa." },
+    { fn:v3, t:"V3 · Píldoras", d:"Regiones como píldoras compactas que fluyen. Ocupa poco, se ven muchas juntas." },
+    { fn:v4, t:"V4 · Mini-tarjetas", d:"Rejilla de 2 columnas: el número grande manda, el nombre debajo. Aire y foco en la cifra." },
+    { fn:v5, t:"V5 · Tabla dividida", d:"Lista sobria en un solo bloque con divisores; la cantidad en una etiqueta. Muy ordenada." },
+    { fn:v6, t:"V6 · Ranking numerado", d:"Ordenadas por cantidad con su posición (1, 2, 3…). La #1 se destaca. Tipo tablero." },
+    { fn:v7, t:"V7 · Lista simple", d:"Lo más clásico: filas con divisores finos, cantidad discreta a la derecha. Sobrio y neutral." },
+    { fn:v8, t:"V8 · Con inicial", d:"Un círculo con la inicial de cada región a la izquierda. Ayuda a escanear la lista rápido." },
+    { fn:v9, t:"V9 · Dos líneas", d:"Nombre arriba y 'N proyectos' como subtítulo debajo. Muy legible, sin ambigüedad." },
+    { fn:v10, t:"V10 · Contador badge", d:"La cantidad como badge de notificación (píldora oscura) a la derecha. Estilo bandeja/inbox." },
+    { fn:v11, t:"V11 · Rejilla 3 columnas", d:"Mosaico compacto de 3 por fila. Entran muchas regiones sin scroll; foco en el número." },
+    { fn:v12, t:"V12 · Filas con borde", d:"Contorno en vez de sombra. Estilo más plano y liviano, sin tanta profundidad." },
+    { fn:v13, t:"V13 · Zebra", d:"Filas alternadas claro/oscuro dentro de un bloque. Facilita seguir cada renglón." },
+    { fn:v14, t:"V14 · Acento lateral", d:"Una barrita de color a la izquierda de cada fila. Un toque de identidad sin recargar." },
+    { fn:v15, t:"V15 · Mapa de calor", d:"El fondo de la fila se intensifica según cuántos proyectos tiene. Se ve el 'peso' al instante." },
+    { fn:v16, t:"V16 · Con ícono de carpeta", d:"Cada región con un ícono de carpeta. Refuerza la idea de 'entrar' a un nivel. Tipo explorador." }
+  ];
+
+  document.getElementById("gallery").innerHTML = VARIANTS.map(function(V){
+    return '<div class="opt"><h3>'+V.t.replace(/^(V\d+)/,'<b>$1</b>')+'</h3><p>'+V.d+'</p>'+V.fn()+'</div>';
+  }).join("");
+</script>
+</body>
+</html>

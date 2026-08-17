@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propuestas · Ficha de proyecto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --mint:#A6D3C4; --lemon:#F2F97C; --lemon-b:#EAF386;
+    --screen-a:#FBFDF8; --screen-b:#E7F2DE; --screen-c:#D9EBD4;
+    --ink:#141816; --muted:#8A938E; --card:#FFFFFF; --key:#F1F4EE;
+    --pos:#1FA23C; --amber:#C98A00; --neg:#BF2E25;
+    --blue:#3D7EF7; --red:#F04438; --purple:#8E5CD9; --green:#33B679;
+    --shadow-card:0 10px 24px rgba(31,64,51,.08);
+    --track:#E9EEEB; --line:rgba(20,24,22,.07);
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{
+    font-family:"Space Grotesk",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    background:var(--mint); color:var(--ink);
+    padding:32px 18px 90px; line-height:1.4;
+  }
+  .wrap{ max-width:1240px; margin:0 auto; }
+  header.intro h1{ font-size:26px; font-weight:700; }
+  header.intro p{ font-size:14px; color:#3d5148; margin-top:8px; max-width:720px; }
+
+  /* ── Barra de control ── */
+  .controls{
+    margin-top:18px; background:rgba(255,255,255,.62); border-radius:16px;
+    padding:14px 16px; display:flex; flex-wrap:wrap; gap:18px; align-items:center;
+  }
+  .controls .lbl{ font-size:11px; font-weight:700; letter-spacing:.5px;
+    text-transform:uppercase; color:#3d5148; }
+  .seg{ display:inline-flex; background:#fff; border-radius:999px; padding:4px; gap:4px;
+    box-shadow:var(--shadow-card); }
+  .seg button{ font:inherit; border:0; cursor:pointer; background:none; color:#5A665F;
+    font-size:12.5px; font-weight:600; border-radius:999px; padding:7px 14px; }
+  .seg button.on{ background:var(--ink); color:#fff; }
+  .controls .hint{ font-size:12px; color:#3d5148; }
+
+  /* ── Rejilla de propuestas ── */
+  .grid{ display:grid; gap:26px; margin-top:26px;
+    grid-template-columns:repeat(auto-fill,minmax(372px,1fr)); }
+  .variant{ background:rgba(255,255,255,.42); border-radius:22px; padding:18px 18px 22px; }
+  .variant .vh{ display:flex; align-items:baseline; gap:9px; }
+  .variant .vh h2{ font-size:17px; font-weight:700; }
+  .variant .vh .tag{ font-size:10.5px; font-weight:700; letter-spacing:.5px;
+    background:var(--ink); color:var(--lemon); border-radius:999px; padding:3px 9px; }
+  .variant .desc{ font-size:12.5px; color:#3d5148; margin:7px 0 15px; }
+  .variant .desc b{ color:#1d3b30; }
+
+  /* ── Marco de teléfono ── */
+  .phone{
+    width:100%; max-width:340px; margin:0 auto; height:620px; overflow:hidden;
+    border-radius:16px; box-shadow:0 20px 44px rgba(17,56,44,.22);
+    background:linear-gradient(165deg,var(--screen-a) 0%,var(--screen-b) 55%,var(--screen-c) 100%);
+    position:relative;
+  }
+  .scr{ position:absolute; inset:0; overflow-y:auto; padding:18px 16px 28px; scrollbar-width:thin; }
+  .scr::-webkit-scrollbar{ width:5px; }
+  .scr::-webkit-scrollbar-thumb{ background:rgba(20,24,22,.16); border-radius:99px; }
+
+  /* ── Piezas comunes a las propuestas ── */
+  .pname{ font-size:15px; font-weight:700; line-height:1.28; }
+  .pcui{ font-size:11.5px; color:var(--muted); font-weight:600; margin-top:5px; }
+  .badges{ display:flex; flex-wrap:wrap; gap:6px; margin-top:11px; }
+  .badge{ color:#fff; font-size:9.5px; font-weight:700; letter-spacing:.3px;
+    border-radius:999px; padding:4px 10px; }
+  .sh{ display:flex; align-items:center; gap:8px; margin:20px 0 9px; }
+  .sh h3{ font-size:13.5px; font-weight:700; }
+  .sh .dot{ width:8px; height:8px; border-radius:50%; }
+  .card{ background:var(--card); border-radius:16px; box-shadow:var(--shadow-card); padding:4px 15px; }
+  .dr{ display:flex; justify-content:space-between; gap:14px; align-items:baseline;
+    padding:11px 0; border-bottom:1px solid var(--line); font-size:12.5px; }
+  .dr:last-child{ border-bottom:0; }
+  .dr span{ color:var(--muted); }
+  .dr b{ font-weight:600; text-align:right; font-variant-numeric:tabular-nums; }
+  .k{ font-size:9px; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:.5px; }
+  .v{ font-size:15.5px; font-weight:700; font-variant-numeric:tabular-nums; margin-top:2px; }
+  .meter{ height:7px; border-radius:999px; background:var(--track); overflow:hidden; }
+  .meter i{ display:block; height:100%; border-radius:999px; }
+
+  /* ═══ A · Resumen + acordeones ═══ */
+  .A .hero{ background:var(--ink); color:#fff; border-radius:18px; padding:16px 16px 15px; }
+  .A .hero .pname{ color:#fff; } .A .hero .pcui{ color:#9fb0a8; }
+  .A .kpis{ display:flex; gap:10px; margin-top:15px; padding-top:14px; border-top:1px solid rgba(255,255,255,.14); }
+  .A .kpis > div{ flex:1; } .A .kpis .k{ color:#9fb0a8; } .A .kpis .v{ color:#fff; font-size:14.5px; }
+  .A .kpis .v.hi{ color:var(--lemon); }
+  .A .meterwrap{ margin-top:13px; }
+  .A .acc{ margin-top:10px; background:var(--card); border-radius:16px; box-shadow:var(--shadow-card); overflow:hidden; }
+  .A .acc .hd{ display:flex; align-items:center; gap:9px; padding:14px 15px; cursor:pointer; }
+  .A .acc .hd h3{ font-size:13px; font-weight:700; flex:1; }
+  .A .acc .hd .n{ font-size:10.5px; color:var(--muted); font-weight:600; }
+  .A .acc .hd .pm{ width:18px; height:18px; display:grid; place-items:center; color:#9AA39D; }
+  .A .acc .bd{ padding:0 15px 4px; }
+  .A .acc.closed .bd{ display:none; }
+  .A .acc.closed .pm .mi{ display:none; }
+  .A .acc:not(.closed) .pm .pl{ display:none; }
+
+  /* ═══ B · Mosaico de cifras ═══ */
+  .B .tiles{ display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-top:11px; }
+  .B .tile{ background:var(--card); border-radius:14px; box-shadow:var(--shadow-card); padding:12px 13px; }
+  .B .tile .v{ font-size:16px; }
+  .B .tile.wide{ grid-column:1 / -1; }
+  .B .tile.lemon{ background:var(--lemon); }
+  .B .tile.lemon .k{ color:#5d6300; }
+  .B .tile.ink{ background:var(--ink); } .B .tile.ink .k{ color:#9fb0a8; } .B .tile.ink .v{ color:#fff; }
+
+  /* ═══ C · Línea de proceso ═══ */
+  .C .tl{ background:var(--card); border-radius:16px; box-shadow:var(--shadow-card); padding:16px 15px 6px; }
+  .C .st{ position:relative; padding:0 0 20px 26px; border-left:2px solid var(--track); }
+  .C .st:last-child{ border-left-color:transparent; padding-bottom:4px; }
+  .C .st::before{ content:""; position:absolute; left:-7px; top:2px; width:12px; height:12px;
+    border-radius:50%; background:#fff; border:2px solid var(--track); }
+  .C .st.done::before{ background:var(--green); border-color:var(--green); }
+  .C .st.done{ border-left-color:var(--green); }
+  .C .st.now::before{ background:var(--lemon); border-color:var(--ink); transform:scale(1.25); }
+  .C .st.now{ border-left-color:var(--track); }
+  .C .st .tt{ font-size:12.5px; font-weight:700; display:flex; align-items:center; gap:7px; }
+  .C .st.todo .tt{ color:var(--muted); }
+  .C .st .aqui{ font-size:8.5px; font-weight:700; letter-spacing:.4px; background:var(--lemon);
+    color:#3a3d00; border-radius:999px; padding:2px 7px; }
+  .C .st .sub{ font-size:11.5px; color:var(--muted); margin-top:4px; }
+  .C .st .mini{ display:flex; justify-content:space-between; font-size:11.5px; margin-top:6px; }
+  .C .st .mini span{ color:var(--muted); } .C .st .mini b{ font-weight:600; }
+
+  /* ═══ D · Pestañas ═══ */
+  .D .tabs{ display:flex; gap:5px; margin-top:14px; overflow-x:auto; scrollbar-width:none; padding-bottom:2px; }
+  .D .tabs::-webkit-scrollbar{ display:none; }
+  .D .tabs button{ font:inherit; border:0; cursor:pointer; white-space:nowrap;
+    background:rgba(255,255,255,.72); color:#5A665F; font-size:11.5px; font-weight:600;
+    border-radius:999px; padding:8px 13px; }
+  .D .tabs button.on{ background:var(--ink); color:#fff; }
+  .D .pane{ margin-top:13px; }
+
+  /* ═══ E · Bloques con cabecera de color ═══ */
+  .E .blk{ background:var(--card); border-radius:16px; box-shadow:var(--shadow-card);
+    overflow:hidden; margin-top:12px; }
+  .E .blk > .bh{ display:flex; align-items:center; gap:8px; padding:11px 15px;
+    background:var(--key); font-size:11px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; }
+  .E .blk > .bh .dot{ width:8px; height:8px; border-radius:50%; }
+  .E .blk .bb{ padding:2px 15px; }
+  .E .blk.acc > .bh{ background:var(--ink); color:#fff; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="intro">
+    <h1>Propuestas · Ficha de proyecto</h1>
+    <p>Cinco modelos de presentación para la pantalla de detalle, con <b>datos reales</b> de la
+      Matriz Única de Monitoreo. Todos respetan las mismas reglas: los campos sin dato no se
+      dibujan, <b>PRESET</b> muestra etapa de evaluación y estado, y <b>Paralizadas</b> muestra hito
+      y fecha de reactivación. Elegí uno (o partes de varios) y lo llevo a <code>index.html</code>.</p>
+  </header>
+
+  <div class="controls">
+    <span class="lbl">Proyecto de ejemplo</span>
+    <div class="seg" id="seg">
+      <button data-p="0" class="on">Paralizada + Transferencia</button>
+      <button data-p="1">PRESET + Obra directa</button>
+    </div>
+    <span class="hint">Cambiá el ejemplo para ver cómo cada propuesta oculta lo que no aplica.</span>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ── Dos proyectos reales del Excel (31.07.2026) ── */
+  var DATOS = [
+    {
+      cui:"2443494",
+      nombre:"MEJORAMIENTO DE LA TRANSITABILIDAD PEATONAL Y VEHICULAR EN LA LOCALIDAD SANTA ANA DE HUAYCAHUACHO DEL DISTRITO DE SANTA ANA DE HUAYCAHUACHO - PROVINCIA DE LUCANAS - DEPARTAMENTO DE AYACUCHO",
+      programa:"PMIB", uei:"MUNICIPALIDAD DISTRITAL DE SANTA ANA DE HUAYCAHUACHO",
+      dep:"AYACUCHO", prov:"LUCANAS", dist:"SANTA ANA DE HUAYCAHUACHO",
+      modalidad:"TRANSFERENCIA", tipo:"OBRA", pobl:2029, cxAgua:0, cxAlc:0, ssi:"ACTIVO",
+      monto:9116085, devAc:2667219, pim:776149, dev:0, ejec:0, fisico:23.4,
+      procSel:"Contratado", ssp:"Paralizado", subSsp:"Permanente",
+      carteras:{
+        paralizadas:{ avance:23.4, hito:"E.T. SALDO DE OBRA", fecha:"22/07/2027" },
+        transferencias:{ transferido:696149, ejecutado:0 }
+      }
+    },
+    {
+      cui:"2284090",
+      nombre:"AMPLIACION Y MEJORAMIENTO DE LOS SERVICIOS DE AGUA POTABLE Y SANEAMIENTO EN LA LOCALIDAD DE BAJO ALDEA, DISTRITO DE PERENE - CHANCHAMAYO - JUNIN",
+      programa:"PNSR", uei:"PROGRAMA NACIONAL DE SANEAMIENTO RURAL",
+      dep:"JUNIN", prov:"CHANCHAMAYO", dist:"PERENE",
+      modalidad:"DIRECTA", tipo:"EXPEDIENTE TÉCNICO", pobl:748, cxAgua:152, cxAlc:155, ssi:"ACTIVO",
+      monto:4123772, devAc:22691, pim:100000, dev:0, ejec:0,
+      estadoET:"CONVENIO RESUELTO",
+      carteras:{
+        preset:{ etapa:"ABANDONO", estado:"ABANDONO" },
+        obras:{}
+      }
+    }
+  ];
+
+  var CARTERAS = {
+    preset:         { label:"PRESET",              color:"#3D7EF7" },
+    paralizadas:    { label:"Paralizadas",         color:"#F04438" },
+    obras:          { label:"Obras directas",      color:"#33B679" },
+    transferencias: { label:"Transferencias 2026", color:"#8E5CD9" }
+  };
+
+  /* ── Utilidades ── */
+  function hay(v){ return v !== undefined && v !== null && v !== ""; }
+  function fmtM(n){
+    n = Number(n||0);
+    return n >= 1000000 ? "S/ " + (n/1000000).toFixed(1).replace(".",",") + " M"
+                        : "S/ " + n.toLocaleString("es-PE");
+  }
+  function fmtN(n){ return Number(n||0).toLocaleString("es-PE"); }
+  function pct(n){ return String(Number(n||0)).replace(".",",") + "%"; }
+  function colorPct(n){ return n>=60 ? "#1FA23C" : (n>=25 ? "#C98A00" : "#BF2E25"); }
+  /* fila etiqueta–valor; devuelve "" si no hay dato (asi no se dibuja) */
+  function dr(k, v){ return hay(v) ? '<div class="dr"><span>'+k+'</span><b>'+v+'</b></div>' : ""; }
+  function tile(k, v, cls){
+    return hay(v) ? '<div class="tile '+(cls||"")+'"><div class="k">'+k+'</div><div class="v">'+v+'</div></div>' : "";
+  }
+  function meter(n){
+    return '<div class="meter"><i style="width:'+Number(n||0)+'%;background:'+colorPct(n)+'"></i></div>';
+  }
+  function badges(p){
+    return Object.keys(p.carteras||{}).map(function(k){
+      return '<span class="badge" style="background:'+CARTERAS[k].color+'">'+CARTERAS[k].label+'</span>';
+    }).join("");
+  }
+
+  /* ── Grupos de filas: cada bloque devuelve {titulo, color, filas} ── */
+  function bloques(p){
+    var b = [];
+    b.push({ t:"Datos generales", f:
+      dr("Programa", p.programa) +
+      dr("Unidad ejecutora (UEI)", p.uei) +
+      dr("Ubicación", p.dist + ", " + p.prov) +
+      dr("Departamento", p.dep) +
+      dr("Modalidad de financiamiento", p.modalidad) +
+      dr("Tipo de proyecto", p.tipo) +
+      dr("Estado de la inversión (SSI)", p.ssi) });
+    b.push({ t:"Beneficiarios", f:
+      dr("Población beneficiaria", hay(p.pobl) ? fmtN(p.pobl) : null) +
+      dr("Conexiones nuevas de agua", hay(p.cxAgua) ? fmtN(p.cxAgua) : null) +
+      dr("Conexiones nuevas de alcant./UBS", hay(p.cxAlc) ? fmtN(p.cxAlc) : null) });
+    b.push({ t:"Inversión y ejecución 2026", f:
+      dr("Costo de inversión", hay(p.monto) ? fmtM(p.monto) : null) +
+      dr("Devengado acumulado", hay(p.devAc) ? fmtM(p.devAc) : null) +
+      dr("PIM 2026", hay(p.pim) ? fmtM(p.pim) : null) +
+      dr("Devengado 2026", hay(p.dev) ? fmtM(p.dev) : null) +
+      dr("% Ejec. financiera 2026", hay(p.ejec) ? pct(p.ejec) : null) +
+      dr("Avance físico de obra", hay(p.fisico) ? pct(p.fisico) : null) });
+    b.push({ t:"Seguimiento", f:
+      dr("Estado del expediente técnico", p.estadoET) +
+      dr("Estado del proceso de selección", p.procSel) +
+      dr("Estado SSP", p.ssp) +
+      dr("Sub estado SSP", p.subSsp) +
+      dr("Fecha real de término de obra", p.fTerm) });
+
+    Object.keys(p.carteras||{}).forEach(function(k){
+      var d = p.carteras[k], f = "";
+      if(k === "preset"){
+        f = dr("Etapa de evaluación", d.etapa) + dr("Estado", d.estado);
+      } else if(k === "paralizadas"){
+        f = dr("Avance físico", hay(d.avance) ? pct(d.avance) : null) +
+            dr("Hito de reactivación", d.hito) +
+            dr("Fecha estimada o real de reactivación", d.fecha);
+      } else if(k === "obras"){
+        f = dr("Modalidad", "Ejecución directa") +
+            dr("Avance físico", hay(d.avance) ? pct(d.avance) : null);
+      } else if(k === "transferencias"){
+        f = dr("Monto transferido 2026", hay(d.transferido) ? fmtM(d.transferido) : null) +
+            dr("Monto ejecutado 2026", hay(d.ejecutado) ? fmtM(d.ejecutado) : null);
+      }
+      b.push({ t:CARTERAS[k].label, color:CARTERAS[k].color, f:f });
+    });
+    /* los bloques sin ninguna fila no se muestran */
+    return b.filter(function(x){ return x.f; });
+  }
+
+  /* ══ A · Resumen + acordeones ══════════════════════════════ */
+  function vA(p){
+    var bs = bloques(p);
+    var PL = '<span class="pl">+</span><span class="mi">−</span>';
+    return '<div class="A">' +
+      '<div class="hero">' +
+        '<div class="pname">'+p.nombre+'</div>' +
+        '<div class="pcui">CUI '+p.cui+' · '+p.programa+'</div>' +
+        '<div class="badges">'+badges(p)+'</div>' +
+        '<div class="kpis">' +
+          '<div><div class="k">Costo inv.</div><div class="v">'+fmtM(p.monto)+'</div></div>' +
+          '<div><div class="k">PIM 2026</div><div class="v">'+fmtM(p.pim)+'</div></div>' +
+          (hay(p.fisico) ? '<div><div class="k">Avance</div><div class="v hi">'+pct(p.fisico)+'</div></div>' : "") +
+        '</div>' +
+        (hay(p.fisico) ? '<div class="meterwrap">'+meter(p.fisico)+'</div>' : "") +
+      '</div>' +
+      bs.map(function(b,i){
+        var n = (b.f.match(/class="dr"/g)||[]).length;
+        return '<div class="acc'+(i===0?"":" closed")+'">' +
+          '<div class="hd" data-acc>' +
+            (b.color ? '<span class="dot" style="width:8px;height:8px;border-radius:50%;background:'+b.color+'"></span>' : "") +
+            '<h3>'+b.t+'</h3><span class="n">'+n+'</span><span class="pm">'+PL+'</span>' +
+          '</div><div class="bd">'+b.f+'</div></div>';
+      }).join("") +
+    '</div>';
+  }
+
+  /* ══ B · Mosaico de cifras ═════════════════════════════════ */
+  function vB(p){
+    var c = p.carteras||{};
+    return '<div class="B">' +
+      '<div class="pname">'+p.nombre+'</div>' +
+      '<div class="pcui">CUI '+p.cui+' · '+p.programa+' · '+p.dist+'</div>' +
+      '<div class="badges">'+badges(p)+'</div>' +
+      '<div class="tiles">' +
+        tile("Costo de inversión", fmtM(p.monto), "ink") +
+        tile("Devengado acum.", hay(p.devAc)?fmtM(p.devAc):null) +
+        tile("PIM 2026", hay(p.pim)?fmtM(p.pim):null) +
+        tile("Devengado 2026", hay(p.dev)?fmtM(p.dev):null) +
+        tile("% Ejec. financiera", hay(p.ejec)?pct(p.ejec):null) +
+        tile("Avance físico", hay(p.fisico)?pct(p.fisico):null, "lemon") +
+        tile("Población benef.", hay(p.pobl)?fmtN(p.pobl):null) +
+        tile("Cx. agua", hay(p.cxAgua)?fmtN(p.cxAgua):null) +
+        tile("Cx. alcant./UBS", hay(p.cxAlc)?fmtN(p.cxAlc):null) +
+        (c.transferencias ? tile("Transferido 2026", fmtM(c.transferencias.transferido), "wide") : "") +
+      '</div>' +
+      '<div class="sh"><h3>Ficha</h3></div>' +
+      '<div class="card">' +
+        dr("Unidad ejecutora (UEI)", p.uei) +
+        dr("Modalidad de financiamiento", p.modalidad) +
+        dr("Tipo de proyecto", p.tipo) +
+        dr("Estado de la inversión (SSI)", p.ssi) +
+        dr("Estado del expediente técnico", p.estadoET) +
+        dr("Estado del proceso de selección", p.procSel) +
+        dr("Estado SSP", p.ssp) +
+        dr("Sub estado SSP", p.subSsp) +
+      '</div>' +
+      Object.keys(c).map(function(k){
+        var b = bloques(p).filter(function(x){ return x.t === CARTERAS[k].label; })[0];
+        if(!b) return "";
+        return '<div class="sh"><span class="dot" style="background:'+CARTERAS[k].color+'"></span><h3>'+b.t+'</h3></div>' +
+               '<div class="card">'+b.f+'</div>';
+      }).join("") +
+    '</div>';
+  }
+
+  /* ══ C · Línea de proceso ══════════════════════════════════ */
+  function vC(p){
+    var c = p.carteras||{};
+    var pasos = [];
+    pasos.push({ t:"PRESET", ok:!!c.preset, sub:c.preset ? "Etapa: "+c.preset.etapa : "Sin etapa de evaluación",
+      rows: c.preset ? dr("Etapa de evaluación", c.preset.etapa)+dr("Estado", c.preset.estado) : "" });
+    pasos.push({ t:"Expediente técnico", ok:hay(p.estadoET), sub:p.estadoET || "Sin dato", rows:"" });
+    pasos.push({ t:"Proceso de selección", ok:hay(p.procSel), sub:p.procSel || "Sin dato", rows:"" });
+    pasos.push({ t:"Ejecución", ok:hay(p.ssp), sub:p.ssp || "Sin dato",
+      rows: dr("PIM 2026", hay(p.pim)?fmtM(p.pim):null) +
+            dr("Devengado 2026", hay(p.dev)?fmtM(p.dev):null) +
+            dr("Avance físico", hay(p.fisico)?pct(p.fisico):null) });
+    if(c.paralizadas){
+      pasos.push({ t:"Paralizada", ok:true, alerta:true, sub:"Reactivación prevista",
+        rows: dr("Hito de reactivación", c.paralizadas.hito) +
+              dr("Fecha estimada o real", c.paralizadas.fecha) });
+    }
+    pasos.push({ t:"Cierre", ok:/cerrad|concluid/i.test(p.ssp||""), sub:"", rows:"" });
+
+    var ultimo = -1;
+    pasos.forEach(function(s,i){ if(s.ok) ultimo = i; });
+
+    return '<div class="C">' +
+      '<div class="pname">'+p.nombre+'</div>' +
+      '<div class="pcui">CUI '+p.cui+' · '+p.programa+'</div>' +
+      (hay(p.fisico) ? '<div style="margin-top:12px">' +
+        '<div style="display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:6px">' +
+          '<span class="k">Avance físico</span><b>'+pct(p.fisico)+'</b></div>' + meter(p.fisico) + '</div>' : "") +
+      '<div class="sh"><h3>Recorrido del proyecto</h3></div>' +
+      '<div class="tl">' + pasos.map(function(s,i){
+        var cls = i < ultimo ? "done" : (i === ultimo ? "now" : "todo");
+        return '<div class="st '+cls+'">' +
+          '<div class="tt">'+s.t+(i===ultimo?'<span class="aqui">AQUÍ</span>':"")+'</div>' +
+          (s.sub ? '<div class="sub">'+s.sub+'</div>' : "") +
+          (s.rows && i>=ultimo-1 ? '<div style="margin-top:2px">'+s.rows+'</div>' : "") +
+        '</div>';
+      }).join("") + '</div>' +
+      '<div class="sh"><h3>Datos generales</h3></div>' +
+      '<div class="card">' + bloques(p)[0].f + '</div>' +
+    '</div>';
+  }
+
+  /* ══ D · Pestañas ══════════════════════════════════════════ */
+  function vD(p){
+    var bs = bloques(p);
+    var tabs = [
+      { t:"Resumen",    idx:[0,1] },
+      { t:"Inversión",  idx:[2] },
+      { t:"Seguimiento",idx:[3] }
+    ];
+    bs.forEach(function(b,i){ if(i>3) tabs.push({ t:b.t, idx:[i], color:b.color }); });
+    tabs = tabs.filter(function(t){ return t.idx.some(function(i){ return bs[i]; }); });
+
+    return '<div class="D">' +
+      '<div class="pname">'+p.nombre+'</div>' +
+      '<div class="pcui">CUI '+p.cui+' · '+p.programa+' · '+p.dep+'</div>' +
+      '<div class="tabs">' + tabs.map(function(t,i){
+        return '<button data-tab="'+i+'" class="'+(i===0?"on":"")+'">'+t.t+'</button>';
+      }).join("") + '</div>' +
+      tabs.map(function(t,i){
+        return '<div class="pane" data-pane="'+i+'"'+(i===0?"":" hidden")+'>' +
+          t.idx.map(function(j){
+            if(!bs[j]) return "";
+            return '<div class="sh">'+(bs[j].color?'<span class="dot" style="background:'+bs[j].color+'"></span>':"")+
+                   '<h3>'+bs[j].t+'</h3></div><div class="card">'+bs[j].f+'</div>';
+          }).join("") + '</div>';
+      }).join("") +
+    '</div>';
+  }
+
+  /* ══ E · Bloques con cabecera de color ═════════════════════ */
+  function vE(p){
+    return '<div class="E">' +
+      '<div class="pname">'+p.nombre+'</div>' +
+      '<div class="pcui">CUI '+p.cui+' · '+p.programa+'</div>' +
+      '<div class="badges">'+badges(p)+'</div>' +
+      bloques(p).map(function(b,i){
+        return '<div class="blk'+(b.color?" col":(i===0?" acc":""))+'">' +
+          '<div class="bh"'+(b.color?' style="background:'+b.color+';color:#fff"':"")+'>' +
+            (b.color?'<span class="dot" style="background:#fff"></span>':"") + b.t +
+          '</div><div class="bb">'+b.f+'</div></div>';
+      }).join("") +
+    '</div>';
+  }
+
+  var VARIANTES = [
+    { id:"A", tag:"A", t:"Resumen + acordeones",
+      d:"Cabecera en tinta con los <b>3 KPI</b> y la barra de avance; el resto en secciones plegables (solo la primera abierta). Es la que menos scroll pide y la que más se parece a los grupos de la pantalla Inicio.", fn:vA },
+    { id:"B", tag:"B", t:"Mosaico de cifras",
+      d:"Las cifras arriba en <b>mosaico de 2 columnas</b> (cada una con su número grande) y los textos en una ficha debajo. Todo a la vista, sin plegar; se lee de un golpe.", fn:vB },
+    { id:"C", tag:"C", t:"Línea de proceso",
+      d:"Una <b>línea de tiempo</b>: PRESET → Expediente técnico → Proceso de selección → Ejecución → Paralizada → Cierre. Marca en qué etapa está y cuelga los datos del hito actual.", fn:vC },
+    { id:"D", tag:"D", t:"Pestañas",
+      d:"Cabecera fija y <b>pestañas</b>: Resumen · Inversión · Seguimiento · una por cartera. Cada pestaña muestra solo su bloque; cero scroll largo.", fn:vD },
+    { id:"E", tag:"E", t:"Bloques con cabecera de color",
+      d:"Evolución del modelo actual: mismas filas etiqueta–valor pero cada bloque cerrado en su tarjeta, con <b>cabecera de color</b> (las carteras usan su color propio). El cambio más conservador.", fn:vE }
+  ];
+
+  var grid = document.getElementById("grid");
+  var actual = 0;
+
+  function pintar(){
+    var p = DATOS[actual];
+    grid.innerHTML = VARIANTES.map(function(v){
+      return '<div class="variant">' +
+        '<div class="vh"><span class="tag">'+v.tag+'</span><h2>'+v.t+'</h2></div>' +
+        '<div class="desc">'+v.d+'</div>' +
+        '<div class="phone"><div class="scr">'+v.fn(p)+'</div></div>' +
+      '</div>';
+    }).join("");
+  }
+
+  /* acordeones (A) y pestañas (D), delegado */
+  grid.addEventListener("click", function(e){
+    var h = e.target.closest("[data-acc]");
+    if(h){ h.parentNode.classList.toggle("closed"); return; }
+    var b = e.target.closest("[data-tab]");
+    if(b){
+      var cont = b.closest(".D"), i = b.getAttribute("data-tab");
+      cont.querySelectorAll("[data-tab]").forEach(function(x){ x.classList.toggle("on", x === b); });
+      cont.querySelectorAll("[data-pane]").forEach(function(x){ x.hidden = (x.getAttribute("data-pane") !== i); });
+    }
+  });
+
+  document.getElementById("seg").addEventListener("click", function(e){
+    var b = e.target.closest("[data-p]"); if(!b) return;
+    actual = Number(b.getAttribute("data-p"));
+    this.querySelectorAll("button").forEach(function(x){ x.classList.toggle("on", x === b); });
+    pintar();
+  });
+
+  pintar();
+})();
+</script>
+</body>
+</html>

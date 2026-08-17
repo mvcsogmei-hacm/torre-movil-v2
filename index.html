@@ -1,0 +1,2304 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#A6161F">
+<title>La torre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ─ Tokens (colores institucionales del sector Vivienda / Estado peruano) ─
+     Nota: las variables conservan sus nombres históricos (--mint, --lemon)
+     para no tocar todo el CSS; --lemon es ahora el ROJO institucional. */
+  :root{
+    --mint:      #A6161F;   /* fondo detrás del teléfono (rojo profundo) */
+    --screen-a:  #FDFBFA;   /* degradado de pantalla, arriba              */
+    --screen-b:  #F5E9E7;
+    --screen-c:  #EDDAD6;   /* degradado de pantalla, abajo               */
+    --lemon:     #C8102E;   /* rojo institucional (tarjetas principales)  */
+    --lemon-b:   #A50D23;   /* rojo oscuro para el degradado              */
+    --rosa:      #F7C8C2;   /* texto secundario sobre rojo                */
+    --ink:       #1D1B1B;
+    --muted:     #8E8A88;
+    --card:      #FFFFFF;
+    --key:       #F5EFED;
+    --pos:       #1FA23C;
+    --neg:       #BF2E25;
+    --shadow-card: 0 10px 24px rgba(120,25,30,.08);
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ height:100%; overscroll-behavior:none; }
+  body{
+    background:var(--mint);
+    font-family:"Space Grotesk",-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    color:var(--ink);
+    display:grid; place-items:center;
+    min-height:100dvh;
+  }
+  button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; }
+  [hidden]{ display:none !important; }
+
+  /* ─ Marco de teléfono (solo visible en pantallas grandes) ───── */
+  .phone{
+    position:relative;
+    width:min(100vw,412px);
+    height:100dvh; max-height:892px;
+    background:linear-gradient(165deg,var(--screen-a) 0%,var(--screen-b) 55%,var(--screen-c) 100%);
+    overflow:hidden;
+    box-shadow:0 34px 80px rgba(90,15,20,.30);
+    border-radius:15px;
+  }
+  @media (max-width:440px), (max-height:900px){
+    .phone{ max-height:none; border-radius:0; box-shadow:none; }
+  }
+
+  /* ─ Pantallas ────────────────────────────────────────────────── */
+  .screen{
+    position:absolute; inset:0;
+    overflow-y:auto; scrollbar-width:none;
+    padding:max(22px,env(safe-area-inset-top)) 20px 130px;
+    opacity:0; transform:translateX(26px);
+    pointer-events:none;
+    transition:opacity .28s ease, transform .28s ease;
+  }
+  .screen::-webkit-scrollbar{ display:none; }
+  .screen.active{ opacity:1; transform:none; pointer-events:auto; }
+  @media (prefers-reduced-motion:reduce){
+    .screen{ transition:none; }
+  }
+
+  /* ─ Barra superior ───────────────────────────────────────────── */
+  .topbar{
+    display:grid; grid-template-columns:44px 1fr 44px;
+    align-items:center; margin-bottom:18px;
+  }
+  .topbar h1{ text-align:center; font-size:17px; font-weight:600; }
+  .icon-btn{
+    width:44px; height:44px; border-radius:50%;
+    display:grid; place-items:center; position:relative;
+  }
+  .icon-btn:active{ background:rgba(20,24,22,.06); }
+  .icon-btn:focus-visible, button:focus-visible, input:focus-visible{
+    outline:2px solid var(--ink); outline-offset:2px;
+  }
+  .icon-btn svg{ width:22px; height:22px; }
+  .dot{
+    position:absolute; top:11px; right:10px;
+    width:7px; height:7px; border-radius:50%; background:#F4587A;
+  }
+
+  /* ─ Avatares e iconos de marca ──────────────────────────────── */
+  .avatar{
+    width:46px; height:46px; border-radius:50%; flex:none;
+    display:grid; place-items:center;
+    color:#fff; font-size:15px; font-weight:700; letter-spacing:.02em;
+  }
+  .brand{
+    width:46px; height:46px; border-radius:9px; flex:none;
+    display:grid; place-items:center; color:#fff;
+  }
+  .brand svg{ width:22px; height:22px; }
+  .av-leandro{ background:linear-gradient(140deg,#C8102E,#8E0B1E); }
+  .av-eva    { background:linear-gradient(140deg,#D98CA4,#A25476); }
+  .av-henrik { background:linear-gradient(140deg,#7FA3D6,#48679C); }
+  .av-matteo { background:linear-gradient(140deg,#DCA25E,#A96B2C); }
+  .av-emilia { background:linear-gradient(140deg,#A98CD6,#6F54A2); }
+  .br-paslc  { background:linear-gradient(140deg,#4E8F6C,#2C5E48); }
+  .br-pnsu   { background:linear-gradient(140deg,#7FA3D6,#48679C); }
+  .br-cofopri{ background:linear-gradient(140deg,#DCA25E,#A96B2C); }
+  .br-pnsr   { background:linear-gradient(140deg,#D98CA4,#A25476); }
+  .br-binance{ background:#171717; color:#F3BA2F; }
+  .br-multiplex{ background:#C22B23; font-weight:800; font-size:18px; }
+  .br-nike{ background:#111; }
+  .br-megogo{ background:#123F3C; font-weight:800; font-size:18px; }
+
+  /* ═ INICIO ════════════════════════════════════════════════════ */
+  .home-head{ display:flex; align-items:center; gap:12px; margin-bottom:20px; }
+  .home-head .avatar{ width:44px; height:44px; }
+  .home-head .hi{ font-size:17px; font-weight:600; flex:1; }
+  .home-head .actions{ display:flex; gap:2px; }
+
+  .balance-card{
+    background:linear-gradient(150deg,var(--lemon) 0%,var(--lemon-b) 100%);
+    border-radius:15px;
+    padding:22px 22px 26px;
+    text-align:center; position:relative; color:#fff;
+    box-shadow:0 18px 30px rgba(160,20,30,.22);
+  }
+  .balance-card .cur{ font-size:17px; font-weight:700; }
+  .balance-card .rate{ font-size:12px; color:var(--rosa); margin-top:2px; }
+  .balance-card .amount{
+    font-size:44px; font-weight:700; letter-spacing:-.02em; margin-top:10px;
+  }
+  .balance-card .delta{ font-size:16px; font-weight:600; margin-top:4px; }
+  .balance-card .bar{
+    height:8px; border-radius:999px; background:rgba(255,255,255,.30);
+    margin-top:16px; overflow:hidden;
+  }
+  .balance-card .bar i{
+    display:block; height:100%; border-radius:999px; background:#fff;
+  }
+  /* ─ Indicador principal: tarjeta neumórfica ─────────────────── */
+  .neu-card{
+    background:#FFFFFF;
+    border-radius:18px;
+    padding:10px;
+  }
+  .neu-top{
+    position:relative; text-align:center;
+    background:linear-gradient(150deg,var(--lemon) 0%,var(--lemon-b) 100%);
+    border-radius:13px 13px 8px 8px;
+    padding:18px 18px 26px;
+  }
+  .neu-top .cur{ font-size:19px; font-weight:700; color:#fff; }
+  .neu-top .rate{ font-size:13.5px; font-weight:400; color:var(--rosa); margin-top:3px; }
+  .neu-top .amount{
+    font-size:54px; font-weight:700; letter-spacing:-.02em;
+    margin-top:10px; color:#fff;
+  }
+  .neu-top .delta{ font-size:16.5px; font-weight:500; color:var(--rosa); margin-top:4px; }
+  .neu-top .detail-btn{
+    margin-top:16px;
+    display:inline-flex; align-items:center; gap:6px;
+    background:#fff; color:var(--lemon-b);
+    border-radius:999px; padding:10px 18px;
+    font-size:13.5px; font-weight:600;
+  }
+  .neu-top .detail-btn svg{ width:14px; height:14px; }
+  .neu-top .detail-btn:active{ transform:scale(.96); }
+  /* ─ Ajustes ─ */
+  .set-list{ background:var(--card); border-radius:16px; box-shadow:var(--shadow-card); padding:4px 16px; }
+  .set-row{ display:flex; align-items:center; gap:12px; padding:13px 0; border-bottom:1px solid #EEF1EA; width:100%; text-align:left; }
+  .set-row:last-child{ border-bottom:0; }
+  .set-ic{
+    width:40px; height:40px; border-radius:50%; flex:none;
+    background:var(--key); color:var(--ink);
+    display:grid; place-items:center;
+  }
+  .set-ic svg{ width:19px; height:19px; }
+  .set-row .info{ flex:1; min-width:0; }
+  .set-row .name{ font-size:14px; font-weight:600; display:block; }
+  .set-row .sub{ font-size:12px; color:var(--muted); display:block; margin-top:1px; }
+  .set-row .chev{ width:16px; height:16px; color:var(--muted); flex:none; }
+  .set-perfil{
+    display:flex; align-items:center; gap:14px;
+    background:linear-gradient(150deg,var(--lemon) 0%,var(--lemon-b) 100%);
+    border-radius:16px; padding:16px;
+  }
+  .set-perfil{ color:#fff; }
+  .set-perfil .avatar{ width:52px; height:52px; font-size:20px; }
+  .set-perfil .nm{ font-size:16.5px; font-weight:700; }
+  .set-perfil .rl{ font-size:12.5px; color:var(--rosa); font-weight:600; margin-top:2px; }
+  .set-val{ font-size:12.5px; color:var(--muted); font-weight:600; flex:none; }
+  .sw{
+    width:44px; height:26px; border-radius:999px; background:#D5DBD7;
+    position:relative; flex:none; transition:background .18s ease;
+  }
+  .sw::after{
+    content:""; position:absolute; top:3px; left:3px; width:20px; height:20px;
+    border-radius:50%; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.22);
+    transition:left .18s ease;
+  }
+  .sw.on{ background:var(--pos); }
+  .sw.on::after{ left:21px; }
+  .set-body{ padding:2px 0 14px 52px; border-bottom:1px solid #EEF1EA; }
+  .set-body:last-child{ border-bottom:0; }
+  .set-body .seg{ margin:6px 0 0; }
+  .seg3{ grid-template-columns:1fr 1fr 1fr; }
+  .set-txt{ font-size:12.5px; color:#57635C; line-height:1.55; padding-right:4px; }
+  .set-body .detail-card{ box-shadow:none; border:1px solid #EEF1EA; padding:0 12px; margin-top:6px; }
+  .btn-recarga{
+    margin-top:10px; width:100%; padding:11px;
+    background:var(--ink); color:#fff; border-radius:999px;
+    font-size:13px; font-weight:600;
+  }
+  .btn-recarga:active{ transform:scale(.98); }
+  .neu-actions{
+    display:grid; grid-template-columns:1fr 1fr 1fr;
+    padding:6px 0 2px;
+  }
+  .neu-actions button{
+    position:relative;
+    padding:14px 4px 10px;
+    display:grid; justify-items:center; gap:6px;
+    font-size:12.5px; font-weight:500; color:#33382F;
+  }
+  .neu-actions button + button::before{
+    content:""; position:absolute; left:0; top:16px; bottom:12px;
+    width:1px; background:rgba(20,24,22,.08);
+  }
+  .neu-actions svg{ width:21px; height:21px; }
+  .neu-actions button:active{ opacity:.6; }
+
+  /* ─ Pestañas de Actividades (mismo estilo que los accesos de Inicio) ─ */
+  .act-tabs{ margin-bottom:14px; }
+  .act-tabs .neu-actions{ padding:4px; }
+  .act-tabs .neu-actions button{
+    font-size:11px; line-height:1.2; padding:12px 4px 10px;
+    border-radius:12px; text-align:center;
+  }
+  .act-tabs .neu-actions button.active{
+    background:linear-gradient(150deg,var(--lemon) 0%,var(--lemon-b) 100%);
+    font-weight:700; color:#fff;
+  }
+  .act-tabs .neu-actions button.active::before{ display:none; }
+  .tab-empty{
+    background:var(--card); border-radius:16px; box-shadow:var(--shadow-card);
+    padding:30px 20px; text-align:center; color:var(--muted); font-size:13.5px;
+  }
+  .tit-ind{ margin-bottom:4px; }
+  .tit-ind .neu-top{ border-radius:13px; padding-bottom:20px; }
+  .tit-ind .barrow{ margin-top:14px; }
+  .tit-ind .meter-t{ height:8px; border-radius:999px; background:rgba(255,255,255,.32); overflow:hidden; }
+  .tit-ind .meter-t i{ display:block; height:100%; width:0; border-radius:999px; background:#fff; transition:width .5s ease; }
+  .tit-ind .ends{ display:flex; justify-content:space-between; margin-top:7px; font-size:11.5px; font-weight:600; color:var(--rosa); }
+  .tit-ind .ends b{ color:#fff; font-weight:700; }
+  /* Sub-pestañas Macro región / Por regiones */
+  .seg{
+    display:grid; grid-template-columns:1fr 1fr;
+    background:var(--key); border-radius:999px; padding:4px; margin:14px 0;
+  }
+  .seg button{ padding:9px 4px; border-radius:999px; font-size:12.5px; font-weight:600; color:#5A665F; }
+  .seg button.active{
+    background:var(--card); color:var(--ink); font-weight:700;
+    box-shadow:0 4px 10px rgba(120,25,30,.10);
+  }
+
+  /* ─ Entidades adscritas (cuadrícula 2×2) ────────────────────── */
+  .ent-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .ent{
+    background:var(--card); border-radius:12px;
+    padding:20px 16px; box-shadow:var(--shadow-card);
+    display:grid; gap:14px;
+  }
+  .ent .top{ display:flex; justify-content:space-between; align-items:center; gap:8px; }
+  .ent .name{ font-size:15px; font-weight:600; color:#5A665F; }
+  .ent .pct{ font-size:28px; font-weight:700; letter-spacing:-.01em; }
+  .ent .amt{ font-size:14px; color:var(--muted); }
+  .ent .meter{
+    height:6px; border-radius:999px;
+    background:rgba(20,24,22,.10); overflow:hidden;
+  }
+  .ent .meter i{ display:block; height:100%; border-radius:999px; background:var(--ink); }
+
+  .action-row{
+    display:grid; grid-template-columns:1fr 1fr 1fr;
+    background:var(--card); border-radius:12px;
+    margin-top:14px; box-shadow:var(--shadow-card);
+  }
+  .action-row button{
+    padding:14px 4px 12px;
+    display:grid; justify-items:center; gap:5px;
+    font-size:13.5px; font-weight:600;
+  }
+  .action-row button + button{ border-left:1px solid #EEF1EA; }
+  .action-row svg{ width:21px; height:21px; }
+  .action-row button:active{ background:#FAFBF7; border-radius:12px; }
+
+  .section-head{
+    display:flex; align-items:baseline; justify-content:space-between;
+    margin:22px 2px 12px;
+  }
+  .section-head h2{ font-size:16.5px; font-weight:700; }
+  .section-head .link{ font-size:13.5px; color:var(--muted); font-weight:500; }
+
+  /* fila de transacción (compartida) */
+  .tx{
+    display:flex; align-items:center; gap:12px;
+    background:var(--card); border-radius:12px;
+    padding:12px 16px 12px 12px;
+    box-shadow:var(--shadow-card);
+    width:100%; text-align:left;
+  }
+  .tx .info{ flex:1; min-width:0; }
+  .tx .name{ font-size:15.5px; font-weight:600; }
+  .tx .sub{
+    font-size:12.5px; color:var(--muted); margin-top:2px;
+    display:flex; align-items:center; gap:5px;
+  }
+  .tx .sub svg{ width:12px; height:12px; }
+  .tx .amt{ font-size:15.5px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .amt.pos{ color:var(--pos); } .amt.neg{ color:var(--neg); }
+
+  /* ═ BÚSQUEDA DE PROYECTOS ════════════════════════════════════ */
+  .fchips{
+    display:flex; gap:8px; overflow-x:auto;
+    margin-bottom:12px; padding-bottom:2px;
+    scrollbar-width:none;
+  }
+  .fchips::-webkit-scrollbar{ display:none; }
+  .fchips button{
+    flex:none; background:var(--card); color:#5A665F;
+    border-radius:999px; padding:8px 14px;
+    font-size:12.5px; font-weight:600;
+    box-shadow:var(--shadow-card);
+  }
+  .fchips button.on{ background:var(--ink); color:#fff; }
+  .res-count{ font-size:12px; color:var(--muted); margin:0 2px 10px; }
+  .no-results{
+    text-align:center; color:var(--muted);
+    font-size:13.5px; padding:30px 10px; line-height:1.5;
+  }
+
+  /* ─ Tarjeta de proyecto (resultado de búsqueda) · carteras + barra ─ */
+  .pcard{
+    display:block; width:100%; text-align:left;
+    background:var(--card); border-radius:18px;
+    box-shadow:var(--shadow-card); padding:16px;
+    transition:transform .12s ease;
+  }
+  .pcard:active{ transform:scale(.992); }
+  .pcard-top{ display:flex; align-items:center; gap:8px; }
+  .pcard-cui{ font-size:16.5px; font-weight:700; color:var(--ink); letter-spacing:.2px; }
+  .pcard-prog{
+    background:var(--key); color:#5A665F;
+    font-size:10.5px; font-weight:700; letter-spacing:.3px;
+    border-radius:999px; padding:4px 10px;
+  }
+  .pcard-spacer{ flex:1; }
+  .pcard-eye, .pcard-chev{ color:#9AA39D; display:inline-grid; place-items:center; }
+  .pcard-eye svg{ width:18px; height:18px; }
+  .pcard-chev svg{ width:17px; height:17px; }
+  .pcard-name{ font-size:15px; font-weight:700; color:var(--ink); line-height:1.3; margin-top:12px; }
+  .pcard-ubi{
+    font-size:10px; color:var(--muted); font-weight:600;
+    text-transform:uppercase; letter-spacing:.6px; margin-top:5px;
+  }
+  .pcard-badges{ display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+  .pcard-badge{ color:#fff; font-size:10px; font-weight:600; border-radius:999px; padding:4px 10px; }
+  .pcard-stats{ display:flex; justify-content:space-between; align-items:flex-end; margin-top:15px; }
+  .pcard-stats .k{ font-size:10px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.5px; }
+  .pcard-stats .pim{ font-size:16px; font-weight:700; color:var(--ink); margin-top:3px; font-variant-numeric:tabular-nums; }
+  .pcard-pct{ font-size:22px; font-weight:700; font-variant-numeric:tabular-nums; line-height:1; }
+  .pcard-pct.pct-ok{ color:var(--pos); }
+  .pcard-pct.pct-pr{ color:#C98A00; }
+  .pcard-pct.pct-cr{ color:var(--neg); }
+  .pcard-bar{ height:7px; border-radius:999px; background:#EFE9E7; overflow:hidden; margin-top:9px; }
+  .pcard-bar i{ display:block; height:100%; border-radius:999px; }
+
+  /* ── Buscador regional: migas, filtros activos, lista de región ── */
+  .bc{ display:flex; flex-wrap:wrap; align-items:center; gap:4px; font-size:12.5px; margin-bottom:8px; }
+  .bc button{ background:none; border:0; cursor:pointer; font:inherit; font-size:12.5px; color:#2f6b57; font-weight:600; padding:2px 3px; }
+  .bc .sep{ color:var(--muted); }
+  .bc .here{ color:var(--ink); font-weight:700; }
+  .fltags{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
+  .fltags .tag{ display:inline-flex; align-items:center; gap:6px; background:#DCEDE6; color:#1c4a3b; border-radius:999px; padding:5px 9px; font-size:11.5px; font-weight:600; }
+  .fltags .tag button{ background:none; border:0; cursor:pointer; color:#1c4a3b; font-size:13px; line-height:1; padding:0; }
+  .fltags .clear{ background:none; border:0; cursor:pointer; color:#33564a; font-size:11.5px; font-weight:600; text-decoration:underline; }
+  .cards{ display:grid; gap:14px; }
+  .groups{ display:grid; gap:9px; }
+  .grow{ display:block; width:100%; text-align:left; cursor:pointer; background:var(--card); border:0;
+    border-radius:13px; padding:13px 15px; box-shadow:var(--shadow-card); transition:transform .12s ease; }
+  .grow:active{ transform:scale(.994); }
+  .grow-top{ display:flex; align-items:center; gap:10px; }
+  .grow-name{ flex:1; font-size:14.5px; font-weight:600; color:var(--ink); }
+  .grow-n{ font-size:14px; font-weight:700; color:#2f6b57; font-variant-numeric:tabular-nums; }
+  .grow .chev{ width:17px; height:17px; color:#C3CCC6; flex:none; }
+  .grow-bar{ height:6px; border-radius:999px; background:#EFE9E7; margin-top:9px; overflow:hidden; }
+  .grow-bar i{ display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,#8FC7B4,#5FB49B); }
+  .grow-name .lvl{ display:block; font-size:10px; color:var(--muted); font-weight:500; text-transform:none; letter-spacing:0; margin-top:2px; }
+  .sug-h{ font-size:11.5px; font-weight:700; color:#5A665F; text-transform:uppercase; letter-spacing:.5px; margin:16px 2px 9px; }
+  .sug-h:first-child{ margin-top:2px; }
+  .more{ width:100%; background:var(--card); border:0; cursor:pointer; color:var(--ink);
+    border-radius:13px; padding:13px; font:inherit; font-size:13px; font-weight:700; box-shadow:var(--shadow-card); }
+
+  /* ── Barra de Filtros + hoja ── */
+  #screen-search{ padding-bottom:130px; }
+  .icon-btn .fbadge{ position:absolute; top:5px; right:5px; min-width:15px; height:15px; padding:0 3px;
+    border-radius:999px; background:var(--ink); color:#fff; font-size:9.5px; font-weight:700;
+    display:grid; place-items:center; line-height:1; }
+  .bc-clear{ margin-left:auto; background:none; border:0; cursor:pointer; font:inherit; font-size:12px;
+    font-weight:600; color:#B0453B; text-decoration:underline; padding:2px 3px; }
+  .filter-bar{ position:absolute; left:0; right:0; bottom:84px; z-index:16; display:flex; justify-content:center; padding:0 14px; pointer-events:none; }
+  .filter-bar .fbtn{ pointer-events:auto; display:inline-flex; align-items:center; gap:8px; cursor:pointer;
+    background:var(--ink); color:#fff; border:0; border-radius:14px; padding:12px 22px; font:inherit; font-size:14px; font-weight:700; box-shadow:0 12px 26px rgba(23,54,42,.28); }
+  .filter-bar .fbtn svg{ width:17px; height:17px; }
+  .filter-bar .fbtn:active{ transform:scale(.97); }
+  .filter-bar .badge{ background:var(--lemon); color:#fff; font-size:11px; font-weight:700; min-width:18px; height:18px; border-radius:999px; display:inline-grid; place-items:center; padding:0 5px; }
+  .filter-backdrop{ position:absolute; inset:0; background:rgba(20,24,22,.4); z-index:20; animation:fadeIn .2s ease; }
+  @keyframes fadeIn{ from{ opacity:0; } to{ opacity:1; } }
+  .filter-sheet{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:21;
+    width:min(90%,360px); max-height:82%; background:#F7FAF6; border-radius:20px;
+    box-shadow:0 24px 60px rgba(23,54,42,.34);
+    display:flex; flex-direction:column; animation:modalIn .22s ease; }
+  @keyframes modalIn{ from{ opacity:0; transform:translate(-50%,-46%) scale(.96); } to{ opacity:1; transform:translate(-50%,-50%) scale(1); } }
+  .sheet-head{ display:flex; align-items:center; justify-content:space-between; padding:10px 18px 6px; }
+  .sheet-head h2{ font-size:18px; font-weight:700; }
+  .sheet-head .x{ background:none; border:0; cursor:pointer; color:#5A665F; display:grid; place-items:center; padding:4px; }
+  .sheet-head .x svg{ width:20px; height:20px; }
+  .sheet-body{ overflow-y:auto; padding:4px 18px 12px; }
+  .sheet-body section{ margin-top:16px; }
+  .sheet-body h3{ font-size:11.5px; font-weight:700; color:#5A665F; text-transform:uppercase; letter-spacing:.5px; margin-bottom:10px; }
+  .chipset{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chipset button{ background:var(--card); color:#4A5650; border:0; cursor:pointer; border-radius:999px;
+    padding:8px 13px; font:inherit; font-size:12.5px; font-weight:600; box-shadow:0 4px 12px rgba(120,25,30,.06); }
+  .chipset button.on{ background:var(--ink); color:#fff; }
+  .chipset button .n{ opacity:.55; margin-left:6px; font-variant-numeric:tabular-nums; }
+  .chipset button.on .n{ opacity:.85; }
+  .sheet-foot{ display:flex; gap:10px; padding:12px 18px 16px; border-top:1px solid rgba(20,24,22,.06); }
+  .btn-ghost{ flex:none; background:none; border:0; cursor:pointer; color:#33564a; font:inherit; font-size:13.5px; font-weight:600; padding:12px 16px; }
+  .btn-solid{ flex:1; background:var(--ink); color:#fff; border:0; cursor:pointer; border-radius:13px; padding:13px; font:inherit; font-size:14px; font-weight:700; }
+
+  /* ─ Ficha de proyecto ───────────────────────────────────────── */
+  .pname{ font-size:19px; font-weight:700; line-height:1.3; }
+  .pcui{ font-size:12.5px; color:var(--muted); margin-top:4px; }
+  .badges{ display:flex; flex-wrap:wrap; gap:6px; margin:12px 0 2px; }
+  /* Cabecera de la ficha con el mismo formato del indicador principal */
+  .ficha-head{ margin-bottom:6px; }
+  .ficha-head .neu-top{ text-align:left; }
+  .ficha-head .pubi{ font-size:13px; font-weight:600; color:var(--rosa); letter-spacing:.02em; }
+  .ficha-head .pcui{ color:var(--rosa); margin-top:2px; }
+  .ficha-head .pname{ margin-top:8px; color:#fff; }
+  .ficha-head .badges{ justify-content:flex-start; margin-bottom:0; }
+  .ficha-head .neu-actions{ grid-template-columns:1fr 1fr; }
+  /* Hoja de compartir (respaldo cuando no hay Web Share API) */
+  .share-backdrop{ position:absolute; inset:0; background:rgba(20,24,22,.45); z-index:40; }
+  .share-sheet{
+    position:absolute; left:0; right:0; bottom:0; z-index:41;
+    background:var(--card); border-radius:18px 18px 0 0;
+    padding:18px 20px 30px; display:grid; gap:10px;
+  }
+  .share-sheet h3{ font-size:16px; font-weight:700; }
+  .share-opt{
+    display:block; text-align:center; padding:13px; border-radius:12px;
+    background:var(--key); font-weight:600; color:var(--ink); text-decoration:none;
+  }
+  .share-opt:active{ opacity:.7; }
+  .badge{ color:#fff; font-size:11px; font-weight:600; border-radius:999px; padding:5px 11px; }
+
+  /* ─ Menú cristal: barra translúcida con desenfoque ──────────── */
+  .bottom-nav{
+    position:absolute; left:14px; right:14px;
+    bottom:max(14px,env(safe-area-inset-bottom));
+    display:flex; justify-content:space-between; align-items:center;
+    background:rgba(255,255,255,.5);
+    -webkit-backdrop-filter:blur(12px);
+    backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,.75);
+    border-radius:999px; padding:8px 12px;
+    box-shadow:0 16px 34px rgba(23,54,42,.16);
+  }
+  .bottom-nav button{
+    width:46px; height:46px; border-radius:50%;
+    display:grid; place-items:center; color:#4A5650;
+    transition:background .2s ease, color .2s ease;
+  }
+  .bottom-nav button svg{ width:22px; height:22px; }
+  .bottom-nav button.current{
+    background:rgba(255,255,255,.95); color:var(--ink);
+    box-shadow:0 6px 14px rgba(23,54,42,.10);
+  }
+  .bottom-nav .nav-bot{
+    width:58px; height:58px;
+    background:var(--ink); color:#fff;
+    box-shadow:0 12px 26px rgba(23,54,42,.28);
+  }
+  .bottom-nav .nav-bot svg{ width:26px; height:26px; }
+  .bottom-nav .nav-bot.current{ background:var(--ink); color:#fff; }
+  .bottom-nav button:active{ transform:scale(.94); }
+
+  /* ─ Pantallas en construcción ───────────────────────────────── */
+  .placeholder{
+    display:grid; justify-items:center; gap:14px;
+    background:var(--card); border-radius:15px;
+    padding:44px 28px; margin-top:40px; text-align:center;
+    box-shadow:var(--shadow-card);
+  }
+  .placeholder .bubble-big{
+    width:64px; height:64px; border-radius:50%;
+    background:var(--key); display:grid; place-items:center;
+  }
+  .placeholder .bubble-big svg{ width:30px; height:30px; }
+  .placeholder h3{ font-size:17px; font-weight:700; }
+  .placeholder p{ font-size:13.5px; color:var(--muted); line-height:1.5; }
+
+  /* ═ INVERSIONES ══════════════════════════════════════════════ */
+  .btn-white{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    width:100%; background:#fff; color:var(--ink);
+    border-radius:999px; padding:14px; margin-top:14px;
+    font-size:15px; font-weight:600;
+    box-shadow:0 8px 18px rgba(120,25,30,.10);
+  }
+  .btn-white svg{ width:16px; height:16px; }
+  .btn-white:active{ transform:scale(.985); }
+
+  .cartera-card{
+    background:var(--card); border-radius:13px;
+    padding:16px 16px 4px; box-shadow:var(--shadow-card);
+  }
+  .cartera-card + .cartera-card{ margin-top:14px; }
+  .cartera-card .hd{
+    display:flex; align-items:center; gap:8px; width:100%;
+    padding:2px 0 8px; text-align:left;
+  }
+  .cartera-card .hd .hd-txt{ flex:1; display:grid; gap:3px; }
+  .cartera-card .hd .t{ font-size:16px; font-weight:700; }
+  .cartera-card .hd .s{ font-size:12.5px; color:var(--muted); }
+  .cartera-card .hd .caret{ width:18px; height:18px; color:var(--muted); flex:none; }
+  .cartera-card .hd .caret svg{ width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .cartera-card .body{
+    display:grid; grid-template-rows:1fr;
+    transition:grid-template-rows .35s ease;
+  }
+  .cartera-card .body > div{ overflow:hidden; }
+  .cartera-card.closed .body{ grid-template-rows:0fr; }
+  .cartera-card.closed{ padding:13px 16px; }
+  .cartera-card.closed .hd{ display:none; }
+  .cartera-card .summary{ display:none; }
+  .cartera-card.closed .summary{
+    display:grid; grid-template-columns:auto 1fr auto;
+    gap:2px 14px; align-items:center;
+    padding:0; cursor:pointer;
+    animation:sum-in .3s ease;
+  }
+  @keyframes sum-in{
+    from{ opacity:0; transform:translateY(-4px); }
+    to  { opacity:1; transform:none; }
+  }
+  .summary .bic{
+    width:54px; height:54px; border-radius:15px;
+    display:grid; place-items:center; grid-row:span 2;
+  }
+  .summary .bic svg{ width:29px; height:29px; }
+  .bic.b-cartera{ background:#3D7EF7; }
+  .bic.b-paraliz{ background:#F04438; }
+  .bic.b-obras  { background:#33B679; }
+  .bic.b-transf { background:#8E5CD9; }
+  .bic.b-preset { background:#3D7EF7; }
+  .summary .name{ font-size:17.5px; font-weight:700; line-height:1.2; }
+  .summary .name{ grid-column:2; align-self:end; }
+  .summary .sub{ grid-column:2; font-size:12.5px; color:var(--muted); align-self:start; }
+  .summary .pctv{
+    grid-row:1 / span 2; grid-column:3;
+    align-self:center; justify-self:end;
+    font-size:19px; font-weight:700;
+  }
+  .pct-ok{ color:var(--pos); } .pct-pr{ color:#C98A00; } .pct-cr{ color:var(--neg); }
+  .prog{
+    background:var(--key); border-radius:10px;
+    padding:13px 16px; margin-top:10px;
+    display:flex; align-items:center; gap:12px;
+  }
+  .prog .info{ flex:1; display:grid; gap:6px; justify-items:start; }
+  .prog .name{ font-size:15px; font-weight:700; }
+  .prog .meta{ font-size:12px; color:var(--muted); display:flex; align-items:center; gap:7px; }
+  .prog .pct{ font-size:28px; font-weight:700; letter-spacing:-.01em; }
+  .chip{
+    display:inline-flex; align-items:center; gap:5px;
+    font-size:10.5px; font-weight:600;
+    padding:3px 8px; border-radius:999px;
+  }
+  .chip i{ width:6px; height:6px; border-radius:50%; flex:none; }
+  .chip.ok{ background:#E2F3D6; color:#1F7A33; }
+  .chip.ok i{ background:var(--pos); }
+  .chip.proc{ background:#FBF3D9; color:#8A6D00; }
+  .chip.proc i{ background:#E0A100; }
+  .chip.crit{ background:#FADEDC; color:#A32A22; }
+  .chip.crit i{ background:var(--neg); }
+  .prog.ok{ background:#E7F4DC; }
+  .prog.proc{ background:#FBF3D9; }
+  .prog.crit{ background:#FADEDC; }
+  .prog .chip{ background:rgba(255,255,255,.8); }
+  .more-link{
+    display:flex; align-items:center; gap:4px;
+    width:max-content; margin:14px auto 12px;
+    background:var(--ink); color:#fff;
+    border-radius:999px; padding:8px 15px;
+    font-size:12.5px; font-weight:600;
+  }
+  .more-link svg{ width:13px; height:13px; }
+  .more-link:active{ transform:scale(.96); }
+  .btn-dark{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    width:100%; background:var(--ink); color:#fff;
+    border-radius:999px; padding:14px; margin-top:14px;
+    font-size:15px; font-weight:600;
+  }
+  .btn-dark svg{ width:16px; height:16px; }
+  .btn-dark:active{ transform:scale(.985); }
+
+  /* ═ RECOMPENSAS ══════════════════════════════════════════════ */
+  .promo{ border-radius:15px; padding:22px 18px 16px; text-align:center; }
+  .promo + .promo{ margin-top:14px; }
+  .promo.lemon{
+    background:linear-gradient(150deg,var(--lemon) 0%,var(--lemon-b) 100%);
+    box-shadow:0 18px 30px rgba(160,20,30,.22);
+    color:#fff;
+  }
+  .promo.brown{ background:#6E4F3F; color:#fff; }
+  .promo .ic{
+    width:54px; height:54px; border-radius:50%;
+    background:rgba(255,255,255,.16); color:#fff;
+    display:grid; place-items:center; margin:0 auto 10px;
+  }
+  .promo .ic svg{ width:26px; height:26px; }
+  .promo.brown .ic{ background:rgba(255,255,255,.14); color:#F2C97C; }
+  .promo .t{ font-size:15.5px; font-weight:700; }
+  .promo .cap{ font-size:12.5px; color:var(--rosa); margin-top:2px; }
+  .promo.brown .cap{ color:#D8C7BC; }
+  .promo .big{ font-size:42px; font-weight:700; letter-spacing:-.02em; }
+
+  /* ═ ORDEN ════════════════════════════════════════════════════ */
+  .detail-card{
+    background:var(--card); border-radius:13px;
+    padding:4px 16px; box-shadow:var(--shadow-card);
+  }
+  .detail-card .dr{
+    display:flex; justify-content:space-between; gap:12px;
+    padding:13px 0; border-bottom:1px solid #EEF1EA;
+    font-size:14px;
+  }
+  .detail-card .dr:last-child{ border-bottom:0; }
+  .detail-card .dr span{ color:var(--muted); }
+  .detail-card .dr b{ font-weight:600; text-align:right; }
+  /* Fila con barra de % (Macro región / Por regiones en Actividades) */
+  .detail-card .drb{ padding:13px 0 14px; border-bottom:1px solid #EEF1EA; }
+  .detail-card .drb:last-child{ border-bottom:0; }
+  .detail-card .drb .dr{ padding:0 0 8px; border-bottom:0; }
+  .detail-card .drb .mtr{ height:6px; border-radius:999px; background:#EFE9E7; overflow:hidden; }
+  .detail-card .drb .mtr i{ display:block; height:100%; border-radius:999px; }
+  .tx .chev{ width:16px; height:16px; color:var(--muted); flex:none; }
+
+  /* ═ TRANSACCIONES ════════════════════════════════════════════ */
+  .card-pill{
+    margin:2px auto 6px; display:flex; align-items:center; gap:8px;
+    background:var(--ink); color:#fff;
+    border-radius:999px; padding:9px 16px 9px 12px;
+    font-size:14px; font-weight:600; width:max-content;
+  }
+  .mc{ display:flex; }
+  .mc i{ width:15px; height:15px; border-radius:50%; display:block; }
+  .mc i:first-child{ background:#EB001B; }
+  .mc i:last-child{ background:#F79E1B; margin-left:-6px; mix-blend-mode:screen; }
+  .card-pill svg{ width:14px; height:14px; opacity:.85; }
+
+  .group-label{
+    text-align:center; color:var(--muted);
+    font-size:13px; font-weight:500; margin:18px 0 10px;
+  }
+  .tx-list{ display:grid; gap:10px; }
+
+  /* ═ PAGAR ═════════════════════════════════════════════════════ */
+  .payee{
+    display:flex; align-items:center; gap:12px; margin:18px 2px 6px;
+  }
+  .payee .avatar{ width:44px; height:44px; }
+  .payee .who{ flex:1; }
+  .payee .who .name{ font-size:15.5px; font-weight:600; }
+  .payee .who .acct{ font-size:12.5px; color:var(--muted); margin-top:2px; }
+  .payee .change{ font-size:13.5px; color:var(--muted); font-weight:500; }
+
+  .pay-amount{
+    text-align:center; margin:26px 0 4px;
+    font-size:46px; font-weight:700; letter-spacing:-.02em;
+    font-variant-numeric:tabular-nums;
+  }
+  .pay-balance{ text-align:center; font-size:13.5px; color:var(--muted); }
+
+  .note-field{
+    display:flex; align-items:center; gap:9px;
+    background:#EFF3EB; border-radius:999px;
+    padding:13px 18px; margin:26px 0 18px;
+  }
+  .note-field svg{ width:17px; height:17px; color:var(--muted); flex:none; }
+  .note-field input{
+    border:0; background:transparent; font:inherit; font-size:16px; /* ≥16px evita el zoom automático de iOS al enfocar */
+    width:100%; color:var(--ink);
+  }
+  .note-field input::placeholder{ color:var(--muted); }
+  .note-field input:focus{ outline:none; }
+
+  .keypad{
+    display:grid; grid-template-columns:repeat(3,1fr);
+    gap:9px 10px; margin-bottom:16px;
+  }
+  .keypad button{
+    background:var(--key); border-radius:9px;
+    height:52px; font-size:19px; font-weight:600;
+    font-variant-numeric:tabular-nums;
+  }
+  .keypad button:active{ background:#E4E9DF; }
+  .keypad .ghost{ background:transparent; pointer-events:none; }
+  .keypad svg{ width:22px; height:22px; }
+
+  .send-btn{
+    display:block; width:100%;
+    background:var(--ink); color:#fff;
+    border-radius:999px; padding:17px;
+    font-size:16px; font-weight:600;
+  }
+  .send-btn:active{ transform:scale(.985); }
+
+  /* ─ Confirmación de envío ───────────────────────────────────── */
+  .toast{
+    position:absolute; inset:0; z-index:10;
+    display:grid; place-items:center;
+    background:rgba(20,24,22,.35);
+    opacity:0; pointer-events:none; transition:opacity .25s ease;
+  }
+  .toast.show{ opacity:1; pointer-events:auto; }
+  .toast .box{
+    background:var(--card); border-radius:15px;
+    padding:30px 34px; text-align:center; display:grid; gap:12px;
+    justify-items:center; box-shadow:0 24px 60px rgba(0,0,0,.25);
+    transform:translateY(10px); transition:transform .25s ease;
+  }
+  .toast.show .box{ transform:none; }
+  .toast .check{
+    width:56px; height:56px; border-radius:50%;
+    background:var(--lemon); color:#fff; display:grid; place-items:center;
+  }
+  .toast .check svg{ width:26px; height:26px; }
+  .toast .t1{ font-size:17px; font-weight:700; }
+  .toast .t2{ font-size:13.5px; color:var(--muted); }
+
+  /* ─ Aviso de solo-móvil (escritorio) ────────────────────────── */
+  .desktop-msg{ display:none; }
+  @media (min-width:768px) and (hover:hover) and (pointer:fine){
+    .phone{ display:none; }
+    .desktop-msg{
+      display:grid; gap:14px; justify-items:center;
+      text-align:center; padding:40px; max-width:420px;
+    }
+    .desktop-msg svg{ width:64px; height:64px; }
+    .desktop-msg h1{ font-size:24px; font-weight:700; }
+    .desktop-msg p{ font-size:16px; color:#4A5650; line-height:1.5; }
+  }
+</style>
+</head>
+<body>
+
+<div class="desktop-msg" role="note">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18.5h2"/></svg>
+  <h1>La torre es una experiencia móvil</h1>
+  <p>Esta página está diseñada exclusivamente para teléfonos. Ábrela desde el navegador de tu móvil para usarla.</p>
+</div>
+
+<div class="phone" id="app">
+
+  <!-- ═══ INICIO ═══ -->
+  <section class="screen active" id="screen-home" aria-label="Inicio">
+    <header class="home-head">
+      <span class="avatar av-leandro">L</span>
+      <span class="hi">¡Hola, Leandro!</span>
+      <span class="actions">
+        <button class="icon-btn" data-go="screen-ajustes" aria-label="Ajustes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34 1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87 1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/></svg>
+        </button>
+      </span>
+    </header>
+
+    <div class="neu-card">
+      <div class="neu-top" data-go="screen-pliego">
+        <div class="cur">Pliego</div>
+        <div class="rate" id="pliego-rate">Avance de ejecución 2026</div>
+        <div class="amount" id="pliego-amount">—</div>
+        <button class="detail-btn" data-go="screen-pliego">
+          Ver detalles
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+      <div class="neu-actions">
+        <button data-go="screen-pliego">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>
+          Pliego
+        </button>
+        <button data-go="screen-cuenta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-6 4 3 6-8"/><path d="M14 6h4v4"/></svg>
+          Inversiones
+        </button>
+        <button data-go="screen-transactions">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg>
+          Actividades
+        </button>
+      </div>
+    </div>
+
+    <div class="section-head"><h2>Entidades adscritas</h2></div>
+    <div class="ent-grid" id="ent-grid">
+      <div class="ent">
+        <span class="top"><span class="name">SBN</span><span class="pct">32%</span></span>
+        <span class="meter"><i style="width:32%"></i></span>
+        <span class="amt">S/ 14 millones</span>
+      </div>
+      <div class="ent">
+        <span class="top"><span class="name">SENCICO</span><span class="pct">23%</span></span>
+        <span class="meter"><i style="width:23%"></i></span>
+        <span class="amt">S/ 34 millones</span>
+      </div>
+      <div class="ent">
+        <span class="top"><span class="name">OTASS</span><span class="pct">46%</span></span>
+        <span class="meter"><i style="width:46%"></i></span>
+        <span class="amt">S/ 55 millones</span>
+      </div>
+      <div class="ent">
+        <span class="top"><span class="name">COFOPRI</span><span class="pct">39%</span></span>
+        <span class="meter"><i style="width:39%"></i></span>
+        <span class="amt">S/ 66 millones</span>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ═══ TRANSACCIONES ═══ -->
+  <section class="screen" id="screen-transactions" aria-label="Movimientos">
+    <header class="topbar">
+      <button class="icon-btn" data-go="screen-home" aria-label="Atrás">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <h1>Actividades</h1>
+      <button class="icon-btn" aria-label="Buscar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      </button>
+    </header>
+
+    <div class="neu-card act-tabs">
+      <div class="neu-actions" id="act-tabs">
+        <button class="active" data-tab="titulos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>
+          Títulos de propiedad
+        </button>
+        <button data-tab="bonos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v9M14.8 9.2a3.4 3.4 0 0 0-2.8-1.2c-1.6 0-2.9.8-2.9 2.1s1.1 1.8 2.9 2c1.8.2 3 .8 3 2.1s-1.4 2.1-3.1 2.1a3.6 3.6 0 0 1-3-1.3"/></svg>
+          Bonos
+        </button>
+        <button data-tab="wasiymi">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5.5 8.8V20a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V8.8"/><path d="M9.5 21v-6h5v6"/></svg>
+          Wasiymi
+        </button>
+      </div>
+    </div>
+
+    <div id="tab-titulos">
+    <div class="neu-card tit-ind">
+      <div class="neu-top">
+        <div class="cur">Títulos de propiedad</div>
+        <div class="amount" id="tit-pct">—</div>
+        <div class="barrow">
+          <div class="meter-t"><i id="tit-bar"></i></div>
+          <div class="ends">
+            <span id="tit-entregados">—</span>
+            <span id="tit-meta">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="seg" id="tit-seg">
+      <button class="active" data-seg="macro">Macro región</button>
+      <button data-seg="regiones">Por regiones</button>
+    </div>
+    <div id="tit-listas"></div>
+    </div>
+
+    <div id="tab-bonos" hidden>
+    <div class="neu-card tit-ind">
+      <div class="neu-top">
+        <div class="cur">Bonos habitacionales</div>
+        <div class="amount" id="bon-pct">—</div>
+        <div class="barrow">
+          <div class="meter-t"><i id="bon-bar"></i></div>
+          <div class="ends">
+            <span id="bon-desembolsados">—</span>
+            <span id="bon-meta">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="seg" id="bon-seg">
+      <button class="active" data-seg="modalidad">Por modalidad</button>
+      <button data-seg="region">Por región</button>
+    </div>
+    <div id="bon-listas"></div>
+    </div>
+    <div id="tab-wasiymi" hidden>
+    <div class="neu-card tit-ind">
+      <div class="neu-top">
+        <div class="cur">Wasiymi</div>
+        <div class="amount" id="was-pct">—</div>
+        <div class="barrow">
+          <div class="meter-t"><i id="was-bar"></i></div>
+          <div class="ends">
+            <span id="was-ejecutadas">—</span>
+            <span id="was-meta">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="was-listas"></div>
+    </div>
+  </section>
+
+  <!-- ═══ PAGAR ═══ -->
+  <section class="screen" id="screen-pay" aria-label="Pagar">
+    <header class="topbar">
+      <button class="icon-btn" data-go="screen-home" aria-label="Atrás">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <h1>Pagar</h1>
+      <button class="icon-btn" aria-label="Contactos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="8" r="3.5"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.6a3.5 3.5 0 0 1 0 6.8"/></svg>
+      </button>
+    </header>
+
+    <div class="card-pill">
+      <span class="mc"><i></i><i></i></span>
+      **** 2872
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+
+    <div class="payee">
+      <span class="avatar av-matteo">MR</span>
+      <span class="who">
+        <span class="name">Matteo Ricci</span><br>
+        <span class="acct">1111 *** **** 1720</span>
+      </span>
+      <button class="change">Cambiar</button>
+    </div>
+
+    <div class="pay-amount" id="pay-amount" aria-live="polite">$2,101.70</div>
+    <div class="pay-balance">Saldo: $126,887.09</div>
+
+    <label class="note-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <input type="text" id="note" placeholder="Nota" autocomplete="off">
+    </label>
+
+    <div class="keypad" id="keypad">
+      <button data-key="1">1</button><button data-key="2">2</button><button data-key="3">3</button>
+      <button data-key="4">4</button><button data-key="5">5</button><button data-key="6">6</button>
+      <button data-key="7">7</button><button data-key="8">8</button><button data-key="9">9</button>
+      <button class="ghost" tabindex="-1" aria-hidden="true"></button>
+      <button data-key="0">0</button>
+      <button data-key="del" aria-label="Borrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4H8l-6 8 6 8h13a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1z"/><path d="M17 9.5l-5 5M12 9.5l5 5"/></svg>
+      </button>
+    </div>
+
+    <button class="send-btn" id="send">Enviar</button>
+  </section>
+
+  <!-- ═══ DETALLE DE PLIEGO ═══ -->
+  <section class="screen" id="screen-pliego" aria-label="Detalle de pliego">
+    <header class="topbar">
+      <button class="icon-btn" data-go="screen-home" aria-label="Atrás">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <h1>Pliego</h1>
+      <span></span>
+    </header>
+
+    <div class="balance-card">
+      <div class="cur">Avance de ejecución 2026</div>
+      <div class="amount" id="pliegoD-amount">—</div>
+      <div class="delta" id="pliegoD-delta">—</div>
+      <div class="bar"><i id="pliegoD-bar" style="width:0"></i></div>
+    </div>
+
+    <div id="pliego-cards"></div>
+  </section>
+
+  <!-- ═══ AJUSTES ═══ -->
+  <section class="screen" id="screen-ajustes" aria-label="Ajustes">
+    <header class="topbar">
+      <button class="icon-btn" data-go="screen-home" aria-label="Atrás">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <h1>Ajustes</h1>
+      <span></span>
+    </header>
+
+    <div class="set-perfil">
+      <span class="avatar av-leandro">L</span>
+      <span>
+        <span class="nm">Leandro</span><br>
+        <span class="rl">MVCS · Pliego 037</span>
+      </span>
+    </div>
+
+    <div class="section-head"><h2>Preferencias</h2></div>
+    <div class="set-list">
+      <button class="set-row" id="row-notif">
+        <span class="set-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/></svg></span>
+        <span class="info"><span class="name">Notificaciones</span><span class="sub">Alertas de avance y paralizaciones</span></span>
+        <span class="sw" id="sw-notif"></span>
+      </button>
+      <button class="set-row" data-abre="body-texto">
+        <span class="set-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5h16v2M12 5v14M9 19h6"/></svg></span>
+        <span class="info"><span class="name">Tamaño de texto</span><span class="sub" id="sub-texto">Normal</span></span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="set-body" id="body-texto" hidden>
+        <div class="seg seg3" id="seg-texto">
+          <button data-tam="p">Pequeño</button>
+          <button data-tam="n" class="active">Normal</button>
+          <button data-tam="g">Grande</button>
+        </div>
+      </div>
+      <div class="set-row">
+        <span class="set-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 3v9l6.4-6.4"/></svg></span>
+        <span class="info"><span class="name">Idioma</span></span>
+        <span class="set-val">Español (Perú)</span>
+      </div>
+    </div>
+
+    <div class="section-head"><h2>Datos</h2></div>
+    <div class="set-list">
+      <button class="set-row" data-abre="body-datos">
+        <span class="set-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></span>
+        <span class="info"><span class="name">Datos cargados</span><span class="sub">Matriz Única del 31/07/2026</span></span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="set-body" id="body-datos" hidden>
+        <div id="datos-resumen"></div>
+        <button class="btn-recarga" id="btn-recarga">Recargar datos</button>
+      </div>
+      <button class="set-row" data-abre="body-acerca">
+        <span class="set-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg></span>
+        <span class="info"><span class="name">Acerca de La torre</span><span class="sub">Versión 2.0</span></span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="set-body" id="body-acerca" hidden>
+        <p class="set-txt">La torre v2.0 — monitor de proyectos de inversión del sector Vivienda,
+        Construcción y Saneamiento: pliego, entidades adscritas, carteras (PRESET, obras directas,
+        transferencias, paralizadas), títulos de propiedad, bonos habitacionales y Wasiymi.
+        Fuente: Matriz Única de Monitoreo.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ PANTALLAS EN CONSTRUCCIÓN ═══ -->
+  <section class="screen" id="screen-cuenta" aria-label="Inversiones">
+    <header class="topbar">
+      <button class="icon-btn" data-go="screen-home" aria-label="Atrás">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <h1>Inversiones</h1>
+      <button class="icon-btn" data-go="screen-orden" aria-label="Detalles de la orden">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>
+      </button>
+    </header>
+
+    <div class="cartera-card closed">
+      <button class="hd" aria-label="Mostrar u ocultar Cartera priorizada">
+        <span class="hd-txt">
+          <span class="t">Cartera priorizada</span>
+          <span class="s">Avance de ejecución financiera</span>
+        </span>
+        <span class="caret"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+      </button>
+      <div class="summary">
+        <span class="bic b-cartera">
+          <svg viewBox="0 0 24 24" fill="#fff"><rect x="5" y="2.5" width="2.2" height="19" rx="1.1"/><path d="M9 4h9.5L16 8l2.5 4H9z"/></svg>
+        </span>
+        <span class="name">Cartera priorizada</span>
+        <span class="sub">Avance de ejecución financiera</span>
+        <span class="pctv pct-pr">41,5%</span>
+      </div>
+      <div class="body"><div>
+      <div class="prog ok">
+        <span class="info">
+          <span class="name">PASLC</span>
+          <span class="meta">4 proyectos <span class="chip ok"><i></i>Óptimo</span></span>
+        </span>
+        <span class="pct">71,9%</span>
+      </div>
+      <div class="prog proc">
+        <span class="info">
+          <span class="name">PNSU</span>
+          <span class="meta">9 proyectos <span class="chip proc"><i></i>En proceso</span></span>
+        </span>
+        <span class="pct">39%</span>
+      </div>
+      <div class="prog proc">
+        <span class="info">
+          <span class="name">COFOPRI</span>
+          <span class="meta">1 proyecto <span class="chip proc"><i></i>En proceso</span></span>
+        </span>
+        <span class="pct">39,5%</span>
+      </div>
+      <div class="prog crit">
+        <span class="info">
+          <span class="name">PNSR</span>
+          <span class="meta">1 proyecto <span class="chip crit"><i></i>Crítico</span></span>
+        </span>
+        <span class="pct">15,5%</span>
+      </div>
+      <button class="more-link">
+        Ver más detalles
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+      </div></div>
+    </div>
+
+    <div class="cartera-card closed">
+      <button class="hd" aria-label="Mostrar u ocultar Paralizadas">
+        <span class="hd-txt">
+          <span class="t">Paralizadas</span>
+          <span class="s">Reactivación meta 2026</span>
+        </span>
+        <span class="caret"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+      </button>
+      <div class="summary">
+        <span class="bic b-paraliz">
+          <svg viewBox="0 0 24 24" fill="#fff"><path fill-rule="evenodd" d="M12 2.8L22.4 21H1.6zM11.1 9.5h1.8v5.2h-1.8zm0 6.7h1.8v1.9h-1.8z"/></svg>
+        </span>
+        <span class="name">Paralizadas</span>
+        <span class="sub">Reactivación meta 2026</span>
+        <span class="pctv pct-pr">41,2%</span>
+      </div>
+      <div class="body"><div>
+      <div class="prog ok">
+        <span class="info">
+          <span class="name">PASLC</span>
+          <span class="meta">2 proyectos <span class="chip ok"><i></i>Completo</span></span>
+        </span>
+        <span class="pct">100%</span>
+      </div>
+      <div class="prog crit">
+        <span class="info">
+          <span class="name">PMIB</span>
+          <span class="meta">1 proyecto <span class="chip crit"><i></i>Sin avance</span></span>
+        </span>
+        <span class="pct">0%</span>
+      </div>
+      <div class="prog proc">
+        <span class="info">
+          <span class="name">PNSR</span>
+          <span class="meta">20 proyectos <span class="chip proc"><i></i>En proceso</span></span>
+        </span>
+        <span class="pct">40%</span>
+      </div>
+      <div class="prog proc">
+        <span class="info">
+          <span class="name">PNSU</span>
+          <span class="meta">21 proyectos <span class="chip proc"><i></i>En proceso</span></span>
+        </span>
+        <span class="pct">33%</span>
+      </div>
+      <div class="prog proc">
+        <span class="info">
+          <span class="name">SENCICO</span>
+          <span class="meta">3 proyectos <span class="chip proc"><i></i>En proceso</span></span>
+        </span>
+        <span class="pct">33%</span>
+      </div>
+      <button class="more-link">
+        Ver más detalles
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+      </div></div>
+    </div>
+
+    <div class="cartera-card closed">
+      <button class="hd" aria-label="Mostrar u ocultar Obras directas">
+        <span class="hd-txt">
+          <span class="t">Obras directas</span>
+          <span class="s">Avance de ejecución financiera</span>
+        </span>
+        <span class="caret"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+      </button>
+      <div class="summary">
+        <span class="bic b-obras">
+          <svg viewBox="0 0 24 24" fill="#fff"><path d="M4.5 14.5a7.5 7.5 0 0 1 15 0v1h-15z"/><rect x="3" y="16.8" width="18" height="2.6" rx="1.3"/><rect x="10.8" y="4" width="2.4" height="4" rx="1"/></svg>
+        </span>
+        <span class="name">Obras directas</span>
+        <span class="sub">Avance de ejecución financiera</span>
+        <span class="pctv pct-pr">45,4%</span>
+      </div>
+      <div class="body"><div>
+      <div class="prog crit">
+        <span class="info">
+          <span class="name">Ejecutora 01</span>
+          <span class="meta">17 obras <span class="chip crit"><i></i>Crítico</span></span>
+        </span>
+        <span class="pct">21%</span>
+      </div>
+      <div class="prog proc">
+        <span class="info">
+          <span class="name">PNSR</span>
+          <span class="meta">445 obras <span class="chip proc"><i></i>En proceso</span></span>
+        </span>
+        <span class="pct">48%</span>
+      </div>
+      <div class="prog proc">
+        <span class="info">
+          <span class="name">PNSU</span>
+          <span class="meta">54 obras <span class="chip proc"><i></i>En proceso</span></span>
+        </span>
+        <span class="pct">43%</span>
+      </div>
+      <div class="prog ok">
+        <span class="info">
+          <span class="name">PASLC</span>
+          <span class="meta">27 obras <span class="chip ok"><i></i>Óptimo</span></span>
+        </span>
+        <span class="pct">72%</span>
+      </div>
+      <div class="prog proc">
+        <span class="info">
+          <span class="name">SENCICO</span>
+          <span class="meta">8 obras <span class="chip proc"><i></i>En proceso</span></span>
+        </span>
+        <span class="pct">32%</span>
+      </div>
+      <div class="prog proc">
+        <span class="info">
+          <span class="name">OTASS</span>
+          <span class="meta">2 obras <span class="chip proc"><i></i>En proceso</span></span>
+        </span>
+        <span class="pct">41%</span>
+      </div>
+      <div class="prog ok">
+        <span class="info">
+          <span class="name">COFOPRI</span>
+          <span class="meta">1 obra <span class="chip ok"><i></i>Óptimo</span></span>
+        </span>
+        <span class="pct">61%</span>
+      </div>
+      <button class="more-link">
+        Ver más detalles
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+      </div></div>
+    </div>
+
+      <div class="cartera-card closed">
+      <button class="hd" aria-label="Mostrar u ocultar Transferencias 2026">
+        <span class="hd-txt">
+          <span class="t">Transferencias 2026</span>
+          <span class="s">Avance de ejecución transferido</span>
+        </span>
+        <span class="caret"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+      </button>
+      <div class="summary">
+        <span class="bic b-transf">
+          <svg viewBox="0 0 24 24" fill="#fff"><path d="M15.5 3l5 4.5-5 4.5V9H5V6h10.5z"/><path d="M8.5 12l-5 4.5 5 4.5V18H19v-3H8.5z"/></svg>
+        </span>
+        <span class="name">Transferencias 2026</span>
+        <span class="sub">Avance de ejecución transferido</span>
+        <span class="pctv pct-cr">18,2%</span>
+      </div>
+      <div class="body"><div>
+      <div class="prog crit">
+        <span class="info">
+          <span class="name">PNSR</span>
+          <span class="meta">958 transferencias <span class="chip crit"><i></i>Crítico</span></span>
+        </span>
+        <span class="pct">24%</span>
+      </div>
+      <div class="prog proc">
+        <span class="info">
+          <span class="name">PMIB</span>
+          <span class="meta">291 transferencias <span class="chip proc"><i></i>En proceso</span></span>
+        </span>
+        <span class="pct">25%</span>
+      </div>
+      <div class="prog crit">
+        <span class="info">
+          <span class="name">PNSU</span>
+          <span class="meta">165 transferencias <span class="chip crit"><i></i>Crítico</span></span>
+        </span>
+        <span class="pct">9%</span>
+      </div>
+      <div class="prog proc">
+        <span class="info">
+          <span class="name">PNC</span>
+          <span class="meta">5 transferencias <span class="chip proc"><i></i>En proceso</span></span>
+        </span>
+        <span class="pct">34%</span>
+      </div>
+      <button class="more-link">
+        Ver más detalles
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+      </div></div>
+    </div>
+
+    <div class="cartera-card closed">
+      <button class="hd" aria-label="Mostrar u ocultar PRESET">
+        <span class="hd-txt">
+          <span class="t">PRESET</span>
+          <span class="s">Aptos respecto al total</span>
+        </span>
+        <span class="caret"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+      </button>
+      <div class="summary">
+        <span class="bic b-preset">
+          <svg viewBox="0 0 24 24" fill="#fff"><path d="M9 2.8h6a1.6 1.6 0 0 1 1.6 1.6V6H7.4V4.4A1.6 1.6 0 0 1 9 2.8z"/><path d="M5.6 5H7.4v2.6h9.2V5h1.8a1.4 1.4 0 0 1 1.4 1.4v13.2A1.4 1.4 0 0 1 18.4 21H5.6a1.4 1.4 0 0 1-1.4-1.4V6.4A1.4 1.4 0 0 1 5.6 5z" fill-rule="evenodd"/><path d="M8.3 14.2l2.4 2.4 5-5-1.3-1.3-3.7 3.7-1.1-1.1z" fill="#3D7EF7"/></svg>
+        </span>
+        <span class="name">PRESET</span>
+        <span class="sub">Aptos respecto al total</span>
+        <span class="pctv pct-cr" id="preset-card-pct">—</span>
+      </div>
+      <div class="body"><div id="preset-card-body">
+      <button class="more-link">
+        Ver más detalles
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+      </div></div>
+    </div>
+
+  </section>
+
+  <section class="screen" id="screen-recompensas" aria-label="Recompensas">
+    <header class="topbar">
+      <button class="icon-btn" data-go="screen-cuenta" aria-label="Atrás">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <h1>Recompensas</h1>
+      <span></span>
+    </header>
+
+    <div class="promo lemon">
+      <span class="ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 8.5v7M10 10c.5-.8 3.4-.9 3.7.4.3 1.5-3.9 1-3.7 2.6.2 1.4 3.3 1.3 3.8.4"/></svg>
+      </span>
+      <div class="t">Recompensa</div>
+      <div class="cap">Hasta</div>
+      <div class="big">100</div>
+      <button class="btn-white">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        Recibir S/ 25.24
+      </button>
+    </div>
+
+    <div class="promo brown">
+      <span class="ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M12 9V7.5M12 16.5V15M9 12H7.5M16.5 12H15"/></svg>
+      </span>
+      <div class="t">Bono</div>
+      <div class="cap">Hasta</div>
+      <div class="big">250</div>
+      <button class="btn-white">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        Recibir
+      </button>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-orden" aria-label="Orden">
+    <header class="topbar">
+      <button class="icon-btn" data-go="screen-cuenta" aria-label="Atrás">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <h1>Orden</h1>
+      <span></span>
+    </header>
+
+    <div class="section-head"><h2>Detalles de la orden</h2></div>
+    <div class="detail-card">
+      <div class="dr"><span>Monto</span><b>S/ 1,000.00</b></div>
+      <div class="dr"><span>Plazo</span><b>12 meses</b></div>
+      <div class="dr"><span>Frecuencia</span><b>Mensual</b></div>
+      <div class="dr"><span>Tasa de retorno</span><b>8.5%</b></div>
+      <div class="dr"><span>Ganancia de hoy</span><b>S/ 5.46</b></div>
+      <div class="dr"><span>Ingreso acumulado</span><b>S/ 293.78</b></div>
+      <div class="dr"><span>Fecha de creación</span><b>28 mar, 14:33</b></div>
+      <div class="dr"><span>Tiempo en curso</span><b>137 días</b></div>
+      <div class="dr"><span>Vencimiento</span><b>12 abr 2027</b></div>
+      <div class="dr"><span>ID</span><b>0064837669224y</b></div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-bot" aria-label="BOT">
+    <header class="topbar">
+      <button class="icon-btn" data-go="screen-home" aria-label="Atrás">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <h1>BOT</h1>
+      <span></span>
+    </header>
+    <div class="placeholder">
+      <span class="bubble-big">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 8V5.2"/><circle cx="12" cy="4" r="1.2"/><path d="M9.5 13h.01M14.5 13h.01"/><path d="M9.6 16c.8.7 4 .7 4.8 0"/></svg>
+      </span>
+      <h3>Tu asistente está en camino</h3>
+      <p>El BOT te ayudará a resolver dudas, mover tu dinero y entender tus gastos conversando.</p>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-search" aria-label="Búsqueda">
+    <header class="topbar">
+      <button class="icon-btn" data-go="screen-home" aria-label="Atrás">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <h1>Búsqueda</h1>
+      <button class="icon-btn" id="open-filters" aria-label="Filtros">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+        <span class="fbadge" id="filter-count" hidden></span>
+      </button>
+    </header>
+    <label class="note-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="search" id="search-input" placeholder="Buscar por obra, CUI, programa o lugar…" autocomplete="off">
+    </label>
+
+    <div id="search-results"></div>
+  </section>
+
+  <!-- ═══ FICHA DE PROYECTO ═══ -->
+  <section class="screen" id="screen-proyecto" aria-label="Proyecto">
+    <header class="topbar">
+      <button class="icon-btn" data-go="screen-search" aria-label="Atrás">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <h1>Proyecto</h1>
+      <span></span>
+    </header>
+    <div id="ficha"></div>
+  </section>
+
+  <!-- ═══ NAV INFERIOR ═══ -->
+  <nav class="bottom-nav" aria-label="Principal">
+    <button data-go="screen-home" aria-label="Inicio" class="current">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5.5 8.8V20a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V8.8"/></svg>
+    </button>
+    <button data-go="screen-cuenta" aria-label="Inversiones">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-6 4 3 6-8"/><path d="M14 6h4v4"/></svg>
+    </button>
+    <button class="nav-bot" data-go="screen-bot" aria-label="BOT">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 8V5.2"/><circle cx="12" cy="4" r="1.2"/><path d="M9.5 13h.01M14.5 13h.01"/><path d="M9.6 16c.8.7 4 .7 4.8 0"/></svg>
+    </button>
+    <button data-go="screen-transactions" aria-label="Actividades">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg>
+    </button>
+    <button data-go="screen-search" aria-label="Búsqueda">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    </button>
+  </nav>
+
+  <!-- ═══ FILTROS (búsqueda) ═══ -->
+  <div class="filter-backdrop" id="filter-backdrop" hidden></div>
+  <aside class="filter-sheet" id="filter-sheet" hidden aria-label="Filtros">
+    <div class="sheet-head">
+      <h2>Filtros</h2>
+      <button class="x" id="filters-close" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="sheet-body">
+      <section><h3>Programa</h3><div class="chipset" id="f-programa"></div></section>
+      <section><h3>Cartera</h3><div class="chipset" id="f-cartera"></div></section>
+    </div>
+    <div class="sheet-foot">
+      <button class="btn-ghost" id="filters-clear">Limpiar</button>
+      <button class="btn-solid" id="filters-apply">Ver proyectos</button>
+    </div>
+  </aside>
+
+  <!-- ═══ CONFIRMACIÓN ═══ -->
+  <div class="toast" id="toast" role="status">
+    <div class="box">
+      <span class="check">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </span>
+      <span class="t1" id="toast-title">¡Enviado!</span>
+      <span class="t2" id="toast-sub">a Matteo Ricci</span>
+    </div>
+  </div>
+</div>
+
+<script src="Data/proyectos.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  /* ── Navegación entre pantallas ── */
+  var screens = document.querySelectorAll(".screen");
+  var navBtns = document.querySelectorAll(".bottom-nav button");
+  function goScreen(id){
+    screens.forEach(function(s){ s.classList.toggle("active", s.id === id); });
+    navBtns.forEach(function(b){ b.classList.toggle("current", b.getAttribute("data-go") === id); });
+    var active = document.getElementById(id);
+    if(active) active.scrollTop = 0;
+    var fb = document.getElementById("filter-bar");
+    if(fb) fb.hidden = (id !== "screen-search");
+    if(id !== "screen-search"){
+      var sh = document.getElementById("filter-sheet"), bd = document.getElementById("filter-backdrop");
+      if(sh) sh.hidden = true; if(bd) bd.hidden = true;
+    }
+  }
+  document.addEventListener("click", function(e){
+    var t = e.target.closest("[data-go]");
+    if(!t) return;
+    goScreen(t.getAttribute("data-go"));
+  });
+
+  /* ── Grupos plegables (maximizar / minimizar) ── */
+  document.addEventListener("click", function(e){
+    if(e.target.closest(".more-link")) return;
+    var h = e.target.closest(".cartera-card .hd, .cartera-card .summary");
+    if(!h) return;
+    var card = h.closest(".cartera-card");
+    var willOpen = card.classList.contains("closed");
+    if(willOpen){
+      /* acordeón excluyente: solo un grupo abierto a la vez */
+      document.querySelectorAll(".cartera-card").forEach(function(c){
+        c.classList.add("closed");
+      });
+      card.classList.remove("closed");
+    } else {
+      card.classList.add("closed");
+    }
+  });
+
+  /* ── Inicio + detalle de Pliego + Entidades adscritas (hojas PLIEGO y ADSCRITAS) ── */
+  (function(){
+    var ind = window.INDICADORES || {};
+    var filasP = ind.pliego || [];
+    if(filasP.length){
+      var p0 = filasP[0];   /* fila PLIEGO */
+      document.getElementById("pliego-amount").textContent = Math.round(p0.todo) + "%";
+      document.getElementById("pliegoD-amount").textContent = pctTxt(p0.todo);
+      document.getElementById("pliegoD-delta").textContent =
+        "Actividades " + pctTxt(p0.actividades) + " · Proyectos " + pctTxt(p0.proyectos);
+      document.getElementById("pliegoD-bar").style.width = Math.min(100, p0.todo) + "%";
+      /* un card por cada fila restante de la hoja PLIEGO */
+      document.getElementById("pliego-cards").innerHTML = filasP.slice(1).map(function(f){
+        return seccionPct(f.nombre,
+          filaPct("Todo", f.todo) +
+          filaPct("Actividades", f.actividades) +
+          filaPct("Proyectos", f.proyectos));
+      }).join("");
+    }
+    var ads = ind.adscritas || [];
+    if(ads.length){
+      document.getElementById("ent-grid").innerHTML = ads.map(function(a){
+        return '<div class="ent">' +
+          '<span class="top"><span class="name">' + a.nombre + '</span><span class="pct">' + pctTxt(a.pct) + '</span></span>' +
+          '<span class="meter"><i style="width:' + Math.min(100, a.pct) + '%"></i></span>' +
+          '<span class="amt">S/ ' + fmtNum(Math.round(a.monto / 1000000)) + ' millones</span></div>';
+      }).join("");
+    }
+  })();
+
+  /* ══ BÚSQUEDA DE PROYECTOS (datos de muestra; luego Excel/BBDD) ══ */
+  var CARTERAS = {
+    preset:         { label:"PRESET",              color:"#3D7EF7" },
+    paralizadas:    { label:"Paralizadas",         color:"#F04438" },
+    obras:          { label:"Obras directas",      color:"#33B679" },
+    transferencias: { label:"Transferencias 2026", color:"#8E5CD9" }
+  };
+
+  var PROYECTOS = window.PROYECTOS || [];   /* datos reales cargados desde data/proyectos.js */
+
+  function norm(t){
+    return String(t).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+  }
+  function pctTxt(n){ return String(n).replace(".", ",") + "%"; }
+  function pctClass(n){ return n >= 60 ? "pct-ok" : (n >= 25 ? "pct-pr" : "pct-cr"); }
+  function execColor(n){ return n >= 60 ? "#1FA23C" : (n >= 25 ? "#C98A00" : "#BF2E25"); }
+  function fmtMonto(n){
+    return n >= 1000000 ? "S/ " + (n/1000000).toFixed(1).replace(".", ",") + " M"
+                        : "S/ " + n.toLocaleString("es-PE");
+  }
+  function fmtSoles(n){ return "S/ " + Number(n || 0).toLocaleString("es-PE"); }
+  function fmtNum(n){ return Number(n || 0).toLocaleString("es-PE"); }
+  function txt(v){ return (v === 0 || v) && String(v) !== "" ? v : "—"; }
+  /* Color del chip de programa */
+  var PROG_COLORS = { PNSR:"#33B679", PNSU:"#3D7EF7", PMIB:"#8E5CD9", PASLC:"#E8833A",
+                      COFOPRI:"#16A2A2", SENCICO:"#C25CA0", OTASS:"#6E8B3D", PNC:"#D98C00" };
+  function progColor(prog){ return PROG_COLORS[prog] || "#5A7DE0"; }
+
+  /* ── Buscador regional: drill-down + filtros + paginación ── */
+  var THRESHOLD = 10, PAGE = 20;
+  var PROGRAMAS = (function(){ var s={}; PROYECTOS.forEach(function(p){ s[p.programa]=1; }); return Object.keys(s).sort(); })();
+
+  function matchProj(p, f){
+    if(f.dep  && p.dep  !== f.dep)  return false;
+    if(f.prov && p.prov !== f.prov) return false;
+    if(f.dist && p.dist !== f.dist) return false;
+    if(f.programa && p.programa !== f.programa) return false;
+    if(f.cartera  && !(p.carteras && p.carteras[f.cartera])) return false;
+    return true;
+  }
+  function filtrar(f){ return PROYECTOS.filter(function(p){ return matchProj(p, f); }); }
+  function ordenar(arr){ return arr.slice().sort(function(x,y){ return (y.fisico||0) - (x.fisico||0); }); }
+  function groupAgg(arr, key){
+    var m = {};
+    arr.forEach(function(p){ var g=p[key]; if(!m[g]) m[g]={name:g,n:0}; m[g].n++; });
+    return Object.keys(m).map(function(k){ return m[k]; })
+      .sort(function(a,b){ return b.n-a.n || a.name.localeCompare(b.name,"es"); });
+  }
+
+  var sInput   = document.getElementById("search-input");
+  var sResults = document.getElementById("search-results");
+  var state = { texto:"", dep:"", prov:"", dist:"", programa:"", cartera:"", page:1 };
+
+  /* Referencias de la hoja de filtros */
+  var fBack    = document.getElementById("filter-backdrop");
+  var fSheet   = document.getElementById("filter-sheet");
+  var fCountEl = document.getElementById("filter-count");
+  var applyBtn = document.getElementById("filters-apply");
+  var SETS = [
+    { el:document.getElementById("f-programa"), field:"programa", opts:[{k:"",label:"Todos"}].concat(PROGRAMAS.map(function(p){ return {k:p,label:p}; })) },
+    { el:document.getElementById("f-cartera"),  field:"cartera",  opts:[{k:"",label:"Todas"}].concat(Object.keys(CARTERAS).map(function(k){ return {k:k,label:CARTERAS[k].label}; })), count:true }
+  ];
+  function renderFilters(){
+    SETS.forEach(function(s){
+      var current = state[s.field];
+      s.el.innerHTML = s.opts.map(function(o){
+        var n = "";
+        if(s.count){ var f = Object.assign({}, state); f[s.field]=o.k; n='<span class="n">'+filtrar(f).length+'</span>'; }
+        return '<button data-field="'+s.field+'" data-k="'+o.k+'" class="'+(current===o.k?"on":"")+'">'+o.label+n+'</button>';
+      }).join("");
+    });
+    applyBtn.textContent = "Ver " + filtrar(state).length + " proyectos";
+  }
+  function updateBadge(){
+    var n = ["programa","cartera"].reduce(function(a,f){ return a+(state[f]?1:0); }, 0);
+    fCountEl.textContent = n; fCountEl.hidden = (n === 0);
+  }
+
+  var CHV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';
+  var eyeSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+
+  function cardHTML(p){
+    var fis = (typeof p.fisico === "number") ? p.fisico : 0;
+    var badges = Object.keys(p.carteras||{}).map(function(k){
+      return '<span class="pcard-badge" style="background:'+CARTERAS[k].color+'">'+CARTERAS[k].label+'</span>';
+    }).join("");
+    return '<button class="pcard" data-cui="'+p.cui+'">'+
+      '<div class="pcard-top"><span class="pcard-cui">CUI '+p.cui+'</span><span class="pcard-prog">'+p.programa+'</span>'+
+        '<span class="pcard-spacer"></span><span class="pcard-eye" aria-hidden="true">'+eyeSvg+'</span><span class="pcard-chev" aria-hidden="true">'+CHV+'</span></div>'+
+      '<div class="pcard-name">'+p.nombre+'</div>'+
+      '<div class="pcard-ubi">'+p.dep+' · '+p.prov+' · '+p.dist+'</div>'+
+      '<div class="pcard-badges">'+badges+'</div>'+
+      '<div class="pcard-stats">'+
+        '<div><div class="k">PIM 2026</div><div class="pim">'+fmtSoles(p.pim)+'</div></div>'+
+        '<div style="text-align:right"><div class="k">Avance físico</div><div class="pcard-pct '+pctClass(fis)+'">'+pctTxt(fis)+'</div></div>'+
+      '</div>'+
+      '<div class="pcard-bar"><i style="width:'+fis+'%;background:'+execColor(fis)+'"></i></div>'+
+    '</button>';
+  }
+
+  function breadcrumb(){
+    var parts = ['<button data-bc="inicio">Inicio</button>'];
+    if(state.dep){  parts.push('<span class="sep">›</span>'); parts.push(state.prov ? '<button data-bc="dep">'+state.dep+'</button>' : '<span class="here">'+state.dep+'</span>'); }
+    if(state.prov){ parts.push('<span class="sep">›</span>'); parts.push(state.dist ? '<button data-bc="prov">'+state.prov+'</button>' : '<span class="here">'+state.prov+'</span>'); }
+    if(state.dist){ parts.push('<span class="sep">›</span>'); parts.push('<span class="here">'+state.dist+'</span>'); }
+    var hay = state.programa||state.cartera||state.dep||state.texto;
+    return '<div class="bc">'+parts.join("")+(hay?'<button class="bc-clear" data-clear>Limpiar</button>':'')+'</div>';
+  }
+  function activos(){
+    var tags = [];
+    if(state.programa) tags.push('<span class="tag">Programa: '+state.programa+' <button data-rm="programa">✕</button></span>');
+    if(state.cartera)  tags.push('<span class="tag">'+CARTERAS[state.cartera].label+' <button data-rm="cartera">✕</button></span>');
+    if(!tags.length) return "";
+    return '<div class="fltags">'+tags.join("")+'</div>';
+  }
+  function pasaFacetas(p){
+    if(state.programa && p.programa !== state.programa) return false;
+    if(state.cartera  && !(p.carteras && p.carteras[state.cartera])) return false;
+    return true;
+  }
+  function renderBuscador(){ updateBadge(); sResults.innerHTML = navegar(); }
+  function navegar(){
+    var q = norm(state.texto), qr = state.texto.trim();
+    var base = filtrar(state);
+    var nivel = !state.dep ? "dep" : (!state.prov ? "prov" : (!state.dist ? "dist" : "lista"));
+    sInput.placeholder = nivel==="dep" ? "Buscar por CUI o departamento…"
+                       : nivel==="prov" ? "Buscar por CUI o provincia…"
+                       : nivel==="dist" ? "Buscar por CUI o distrito…"
+                       : "Buscar por CUI o nombre de obra…";
+    var top = breadcrumb() + activos();
+    var body = "";
+    if(qr){
+      var cuiHits = PROYECTOS.filter(function(p){ return pasaFacetas(p) && p.cui.indexOf(qr) !== -1; });
+      if(cuiHits.length){
+        body += '<div class="sug-h">Proyectos · '+cuiHits.length+'</div>';
+        body += '<div class="cards">'+ ordenar(cuiHits).slice(0, PAGE).map(cardHTML).join("") +'</div>';
+      }
+    }
+    if(nivel !== "lista"){
+      var etiqueta  = nivel==="dep" ? "región" : (nivel==="prov" ? "provincia" : "distrito");
+      var etiquetaP = nivel==="dep" ? "regiones" : (nivel==="prov" ? "provincias" : "distritos");
+      var grupos = groupAgg(base, nivel==="dep" ? "dep" : (nivel==="prov" ? "prov" : "dist"));
+      if(q) grupos = grupos.filter(function(g){ return norm(g.name).indexOf(q) !== -1; });
+      if(grupos.length){
+        var maxN = grupos.reduce(function(m,g){ return Math.max(m, g.n); }, 1);
+        if(!q) body += '<div class="res-count"><b>'+base.length+'</b> proyectos en '+grupos.length+' '+etiquetaP+' · elegí una '+etiqueta+'</div>';
+        body += '<div class="groups">'+ grupos.map(function(g){
+          return '<button class="grow" data-drill="'+nivel+'" data-val="'+g.name.replace(/"/g,'&quot;')+'">'+
+            '<div class="grow-top"><span class="grow-name">'+g.name+'</span><span class="grow-n">'+g.n+'</span>'+CHV+'</div>'+
+            '<div class="grow-bar"><i style="width:'+Math.round(g.n/maxN*100)+'%"></i></div>'+
+          '</button>';
+        }).join("") +'</div>';
+      }
+    } else {
+      var lista = base;
+      if(q) lista = lista.filter(function(p){ return norm(p.nombre).indexOf(q) !== -1; });
+      if(lista.length){
+        var orden = ordenar(lista);
+        var shown = Math.min(state.page * PAGE, lista.length);
+        body += '<div class="res-count">Mostrando <b>'+shown+'</b> de <b>'+lista.length+'</b> proyectos</div>';
+        body += '<div class="cards">'+ orden.slice(0, shown).map(cardHTML).join("") +'</div>';
+        if(shown < lista.length) body += '<button class="more" data-more>Cargar más ('+(lista.length-shown)+')</button>';
+      }
+    }
+    if(!body){ body = '<div class="no-results">'+(qr ? 'Sin resultados para "'+qr+'".' : 'Sin proyectos.')+'</div>'; }
+    return top + body;
+  }
+
+  /* Eventos de busqueda y filtros */
+  sInput.addEventListener("input", function(e){ state.texto = e.target.value.trim(); state.page = 1; renderBuscador(); });
+  function openFilters(){ renderFilters(); fBack.hidden=false; fSheet.hidden=false; }
+  function closeFilters(){ fBack.hidden=true; fSheet.hidden=true; }
+  document.getElementById("open-filters").addEventListener("click", openFilters);
+  document.getElementById("filters-close").addEventListener("click", closeFilters);
+  applyBtn.addEventListener("click", closeFilters);
+  fBack.addEventListener("click", closeFilters);
+  document.getElementById("filters-clear").addEventListener("click", function(){
+    state.programa=state.cartera=""; state.page=1; renderFilters(); renderBuscador();
+  });
+  fSheet.addEventListener("click", function(e){
+    var b = e.target.closest("[data-field]"); if(!b) return;
+    var field = b.getAttribute("data-field"), k = b.getAttribute("data-k");
+    state[field] = (state[field] === k ? "" : k);
+    state.page = 1; renderFilters(); renderBuscador();
+  });
+
+  renderBuscador();
+
+  /* ── Inversiones: tarjeta PRESET dinámica (% de aptos sobre el total) ── */
+  (function(){
+    var pctEl = document.getElementById("preset-card-pct");
+    var cont  = document.getElementById("preset-card-body");
+    if(!pctEl || !cont) return;
+    var agg = {}, tot = 0, aptos = 0;
+    PROYECTOS.forEach(function(p){
+      var c = p.carteras && p.carteras.preset; if(!c) return;
+      var a = agg[p.programa] || (agg[p.programa] = { n:0, aptos:0 });
+      a.n++; tot++;
+      if(String(c.etapa || "").toUpperCase() === "APTO"){ a.aptos++; aptos++; }
+    });
+    var pctG = tot ? Math.round(aptos / tot * 1000) / 10 : 0;
+    pctEl.textContent = pctTxt(pctG);
+    pctEl.className = "pctv " + pctClass(pctG);
+    var filas = Object.keys(agg).sort(function(a, b){ return agg[b].n - agg[a].n; }).map(function(prog){
+      var a = agg[prog], pc = Math.round(a.aptos / a.n * 1000) / 10;
+      var cls = pc >= 60 ? "ok" : (pc >= 25 ? "proc" : "crit");
+      var chip = pc >= 60 ? "Óptimo" : (pc >= 25 ? "En proceso" : "Crítico");
+      return '<div class="prog ' + cls + '"><span class="info">' +
+        '<span class="name">' + prog + '</span>' +
+        '<span class="meta">' + fmtNum(a.n) + (a.n === 1 ? ' proyecto ' : ' proyectos ') +
+          '<span class="chip ' + cls + '"><i></i>' + chip + '</span></span></span>' +
+        '<span class="pct">' + pctTxt(pc) + '</span></div>';
+    }).join("");
+    cont.insertAdjacentHTML("afterbegin", filas);
+  })();
+
+  /* ── Actividades: componentes compartidos de las pestañas de indicadores ──
+     Mismo formato que la ficha de proyecto: título de sección + tarjeta de
+     filas, cada fila con su barra de porcentaje. */
+  function filaPct(nombre, pc, colorFijo){
+    var c = colorFijo || execColor(pc);
+    return '<div class="drb"><div class="dr"><span>' + nombre + '</span>' +
+      '<b style="color:' + c + '">' + pctTxt(pc) + '</b></div>' +
+      '<div class="mtr"><i style="width:' + Math.min(100, pc) + '%;background:' + c + '"></i></div></div>';
+  }
+  function seccionPct(titulo, filas){
+    return '<div class="section-head"><h2>' + titulo + '</h2></div>' +
+      '<div class="detail-card">' + filas + '</div>';
+  }
+  function indicadorPrincipal(pref, hecho, meta, etiqueta){
+    var pct = Math.round(hecho / meta * 1000) / 10;
+    document.getElementById(pref + "-pct").textContent = pctTxt(pct);
+    document.getElementById(pref + "-bar").style.width = Math.min(100, pct) + "%";
+    document.getElementById(pref + "-" + etiqueta).innerHTML = "<b>" + fmtNum(hecho) + "</b> " + etiqueta;
+    document.getElementById(pref + "-meta").innerHTML = "Meta <b>" + fmtNum(meta) + "</b>";
+  }
+  function segControl(id, onCambio){
+    var seg = document.getElementById(id);
+    seg.addEventListener("click", function(e){
+      var b = e.target.closest("[data-seg]"); if(!b) return;
+      seg.querySelectorAll("button").forEach(function(x){ x.classList.toggle("active", x === b); });
+      onCambio(b.getAttribute("data-seg"));
+    });
+  }
+
+  /* ── Actividades · Títulos: indicador (diseño 4) + Macro región / Por regiones ── */
+  (function(){
+    var t = (window.INDICADORES || {}).titulos;
+    if(!t || !t.meta) return;
+    indicadorPrincipal("tit", t.entregados, t.meta, "entregados");
+    var listas = document.getElementById("tit-listas");
+    function render(vista){
+      if(vista === "macro"){
+        listas.innerHTML = seccionPct("Por macro región",
+          (t.macro || []).map(function(mr){ return filaPct(mr.nombre, mr.pct); }).join(""));
+        return;
+      }
+      var html = "", actual = null, filas = "";
+      (t.regiones || []).forEach(function(r){
+        if(r.macro !== actual){
+          if(actual !== null) html += seccionPct(actual, filas);
+          actual = r.macro; filas = "";
+        }
+        filas += filaPct(r.nombre, r.pct);
+      });
+      if(actual !== null) html += seccionPct(actual, filas);
+      listas.innerHTML = html;
+    }
+    render("macro");
+    segControl("tit-seg", render);
+  })();
+
+  /* ── Actividades · Bonos: indicador (diseño 4) + Por modalidad / Por región ── */
+  (function(){
+    var b = (window.INDICADORES || {}).bonos;
+    if(!b || !b.meta) return;
+    indicadorPrincipal("bon", b.desembolsados, b.meta, "desembolsados");
+    var listas = document.getElementById("bon-listas");
+    function render(vista){
+      if(vista === "modalidad"){
+        listas.innerHTML = seccionPct("Bonos por modalidad",
+          (b.modalidades || []).map(function(m){ return filaPct(m.nombre, m.pct); }).join(""));
+        return;
+      }
+      listas.innerHTML = seccionPct("Bonos por región",
+        (b.regiones || []).map(function(r){ return filaPct(r.nombre, r.pct); }).join(""));
+    }
+    render("modalidad");
+    segControl("bon-seg", render);
+  })();
+
+  /* ── Actividades · Wasiymi: indicador (diseño 4) + lista directa por región ── */
+  (function(){
+    var w = (window.INDICADORES || {}).wasiymi;
+    if(!w || !w.meta) return;
+    indicadorPrincipal("was", w.ejecutadas, w.meta, "ejecutadas");
+    document.getElementById("was-listas").innerHTML = seccionPct("Wasiymi por región",
+      (w.regiones || []).map(function(r){ return filaPct(r.nombre, r.pct); }).join(""));
+  })();
+
+  /* ── Actividades: pestañas Títulos de propiedad / Bonos / Wasiymi ── */
+  (function(){
+    var tabs = document.getElementById("act-tabs");
+    if(!tabs) return;
+    tabs.addEventListener("click", function(e){
+      var b = e.target.closest("[data-tab]"); if(!b) return;
+      tabs.querySelectorAll("button").forEach(function(x){ x.classList.toggle("active", x === b); });
+      ["titulos", "bonos", "wasiymi"].forEach(function(t){
+        document.getElementById("tab-" + t).hidden = (t !== b.getAttribute("data-tab"));
+      });
+    });
+  })();
+
+  /* ── Ajustes: preferencias persistentes + resumen de datos ── */
+  (function(){
+    var LS = "torre-ajustes", cfg = {};
+    try{ cfg = JSON.parse(localStorage.getItem(LS)) || {}; }catch(e){}
+    function guardar(){ try{ localStorage.setItem(LS, JSON.stringify(cfg)); }catch(e){} }
+
+    /* Notificaciones: interruptor persistente */
+    var swN = document.getElementById("sw-notif");
+    if(cfg.notif === undefined) cfg.notif = true;
+    function pintaNotif(){ swN.classList.toggle("on", !!cfg.notif); }
+    pintaNotif();
+    document.getElementById("row-notif").addEventListener("click", function(){
+      cfg.notif = !cfg.notif; guardar(); pintaNotif();
+    });
+
+    /* Tamaño de texto: se aplica a toda la app y se recuerda */
+    var TAM = { p:{ zoom:.92, nombre:"Pequeño" }, n:{ zoom:1, nombre:"Normal" }, g:{ zoom:1.08, nombre:"Grande" } };
+    var phone = document.querySelector(".phone");
+    var segT = document.getElementById("seg-texto");
+    function aplicaTam(){
+      var t = TAM[cfg.texto] ? cfg.texto : "n";
+      if(phone) phone.style.zoom = TAM[t].zoom;
+      document.getElementById("sub-texto").textContent = TAM[t].nombre;
+      segT.querySelectorAll("button").forEach(function(b){
+        b.classList.toggle("active", b.getAttribute("data-tam") === t);
+      });
+    }
+    segT.addEventListener("click", function(e){
+      var b = e.target.closest("[data-tam]"); if(!b) return;
+      cfg.texto = b.getAttribute("data-tam"); guardar(); aplicaTam();
+    });
+    aplicaTam();
+
+    /* Filas expandibles */
+    document.querySelectorAll(".set-row[data-abre]").forEach(function(r){
+      r.addEventListener("click", function(){
+        var body = document.getElementById(r.getAttribute("data-abre"));
+        body.hidden = !body.hidden;
+      });
+    });
+
+    /* Resumen real de los datos cargados */
+    var d = document.getElementById("datos-resumen");
+    if(d){
+      var n = {};
+      PROYECTOS.forEach(function(p){
+        Object.keys(p.carteras || {}).forEach(function(k){ n[k] = (n[k] || 0) + 1; });
+      });
+      d.innerHTML = '<div class="detail-card">' +
+        filaDr("Proyectos en la matriz", fmtNum(PROYECTOS.length)) +
+        Object.keys(CARTERAS).map(function(k){
+          return filaDr(CARTERAS[k].label, fmtNum(n[k] || 0));
+        }).join("") +
+      '</div>';
+    }
+    document.getElementById("btn-recarga").addEventListener("click", function(){ location.reload(); });
+  })();
+
+  /* ── Ficha dinámica: bloque común + una sección por cartera ── */
+  var fichaEl = document.getElementById("ficha");
+
+  function filaDr(k, v){
+    return '<div class="dr"><span>' + k + '</span><b>' + v + '</b></div>';
+  }
+  function carteraFilas(clave, datos){
+    if(clave === "preset"){
+      /* solo los PRESET muestran la evaluación */
+      return [["Etapa de evaluación", txt(datos.etapa)], ["Estado", txt(datos.estado)]];
+    }
+    if(clave === "paralizadas"){
+      return [["Avance físico", pctTxt(datos.avance || 0)],
+              ["Hito de reactivación", txt(datos.hito)],
+              ["Fecha estimada o real de reactivación", txt(datos.fecha)]];
+    }
+    if(clave === "obras"){
+      return [["Modalidad", "Ejecución directa"], ["Avance físico", pctTxt(datos.avance || 0)]];
+    }
+    if(clave === "transferencias"){
+      var pctTr = datos.transferido > 0 ? Math.round((datos.ejecutado || 0) / datos.transferido * 1000) / 10 : null;
+      return [["Monto transferido 2026", fmtMonto(datos.transferido || 0)],
+              ["Monto ejecutado 2026", fmtMonto(datos.ejecutado || 0)],
+              ["% Ejecución de transferencias", pctTr === null ? "—" : pctTxt(pctTr)]];
+    }
+    return [];
+  }
+
+  /* Única fuente de las secciones de la ficha: alimenta la pantalla y el PDF */
+  function fichaDatos(p){
+    var secs = [
+      { id:"gen", titulo:"Datos generales", filas:[
+          ["Programa", p.programa],
+          ["Unidad ejecutora (UEI)", txt(p.uei)],
+          ["Ubicación", p.dist + ", " + p.prov],
+          ["Departamento", p.dep],
+          ["Modalidad de financiamiento", txt(p.modalidad)],
+          ["Tipo de proyecto", txt(p.tipo)],
+          ["Estado de la inversión (SSI)", txt(p.ssi)]
+      ]},
+      { id:"benef", titulo:"Beneficiarios", filas:[
+          ["Población beneficiaria", p.pobl ? fmtNum(p.pobl) : "—"],
+          ["Conexiones nuevas de agua", p.cxAgua ? fmtNum(p.cxAgua) : "—"],
+          ["Conexiones nuevas de alcant./UBS", p.cxAlc ? fmtNum(p.cxAlc) : "—"]
+      ]},
+      { id:"fin", titulo:"Información financiera 2026", filas:[
+          ["Costo de inversión", fmtMonto(p.monto || 0)],
+          ["Devengado acumulado", fmtMonto(p.devAc || 0)],
+          ["PIM 2026", fmtMonto(p.pim || 0)],
+          ["Devengado 2026", fmtMonto(p.dev || 0)],
+          ["% Ejec. financiera 2026", p.pim > 0 ? pctTxt(Math.round((p.dev || 0) / p.pim * 1000) / 10) : "—"]
+      ]}
+    ];
+    if(!(p.carteras && p.carteras.preset)){
+      secs.push({ id:"sit", titulo:"Estado situacional", filas:[
+        ["Estado del expediente técnico", txt(p.estadoET)],
+        ["Estado del proceso de selección", txt(p.procSel)],
+        ["Estado SSP", txt(p.ssp)],
+        ["Sub estado SSP", txt(p.subSsp)],
+        ["Avance físico de obra", pctTxt(p.fisico || 0)],
+        ["Fecha real de término de obra", txt(p.fTerm)]
+      ]});
+    }
+    Object.keys(p.carteras||{}).forEach(function(k){
+      secs.push({ id:k, titulo:CARTERAS[k].label, filas:carteraFilas(k, p.carteras[k]) });
+    });
+    return secs;
+  }
+
+  function fichaBadges(p){
+    return Object.keys(p.carteras||{}).map(function(k){
+      return '<span class="badge" style="background:' + CARTERAS[k].color + '">' + CARTERAS[k].label + '</span>';
+    }).join("");
+  }
+  function fichaSecciones(p){
+    return fichaDatos(p).map(function(s){
+      return '<div class="sec sec-' + s.id + '"><div class="section-head"><h2>' + s.titulo + '</h2></div>' +
+        '<div class="detail-card">' + s.filas.map(function(f){ return filaDr(f[0], f[1]); }).join("") + '</div></div>';
+    }).join("");
+  }
+
+  var fichaP = null;   /* proyecto mostrado actualmente en la ficha */
+
+  function abrirFicha(cui){
+    var p = null;
+    for(var i = 0; i < PROYECTOS.length; i++){
+      if(PROYECTOS[i].cui === cui){ p = PROYECTOS[i]; break; }
+    }
+    if(!p) return;
+    fichaP = p;
+    var badges = fichaBadges(p);
+    fichaEl.innerHTML =
+      '<div class="neu-card ficha-head">' +
+        '<div class="neu-top">' +
+          '<div class="pubi">' + p.dep + ' - ' + p.prov + ' - ' + p.dist + '</div>' +
+          '<div class="pcui">CUI ' + p.cui + '</div>' +
+          '<div class="pname">' + p.nombre + '</div>' +
+          (badges ? '<div class="badges">' + badges + '</div>' : '') +
+        '</div>' +
+        '<div class="neu-actions">' +
+          '<button data-ficha="pdf">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>' +
+            'Descargar PDF' +
+          '</button>' +
+          '<button data-ficha="compartir">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>' +
+            'Compartir' +
+          '</button>' +
+        '</div>' +
+      '</div>' +
+      fichaSecciones(p);
+    goScreen("screen-proyecto");
+  }
+
+  /* ── Acciones de la ficha: descargar PDF y compartir ── */
+  /* PDF generado a mano (sin librerías): descarga directa como archivo .pdf.
+     Diseño adaptativo: aireado por defecto; si el proyecto tiene muchas
+     secciones, compacta lo justo para caber en una sola hoja A4. */
+  function descargarPdf(p){
+    var W = 595, H = 842, M = 36;                 /* A4 en puntos */
+    var pages = [], ops;
+    function nuevaPagina(){ ops = []; pages.push(ops); }
+    nuevaPagina();
+
+    function col(hex){
+      var n = parseInt(hex.slice(1), 16);
+      return (((n>>16)&255)/255).toFixed(3) + " " + (((n>>8)&255)/255).toFixed(3) + " " + ((n&255)/255).toFixed(3);
+    }
+    function esc(s){
+      s = String(s); var out = "";
+      for(var i = 0; i < s.length; i++){
+        var c = s.charCodeAt(i), ch = s.charAt(i);
+        if(ch === "\\" || ch === "(" || ch === ")") out += "\\" + ch;
+        else if(c === 8212) out += String.fromCharCode(151);
+        else if(c === 8211) out += String.fromCharCode(150);
+        else if(c === 8230) out += String.fromCharCode(133);
+        else if(c === 160 || c === 8239 || c === 8201) out += " ";
+        else if(c > 255) out += "?";
+        else out += ch;
+      }
+      return out;
+    }
+    function rect(x, y, w, h, hex){
+      ops.push(col(hex) + " rg " + x.toFixed(1) + " " + (H - y - h).toFixed(1) + " " + w.toFixed(1) + " " + h.toFixed(1) + " re f");
+    }
+    function texto(x, y, s, size, hex, bold){
+      ops.push("BT /F" + (bold ? "2" : "1") + " " + size + " Tf " + col(hex) + " rg 1 0 0 1 " + x.toFixed(1) + " " + (H - y).toFixed(1) + " Tm (" + esc(s) + ") Tj ET");
+    }
+    function wrapTxt(s, maxC){
+      var out = [], line = "";
+      String(s).split(" ").forEach(function(wd){
+        if(line && (line.length + 1 + wd.length) > maxC){ out.push(line); line = wd; }
+        else line = line ? line + " " + wd : wd;
+      });
+      if(line) out.push(line);
+      return out.length ? out : [""];
+    }
+
+    var secs = fichaDatos(p);
+    var claves = Object.keys(p.carteras || {});
+
+    /* Dos juegos de medidas: cómodo y compacto */
+    var COMODO   = { lineH:14,   rowPad:9, bandH:22, bandGap:8, secGap:8, fRow:10.5, fBand:10,  fTit:12, titLH:17, fHead:9.5, headTop:50, badH:28, wrapV:46, wrapT:72 };
+    var COMPACTO = { lineH:11.5, rowPad:4, bandH:16, bandGap:5, secGap:5, fRow:9.5,  fBand:8.5, fTit:11, titLH:15, fHead:9,   headTop:42, badH:24, wrapV:52, wrapT:80 };
+    function altura(m){
+      var t = m.headTop + wrapTxt(p.nombre, m.wrapT).length * m.titLH + (claves.length ? m.badH : 6) + 16;
+      secs.forEach(function(s){
+        t += m.bandH + m.bandGap + m.secGap;
+        s.filas.forEach(function(f){ t += m.rowPad + wrapTxt(String(f[1]), m.wrapV).length * m.lineH; });
+      });
+      return t;
+    }
+    var m = altura(COMODO) <= H - 2 * M ? COMODO : COMPACTO;
+
+    /* Cabecera: panel limón como el indicador de Inicio */
+    var y = M;
+    var tLines = wrapTxt(p.nombre, m.wrapT);
+    var headH = m.headTop + tLines.length * m.titLH + (claves.length ? m.badH : 6);
+    rect(M - 8, y, W - 2 * (M - 8), headH, "#C8102E");
+    var ty = y + 18;
+    texto(M + 8, ty, (p.dep + " - " + p.prov + " - " + p.dist).toUpperCase(), m.fHead, "#F7C8C2", true); ty += m.fHead + 5;
+    texto(M + 8, ty, "CUI " + p.cui, m.fHead, "#F7C8C2", true); ty += m.fHead + 9;
+    tLines.forEach(function(l){ texto(M + 8, ty, l, m.fTit, "#FFFFFF", true); ty += m.titLH; });
+    if(claves.length){
+      ty += 5;
+      var bx = M + 8;
+      claves.forEach(function(k){
+        var lab = CARTERAS[k].label, wB = lab.length * 5.4 + 20;
+        rect(bx, ty - 12, wB, 17, "#FFFFFF");
+        texto(bx + 10, ty, lab, 8.5, CARTERAS[k].color, true);
+        bx += wB + 8;
+      });
+    }
+    y += headH + 14;
+
+    var PDF_COLS = {
+      gen:["#DCEFE5","#1C5B41"], benef:["#F8E8DC","#9A5A1F"], fin:["#E2EBFB","#2B4F9E"], sit:["#FBEDD9","#9A6A1F"],
+      preset:["#E2EBFB","#2B4F9E"], obras:["#DCEFE5","#1C5B41"], transferencias:["#EDE4F9","#6A3FB5"], paralizadas:["#FBE3E1","#B3261E"]
+    };
+
+    secs.forEach(function(s){
+      if(y > H - 100){ nuevaPagina(); y = M; }
+      var pc = PDF_COLS[s.id] || ["#E4EDE8", "#3A5548"];
+      rect(M - 8, y, W - 2 * (M - 8), m.bandH, pc[0]);
+      texto(M + 8, y + m.bandH * 0.7, s.titulo.toUpperCase(), m.fBand, pc[1], true);
+      y += m.bandH + m.bandGap;
+      s.filas.forEach(function(f, i){
+        var vLines = wrapTxt(String(f[1]), m.wrapV);
+        var rh = m.rowPad + vLines.length * m.lineH;
+        if(y + rh > H - M){ nuevaPagina(); y = M; }
+        if(i % 2 === 1) rect(M - 8, y, W - 2 * (M - 8), rh, "#F3F7F4");
+        var base = y + m.rowPad * 0.5 + m.lineH * 0.78;
+        texto(M + 8, base, f[0], m.fRow, "#6B756F", false);
+        vLines.forEach(function(vl){ texto(315, base, vl, m.fRow, "#141816", true); base += m.lineH; });
+        y += rh;
+      });
+      y += m.secGap;
+    });
+
+    /* Ensamblado del archivo PDF */
+    var objs = [];
+    objs[1] = "<< /Type /Catalog /Pages 2 0 R >>";
+    objs[3] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>";
+    objs[4] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>";
+    var kids = [], next = 5;
+    pages.forEach(function(po){
+      var contId = next++, pageId = next++;
+      var stream = po.join("\n");
+      objs[contId] = "<< /Length " + stream.length + " >>\nstream\n" + stream + "\nendstream";
+      objs[pageId] = "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 " + W + " " + H + "] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents " + contId + " 0 R >>";
+      kids.push(pageId + " 0 R");
+    });
+    objs[2] = "<< /Type /Pages /Kids [" + kids.join(" ") + "] /Count " + pages.length + " >>";
+    var pdf = "%PDF-1.4\n", offs = [];
+    for(var i = 1; i < objs.length; i++){
+      offs[i] = pdf.length;
+      pdf += i + " 0 obj\n" + objs[i] + "\nendobj\n";
+    }
+    var xref = pdf.length, nObj = objs.length;
+    pdf += "xref\n0 " + nObj + "\n0000000000 65535 f \n";
+    for(i = 1; i < nObj; i++){ pdf += ("0000000000" + offs[i]).slice(-10) + " 00000 n \n"; }
+    pdf += "trailer\n<< /Size " + nObj + " /Root 1 0 R >>\nstartxref\n" + xref + "\n%%EOF";
+
+    var bytes = new Uint8Array(pdf.length);
+    for(i = 0; i < pdf.length; i++){ var c = pdf.charCodeAt(i); bytes[i] = c <= 255 ? c : 63; }
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
+    a.download = "Proyecto-CUI-" + p.cui + ".pdf";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 800);
+  }
+
+  function textoCompartir(p){
+    return "Proyecto CUI " + p.cui + "\n" +
+      p.nombre + "\n" +
+      "Ubicación: " + p.dep + " - " + p.prov + " - " + p.dist + "\n" +
+      "Programa: " + p.programa + "\n" +
+      "Costo de inversión: " + fmtSoles(p.monto || 0) + "\n" +
+      "Avance físico: " + pctTxt(p.fisico || 0);
+  }
+  function compartir(p){
+    var texto = textoCompartir(p);
+    if(navigator.share){
+      navigator.share({ title: "Proyecto CUI " + p.cui, text: texto }).catch(function(){});
+      return;
+    }
+    /* Sin Web Share API: hoja propia con WhatsApp y Correo */
+    var enc = encodeURIComponent(texto);
+    var host = document.querySelector(".phone") || document.body;
+    var bd = document.createElement("div"); bd.className = "share-backdrop";
+    var sh = document.createElement("div"); sh.className = "share-sheet";
+    sh.innerHTML = '<h3>Compartir proyecto</h3>' +
+      '<a class="share-opt" target="_blank" rel="noopener" href="https://wa.me/?text=' + enc + '">WhatsApp</a>' +
+      '<a class="share-opt" href="mailto:?subject=' + encodeURIComponent("Proyecto CUI " + p.cui) + '&body=' + enc + '">Correo</a>';
+    function cerrar(){ bd.remove(); sh.remove(); }
+    bd.addEventListener("click", cerrar);
+    sh.addEventListener("click", function(e){ if(e.target.closest(".share-opt")) setTimeout(cerrar, 300); });
+    host.appendChild(bd); host.appendChild(sh);
+  }
+
+  fichaEl.addEventListener("click", function(e){
+    var b = e.target.closest("[data-ficha]");
+    if(!b || !fichaP) return;
+    if(b.getAttribute("data-ficha") === "pdf") descargarPdf(fichaP);
+    else compartir(fichaP);
+  });
+
+  sResults.addEventListener("click", function(e){
+    var t;
+    if((t = e.target.closest("[data-place]"))){
+      state.dep  = t.getAttribute("data-dep")  || "";
+      state.prov = t.getAttribute("data-prov") || "";
+      state.dist = t.getAttribute("data-dist") || "";
+      state.texto = ""; sInput.value = ""; state.page = 1; renderBuscador(); return;
+    }
+    if((t = e.target.closest("[data-drill]"))){
+      var lvl = t.getAttribute("data-drill"), val = t.getAttribute("data-val");
+      if(lvl==="dep")  state.dep  = val;
+      if(lvl==="prov") state.prov = val;
+      if(lvl==="dist") state.dist = val;
+      state.page = 1; renderBuscador(); return;
+    }
+    if((t = e.target.closest("[data-bc]"))){
+      var to = t.getAttribute("data-bc");
+      if(to==="inicio"){ state.dep=state.prov=state.dist=""; }
+      if(to==="dep"){ state.prov=state.dist=""; }
+      if(to==="prov"){ state.dist=""; }
+      state.page = 1; renderBuscador(); return;
+    }
+    if((t = e.target.closest("[data-rm]"))){ state[t.getAttribute("data-rm")] = ""; state.page = 1; renderBuscador(); return; }
+    if(e.target.closest("[data-clear]")){
+      state.dep=state.prov=state.dist=""; state.programa=state.cartera=state.texto="";
+      sInput.value=""; state.page = 1; renderBuscador(); return;
+    }
+    if(e.target.closest("[data-more]")){ state.page++; renderBuscador(); return; }
+    if((t = e.target.closest("[data-cui]"))){ abrirFicha(t.getAttribute("data-cui")); return; }
+  });
+
+  /* ── Teclado numérico (entrada estilo cajero: centavos) ── */
+  var cents = 210170;                 /* $2,101.70 como en el diseño */
+  var amountEl = document.getElementById("pay-amount");
+  function render(){
+    var s = (cents/100).toFixed(2).split(".");
+    amountEl.textContent = "$" + Number(s[0]).toLocaleString("en-US") + "." + s[1];
+  }
+  document.getElementById("keypad").addEventListener("click", function(e){
+    var b = e.target.closest("button[data-key]");
+    if(!b) return;
+    var k = b.getAttribute("data-key");
+    if(k === "del"){ cents = Math.floor(cents/10); }
+    else if(cents < 9999999999){ cents = cents*10 + Number(k); }
+    render();
+  });
+
+  /* ── Enviar ── */
+  var toast = document.getElementById("toast");
+  document.getElementById("send").addEventListener("click", function(){
+    if(cents === 0) return;
+    document.getElementById("toast-sub").textContent =
+      amountEl.textContent + " a Matteo Ricci";
+    toast.classList.add("show");
+    setTimeout(function(){
+      toast.classList.remove("show");
+      cents = 0; render();
+      document.getElementById("note").value = "";
+    }, 1800);
+  });
+  toast.addEventListener("click", function(){ toast.classList.remove("show"); });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La torre — Detalle de grupos (réplica)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%23A6D3C4'/%3E%3Cpath%20fill='%23141816'%20d='M17%2012h7v6h5v-6h6v6h5v-6h7v12l-5%205v13l5%207v7H17v-7l5-7V29l-5-5z'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --mint:#A6D3C4; --ink:#141816; --muted:#8A938E;
+    --lemon:#F2F97C; --key:#F1F4EE;
+    --sa:#FBFDF8; --sb:#E7F2DE; --sc:#D9EBD4;
+    --ok:#1FA23C; --cr:#D24B40;
+    --link:#2C5E48;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{
+    background:#F2F6EF; color:var(--ink);
+    font-family:"Space Grotesk",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    padding:36px 22px 60px;
+  }
+  header{ max-width:900px; margin:0 auto 28px; }
+  header h1{ font-size:26px; letter-spacing:-.01em; }
+  header p{ color:#57635C; margin-top:8px; font-size:15px; line-height:1.55; max-width:680px; }
+  .grid{
+    max-width:900px; margin:0 auto;
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+    gap:24px 22px;
+  }
+  figure{ display:grid; gap:10px; align-content:start; }
+  .mock{
+    position:relative;
+    border-radius:18px; padding:14px 14px 76px;
+    background:linear-gradient(165deg,var(--sa) 0%,var(--sb) 60%,var(--sc) 100%);
+    box-shadow:0 14px 34px rgba(17,56,44,.13);
+    overflow:hidden;
+  }
+  figcaption{ padding:0 4px; }
+  figcaption strong{ font-size:14px; display:block; }
+  figcaption span{ font-size:12.5px; color:#66726B; line-height:1.45; display:block; margin-top:2px; }
+
+  /* barra superior */
+  .appbar{
+    display:flex; align-items:center; gap:14px;
+    background:#fff; border-radius:12px;
+    padding:10px 14px;
+    box-shadow:0 8px 20px rgba(31,64,51,.07);
+  }
+  .appbar .logo{
+    width:34px; height:34px; border-radius:9px; flex:none;
+    background:var(--mint); display:grid; place-items:center; color:var(--ink);
+  }
+  .appbar .logo svg{ width:18px; height:18px; }
+  .appbar .sp{ flex:1; }
+  .appbar .ic{ position:relative; width:26px; height:26px; display:grid; place-items:center; color:var(--ink); }
+  .appbar .ic svg{ width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+  .appbar .ic .dot{ position:absolute; top:2px; right:2px; width:6px; height:6px; border-radius:50%; background:#F4587A; }
+  .appbar .avat{
+    width:32px; height:32px; border-radius:50%; flex:none;
+    background:linear-gradient(140deg,#4E8F6C,#2C5E48); color:#fff;
+    display:grid; place-items:center; font-size:12px; font-weight:700;
+  }
+
+  .back{
+    display:flex; align-items:center; gap:6px;
+    margin:16px 4px 10px;
+    color:var(--link); font-size:13.5px; font-weight:600;
+  }
+  .back svg{ width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+  .ptitle{
+    display:inline-block; margin:0 4px 14px;
+    font-size:19px; font-weight:700;
+    border-bottom:2.5px solid var(--ink); padding-bottom:3px;
+  }
+
+  /* tarjetas de programa */
+  .ev{
+    background:#fff; border-radius:12px;
+    padding:16px; margin-top:12px;
+    box-shadow:0 8px 20px rgba(31,64,51,.06);
+    display:grid; grid-template-columns:auto 1fr auto; gap:6px 12px;
+    align-items:start;
+  }
+  .ev:first-of-type{ margin-top:0; }
+  .ev .pic{ width:24px; height:24px; }
+  .ev .pic svg{ width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+  .ev .name{ font-size:14.5px; font-weight:700; line-height:1.35; align-self:center; }
+  .ev .trend{ width:18px; height:18px; justify-self:end; }
+  .ev .trend svg{ width:18px; height:18px; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .ev .trend.up svg{ stroke:var(--ok); }
+  .ev .trend.down svg{ stroke:var(--cr); }
+  .ev .sub{
+    grid-column:2; font-size:12px; color:var(--muted); margin-top:8px; align-self:center;
+  }
+  .ev .pill{
+    grid-column:3; justify-self:end; margin-top:4px;
+    display:inline-flex; align-items:center; gap:5px;
+    background:var(--key); border-radius:999px;
+    padding:5px 11px; font-size:11.5px; font-weight:700;
+  }
+  .ev .pill svg{ width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+  .c-green{ color:#2FA84F; } .c-blue{ color:#4A90D9; } .c-amber{ color:#E9A23B; }
+  .c-pink{ color:#EC6BAE; } .c-purple{ color:#6C5CE7; } .c-teal{ color:#2AA79B; }
+
+  .fab{
+    position:absolute; right:18px; bottom:18px;
+    width:48px; height:48px; border-radius:50%;
+    background:var(--ink); color:var(--lemon);
+    display:grid; place-items:center;
+    box-shadow:0 12px 24px rgba(23,54,42,.30);
+    font-size:24px; font-weight:400;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Detalle de grupos — réplica de la referencia</h1>
+  <p>La pantalla de "Nearest Events" de la imagen, convertida en el detalle que se abre desde "Ver más detalles" de cada grupo: barra superior con búsqueda y notificaciones, enlace de regreso, título subrayado, y una tarjeta por programa con su icono, la flecha de tendencia vs. el mes anterior, y el % de ejecución en la píldora. Adaptada a la paleta y tipografía de La torre.</p>
+</header>
+
+<div class="grid">
+
+  <figure>
+    <div class="mock">
+      <div class="appbar">
+        <span class="logo"><svg viewBox="0 0 64 64"><path fill="currentColor" stroke="none" d="M17 12h7v6h5v-6h6v6h5v-6h7v12l-5 5v13l5 7v7H17v-7l5-7V29l-5-5z"/></svg></span>
+        <span class="sp"></span>
+        <span class="ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span>
+        <span class="ic"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/></svg><span class="dot"></span></span>
+        <span class="avat">L</span>
+      </div>
+
+      <div class="back">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Volver a Inversiones
+      </div>
+      <div class="ptitle">Cartera priorizada</div>
+
+      <div class="ev">
+        <span class="pic c-green"><svg viewBox="0 0 24 24"><path d="M12 8V5"/><path d="M9 5h6"/><path d="M4 14v-4h8a5 5 0 0 1 5 5v2h-3v-1.5a2.5 2.5 0 0 0-2.5-2.5H4z"/><path d="M15.5 21c-.8 0-1.5-.6-1.5-1.4 0-1 1.5-2.6 1.5-2.6s1.5 1.6 1.5 2.6c0 .8-.7 1.4-1.5 1.4z"/></svg></span>
+        <span class="name">PASLC — Agua y saneamiento en Lima y Callao</span>
+        <span class="trend up"><svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg></span>
+        <span class="sub">4 proyectos | Óptimo</span>
+        <span class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>71,9%</span>
+      </div>
+
+      <div class="ev">
+        <span class="pic c-blue"><svg viewBox="0 0 24 24"><path d="M12 8V5"/><path d="M9 5h6"/><path d="M4 14v-4h8a5 5 0 0 1 5 5v2h-3v-1.5a2.5 2.5 0 0 0-2.5-2.5H4z"/><path d="M15.5 21c-.8 0-1.5-.6-1.5-1.4 0-1 1.5-2.6 1.5-2.6s1.5 1.6 1.5 2.6c0 .8-.7 1.4-1.5 1.4z"/></svg></span>
+        <span class="name">PNSU — Saneamiento urbano</span>
+        <span class="trend up"><svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg></span>
+        <span class="sub">9 proyectos | En proceso</span>
+        <span class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>39%</span>
+      </div>
+
+      <div class="ev">
+        <span class="pic c-amber"><svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5"/><path d="M5.5 8.8V20a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V8.8"/></svg></span>
+        <span class="name">COFOPRI — Formalización de la propiedad</span>
+        <span class="trend down"><svg viewBox="0 0 24 24"><path d="M7 7l10 10"/><path d="M17 9v8H9"/></svg></span>
+        <span class="sub">1 proyecto | En proceso</span>
+        <span class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>39,5%</span>
+      </div>
+
+      <div class="ev">
+        <span class="pic c-pink"><svg viewBox="0 0 24 24"><path d="M12 8V5"/><path d="M9 5h6"/><path d="M4 14v-4h8a5 5 0 0 1 5 5v2h-3v-1.5a2.5 2.5 0 0 0-2.5-2.5H4z"/><path d="M15.5 21c-.8 0-1.5-.6-1.5-1.4 0-1 1.5-2.6 1.5-2.6s1.5 1.6 1.5 2.6c0 .8-.7 1.4-1.5 1.4z"/></svg></span>
+        <span class="name">PNSR — Saneamiento rural</span>
+        <span class="trend up"><svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg></span>
+        <span class="sub">1 proyecto | Crítico</span>
+        <span class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>15,5%</span>
+      </div>
+
+      <button class="fab">+</button>
+    </div>
+    <figcaption><strong>A · Detalle de Cartera priorizada</strong><span>Una tarjeta por programa con nombre completo, flecha de tendencia vs. julio (verde sube, roja baja — tendencias de ejemplo) y el % de ejecución en la píldora.</span></figcaption>
+  </figure>
+
+  <figure>
+    <div class="mock">
+      <div class="appbar">
+        <span class="logo"><svg viewBox="0 0 64 64"><path fill="currentColor" stroke="none" d="M17 12h7v6h5v-6h6v6h5v-6h7v12l-5 5v13l5 7v7H17v-7l5-7V29l-5-5z"/></svg></span>
+        <span class="sp"></span>
+        <span class="ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span>
+        <span class="ic"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/></svg><span class="dot"></span></span>
+        <span class="avat">L</span>
+      </div>
+
+      <div class="back">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Volver a Inversiones
+      </div>
+      <div class="ptitle">Paralizadas · Meta 2026</div>
+
+      <div class="ev">
+        <span class="pic c-green"><svg viewBox="0 0 24 24"><path d="M12 8V5"/><path d="M9 5h6"/><path d="M4 14v-4h8a5 5 0 0 1 5 5v2h-3v-1.5a2.5 2.5 0 0 0-2.5-2.5H4z"/><path d="M15.5 21c-.8 0-1.5-.6-1.5-1.4 0-1 1.5-2.6 1.5-2.6s1.5 1.6 1.5 2.6c0 .8-.7 1.4-1.5 1.4z"/></svg></span>
+        <span class="name">PASLC — Reactivación completa</span>
+        <span class="trend up"><svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg></span>
+        <span class="sub">2 proyectos | Completo</span>
+        <span class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>100%</span>
+      </div>
+
+      <div class="ev">
+        <span class="pic c-teal"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></span>
+        <span class="name">PMIB — Mejoramiento integral de barrios</span>
+        <span class="trend down"><svg viewBox="0 0 24 24"><path d="M7 7l10 10"/><path d="M17 9v8H9"/></svg></span>
+        <span class="sub">1 proyecto | Sin avance</span>
+        <span class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>0%</span>
+      </div>
+
+      <div class="ev">
+        <span class="pic c-pink"><svg viewBox="0 0 24 24"><path d="M12 8V5"/><path d="M9 5h6"/><path d="M4 14v-4h8a5 5 0 0 1 5 5v2h-3v-1.5a2.5 2.5 0 0 0-2.5-2.5H4z"/><path d="M15.5 21c-.8 0-1.5-.6-1.5-1.4 0-1 1.5-2.6 1.5-2.6s1.5 1.6 1.5 2.6c0 .8-.7 1.4-1.5 1.4z"/></svg></span>
+        <span class="name">PNSR — Saneamiento rural</span>
+        <span class="trend up"><svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg></span>
+        <span class="sub">20 proyectos | En proceso</span>
+        <span class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>40%</span>
+      </div>
+
+      <div class="ev">
+        <span class="pic c-blue"><svg viewBox="0 0 24 24"><path d="M12 8V5"/><path d="M9 5h6"/><path d="M4 14v-4h8a5 5 0 0 1 5 5v2h-3v-1.5a2.5 2.5 0 0 0-2.5-2.5H4z"/><path d="M15.5 21c-.8 0-1.5-.6-1.5-1.4 0-1 1.5-2.6 1.5-2.6s1.5 1.6 1.5 2.6c0 .8-.7 1.4-1.5 1.4z"/></svg></span>
+        <span class="name">PNSU — Saneamiento urbano</span>
+        <span class="trend up"><svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg></span>
+        <span class="sub">21 proyectos | En proceso</span>
+        <span class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>33%</span>
+      </div>
+
+      <div class="ev">
+        <span class="pic c-purple"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="1.5"/><path d="M9 8h.01M15 8h.01M9 12h.01M15 12h.01"/><path d="M10 21v-4h4v4"/></svg></span>
+        <span class="name">SENCICO — Capacitación e investigación</span>
+        <span class="trend down"><svg viewBox="0 0 24 24"><path d="M7 7l10 10"/><path d="M17 9v8H9"/></svg></span>
+        <span class="sub">3 proyectos | En proceso</span>
+        <span class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>33%</span>
+      </div>
+
+      <button class="fab">+</button>
+    </div>
+    <figcaption><strong>B · Detalle de Paralizadas</strong><span>El mismo patrón para el segundo grupo, con los 5 programas y su avance hacia la meta 2026.</span></figcaption>
+  </figure>
+
+</div>
+</body>
+</html>
