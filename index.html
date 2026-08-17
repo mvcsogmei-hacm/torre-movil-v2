@@ -101,6 +101,20 @@
     background:var(--lemon); color:#FFFFFF;
     box-shadow:0 12px 26px rgba(0,0,0,.45);
   }
+  /* % en blanco en modo oscuro */
+  html[data-tema="oscuro"] .detail-card .drb .dr b{ color:#fff !important; }
+  html[data-tema="oscuro"] .pcard-pct{ color:#fff; }
+  html[data-tema="oscuro"] .summary .pctv{ color:#fff; }
+  /* buscador: contadores de dep/prov/dist en blanco */
+  html[data-tema="oscuro"] .grow-n{ color:#fff; }
+  /* Inversiones: desplegables con colores intensos y letra negra (legibles sobre oscuro) */
+  html[data-tema="oscuro"] .prog{ background:#D8DBD4; }
+  html[data-tema="oscuro"] .prog.ok{ background:#BFE4A6; }
+  html[data-tema="oscuro"] .prog.proc{ background:#F4E29A; }
+  html[data-tema="oscuro"] .prog.crit{ background:#F3B9B2; }
+  html[data-tema="oscuro"] .prog .name,
+  html[data-tema="oscuro"] .prog .pct{ color:#141816; }
+  html[data-tema="oscuro"] .prog .meta{ color:#3F463D; }
   *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body{ height:100%; overscroll-behavior:none; }
   body{
@@ -814,6 +828,13 @@
   }
   .note-field input::placeholder{ color:var(--muted); }
   .note-field input:focus{ outline:none; }
+  .note-field .mic{
+    flex:none; width:28px; height:28px;
+    display:grid; place-items:center; color:var(--lemon);
+  }
+  .note-field .mic svg{ width:19px; height:19px; }
+  .note-field .mic.rec{ color:#FF3B30; animation:pulso-mic 1s ease-in-out infinite; }
+  @keyframes pulso-mic{ 50%{ opacity:.3; } }
 
   .keypad{
     display:grid; grid-template-columns:repeat(3,1fr);
@@ -887,7 +908,7 @@
   <section class="screen active" id="screen-home" aria-label="Inicio">
     <header class="home-head">
       <span class="avatar av-leandro">L</span>
-      <span class="hi">¡Hola, Leandro!</span>
+      <span class="hi">¡Hola, Sr. Ministro!</span>
       <span class="actions">
         <button class="icon-btn solid" id="btn-tema" aria-label="Cambiar tema"></button>
         <button class="icon-btn solid" data-go="screen-ajustes" aria-label="Ajustes">
@@ -1554,6 +1575,9 @@
     <label class="note-field">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
       <input type="search" id="search-input" placeholder="Buscar por obra, CUI, programa o lugar…" autocomplete="off">
+      <button class="mic" id="btn-voz" aria-label="Buscar por voz" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0"/><path d="M12 17.5V21"/></svg>
+      </button>
     </label>
 
     <div id="search-results"></div>
@@ -1844,7 +1868,7 @@
         body += '<div class="groups">'+ grupos.map(function(g){
           return '<button class="grow" data-drill="'+nivel+'" data-val="'+g.name.replace(/"/g,'&quot;')+'">'+
             '<div class="grow-top"><span class="grow-name">'+g.name+'</span><span class="grow-n">'+g.n+'</span>'+CHV+'</div>'+
-            '<div class="grow-bar"><i style="width:'+Math.round(g.n/maxN*100)+'%"></i></div>'+
+            '<div class="grow-bar"><i style="width:'+Math.round(g.n/maxN*100)+'%;background:'+execColor(Math.round(g.n/maxN*100))+'"></i></div>'+
           '</button>';
         }).join("") +'</div>';
       }
@@ -1865,6 +1889,34 @@
 
   /* Eventos de busqueda y filtros */
   sInput.addEventListener("input", function(e){ state.texto = e.target.value.trim(); state.page = 1; renderBuscador(); });
+
+  /* ── Búsqueda por voz (Web Speech API; el botón solo aparece si el navegador la soporta) ── */
+  (function(){
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var btnVoz = document.getElementById("btn-voz");
+    if(!SR || !btnVoz) return;
+    btnVoz.hidden = false;
+    var rec = new SR();
+    rec.lang = "es-PE";
+    rec.interimResults = false;
+    rec.maxAlternatives = 1;
+    var grabando = false;
+    rec.onresult = function(e){
+      var dicho = e.results[0][0].transcript.trim();
+      sInput.value = dicho;
+      state.texto = dicho; state.page = 1; renderBuscador();
+    };
+    rec.onend = function(){ grabando = false; btnVoz.classList.remove("rec"); };
+    rec.onerror = function(){ grabando = false; btnVoz.classList.remove("rec"); };
+    btnVoz.addEventListener("click", function(e){
+      e.preventDefault();               /* que el label no robe el foco */
+      if(grabando){ rec.stop(); return; }
+      try{
+        rec.start();
+        grabando = true; btnVoz.classList.add("rec");
+      }catch(err){ grabando = false; btnVoz.classList.remove("rec"); }
+    });
+  })();
   function openFilters(){ renderFilters(); fBack.hidden=false; fSheet.hidden=false; }
   function closeFilters(){ fBack.hidden=true; fSheet.hidden=true; }
   document.getElementById("open-filters").addEventListener("click", openFilters);
