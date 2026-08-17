@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#FDFBFA">
 <title>La torre</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="iconos/icon-192.png">
+<link rel="apple-touch-icon" href="iconos/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="La torre">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1653,9 +1659,7 @@
     <button data-go="screen-cuenta" aria-label="Inversiones">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-6 4 3 6-8"/><path d="M14 6h4v4"/></svg>
     </button>
-    <button class="nav-bot" data-go="screen-bot" aria-label="BOT">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 8V5.2"/><circle cx="12" cy="4" r="1.2"/><path d="M9.5 13h.01M14.5 13h.01"/><path d="M9.6 16c.8.7 4 .7 4.8 0"/></svg>
-    </button>
+    <!-- BOT retirado del menú (se implementará a futuro; la pantalla screen-bot queda lista) -->
     <button data-go="screen-transactions" aria-label="Actividades">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg>
     </button>
@@ -1738,6 +1742,11 @@
       card.classList.add("closed");
     }
   });
+
+  /* ── PWA: registrar el service worker (permite instalar la app) ── */
+  if("serviceWorker" in navigator && location.protocol !== "file:"){
+    navigator.serviceWorker.register("sw.js").catch(function(){});
+  }
 
   /* ── Saludo según la hora del día ── */
   (function(){
@@ -2454,7 +2463,7 @@
     var COMODO   = { lineH:14,   rowPad:9, bandH:22, bandGap:8, secGap:8, fRow:10.5, fBand:10,  fTit:12, titLH:17, fHead:9.5, headTop:50, badH:28, wrapV:46, wrapT:72 };
     var COMPACTO = { lineH:11,   rowPad:3.5, bandH:14, bandGap:4, secGap:3, fRow:9.5, fBand:8.5, fTit:11, titLH:15, fHead:9, headTop:42, badH:24, wrapV:52, wrapT:80 };
     function altura(m){
-      var t = m.headTop + 34 + wrapTxt(p.nombre, m.wrapT).length * m.titLH + (claves.length ? 14 : 0) + 18;
+      var t = m.headTop + 42 + wrapTxt(p.nombre, m.wrapT).length * m.titLH + (claves.length ? 14 : 0) + 18;
       secs.forEach(function(s){
         t += m.bandH + m.bandGap + m.secGap + 6;
         s.filas.forEach(function(f){ t += m.rowPad + wrapTxt(String(f[1]), m.wrapV).length * m.lineH; });
@@ -2469,8 +2478,9 @@
     rect(M - 8, y, W - 2 * (M - 8), 2.5, "#C8102E");          /* filete superior */
     y += 14;
     texto(M - 8, y, "MINISTERIO DE VIVIENDA, CONSTRUCCIÓN Y SANEAMIENTO", 7.5, "#8A8A8A", true);
-    texto(W - M - 132, y, "FICHA DE PROYECTO · LA TORRE", 7.5, "#8A8A8A", true);
-    y += 16;
+    texto(W - M - 22, y, "OGMEI", 8.5, "#C8102E", true);
+    texto(W - M - 66, y + 10, "La torre de control", 7.5, "#8A8A8A", false);
+    y += 24;
     texto(M - 8, y, (p.dep + " - " + p.prov + " - " + p.dist).toUpperCase(), m.fHead, "#6B6B6B", false);
     y += m.fHead + 6;
     texto(M - 8, y, "CUI " + p.cui, m.fHead, "#1D1B1B", true);

@@ -1,0 +1,17 @@
+{
+  "name": "La torre — Torre de control OGMEI",
+  "short_name": "La torre",
+  "description": "Monitor de proyectos de inversión del sector Vivienda, Construcción y Saneamiento",
+  "lang": "es-PE",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FDFBFA",
+  "theme_color": "#C8102E",
+  "icons": [
+    { "src": "iconos/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "iconos/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "iconos/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
