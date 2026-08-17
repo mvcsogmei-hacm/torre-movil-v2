@@ -14,9 +14,9 @@
      para no tocar todo el CSS; --lemon es ahora el ROJO institucional. */
   :root{
     --mint:      #A6161F;   /* fondo detrás del teléfono (rojo profundo) */
-    --screen-a:  #F8EDEA;   /* degradado de pantalla, arriba              */
-    --screen-b:  #F2E1DD;
-    --screen-c:  #EAD3CE;   /* degradado de pantalla, abajo               */
+    --screen-a:  #FDFBFA;   /* degradado de pantalla, arriba              */
+    --screen-b:  #F5E9E7;
+    --screen-c:  #EDDAD6;   /* degradado de pantalla, abajo               */
     --lemon:     #C8102E;   /* rojo institucional (tarjetas principales)  */
     --lemon-b:   #A50D23;   /* rojo oscuro para el degradado              */
     --rosa:      #F7C8C2;   /* texto secundario sobre rojo                */
@@ -41,15 +41,15 @@
      las superficies oscuras ganen. */
   html[data-paleta="azul"]{
     --mint:#123E73; --lemon:#1E5AA8; --lemon-b:#164581; --rosa:#C3D9F4;
-    --screen-a:#ECF2F9; --screen-b:#E2EBF5; --screen-c:#D5E2F0;
+    --screen-a:#FAFCFE; --screen-b:#E7EEF7; --screen-c:#D8E4F2;
   }
   html[data-paleta="verde"]{
     --mint:#0F5132; --lemon:#1F7A4D; --lemon-b:#175E3B; --rosa:#C4E8D4;
-    --screen-a:#EBF5EF; --screen-b:#E1EFE7; --screen-c:#D4E8DC;
+    --screen-a:#FAFDFB; --screen-b:#E6F2EA; --screen-c:#D7EADF;
   }
   html[data-paleta="morado"]{
     --mint:#4A2680; --lemon:#6A3FB5; --lemon-b:#53308F; --rosa:#DCCDF3;
-    --screen-a:#F2EDF9; --screen-b:#EAE3F5; --screen-c:#DFD4EF;
+    --screen-a:#FCFBFE; --screen-b:#EEE8F7; --screen-c:#E2D8F1;
   }
 
   /* ─ Tema oscuro (conmutable desde Inicio, persistido en Ajustes) ─ */
@@ -133,9 +133,32 @@
     width:min(100vw,412px);
     height:100dvh; max-height:892px;
     background:linear-gradient(165deg,var(--screen-a) 0%,var(--screen-b) 55%,var(--screen-c) 100%);
+    background-size:100% 170%;
+    animation:fondo-fluct 16s ease-in-out infinite alternate;
     overflow:hidden;
     box-shadow:0 34px 80px rgba(90,15,20,.30);
     border-radius:15px;
+  }
+  @keyframes fondo-fluct{
+    from{ background-position:50% 0%; }
+    to  { background-position:50% 100%; }
+  }
+  /* Mancha de color suave que deriva lentamente por la pantalla */
+  .phone::before{
+    content:""; position:absolute; z-index:0; pointer-events:none;
+    width:75%; aspect-ratio:1; border-radius:50%;
+    background:radial-gradient(circle, var(--screen-c) 0%, rgba(255,255,255,0) 68%);
+    filter:blur(26px); opacity:.9;
+    top:-12%; left:-18%;
+    animation:blob-fluct 20s ease-in-out infinite alternate;
+  }
+  @keyframes blob-fluct{
+    from{ transform:translate(0,0) scale(1); }
+    50% { transform:translate(55%,35%) scale(1.3); }
+    to  { transform:translate(15%,80%) scale(1.05); }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .phone, .phone::before{ animation:none; }
   }
   @media (max-width:440px), (max-height:900px){
     body{ background:var(--screen-a); }
@@ -350,8 +373,8 @@
     border-radius:12px; text-align:center;
   }
   .act-tabs .neu-actions button.active{
-    background:var(--panel-metal);
-    font-weight:700; color:#fff;
+    background:var(--key);
+    font-weight:700; color:var(--ink);
   }
   .act-tabs .neu-actions button.active::before{ display:none; }
   .tab-empty{
@@ -653,7 +676,7 @@
     display:grid; grid-template-rows:1fr;
     transition:grid-template-rows .35s ease;
   }
-  .cartera-card .body > div{ overflow:hidden; }
+  .cartera-card .body > div{ overflow:hidden; padding-bottom:16px; }
   .cartera-card.closed .body{ grid-template-rows:0fr; }
   .cartera-card.closed{ padding:13px 16px; }
   .cartera-card.closed .hd{ display:none; }
@@ -1938,13 +1961,20 @@
       cerrarTimer = setTimeout(function(){ panel.hidden = true; }, demora || 0);
     }
 
+    /* Si lo dictado son solo dígitos (de uno en uno, de dos en dos, con
+       espacios o guiones), se unen en un solo número: "21 55 621" -> "2155621" */
+    function normalizaDictado(t){
+      var limpio = t.replace(/[.,;:\-–]/g, " ").trim();
+      if(/^[\d\s]+$/.test(limpio)) return limpio.replace(/\s+/g, "");
+      return t;
+    }
     rec.onresult = function(e){
       var texto = "", final = false;
       for(var i = 0; i < e.results.length; i++){
         texto += e.results[i][0].transcript;
         if(e.results[i].isFinal) final = true;
       }
-      texto = texto.trim();
+      texto = normalizaDictado(texto.trim());
       vozTxt.textContent = "“" + texto + "”";
       if(final && texto){
         estado.textContent = "Listo, buscando:";
@@ -2168,7 +2198,7 @@
       document.documentElement.setAttribute("data-tema", osc ? "oscuro" : "claro");
       document.documentElement.setAttribute("data-paleta", pal);
       if(btnTema) btnTema.innerHTML = osc ? ICO_SOL : ICO_LUNA;
-      var CLAROS = { rojo:"#F8EDEA", azul:"#ECF2F9", verde:"#EBF5EF", morado:"#F2EDF9" };
+      var CLAROS = { rojo:"#FDFBFA", azul:"#FAFCFE", verde:"#FAFDFB", morado:"#FCFBFE" };
       var mt = document.querySelector('meta[name="theme-color"]');
       if(mt) mt.setAttribute("content", osc ? "#0E0F12" : (CLAROS[pal] || "#F8EDEA"));
       var sub = document.getElementById("sub-paleta");
