@@ -2455,6 +2455,19 @@
       if(line) out.push(line);
       return out.length ? out : [""];
     }
+    /* Ancho aproximado de un texto en Helvetica, para alinear a la derecha */
+    function anchoTxt(s, size){
+      var w = 0;
+      for(var i = 0; i < s.length; i++){
+        var ch = s.charAt(i);
+        if(" .,:;'|·".indexOf(ch) >= 0) w += 0.28;
+        else if("iIl1jtf".indexOf(ch) >= 0) w += 0.30;
+        else if("mwMW".indexOf(ch) >= 0) w += 0.90;
+        else if(/[A-ZÑÁÉÍÓÚ0-9]/.test(ch)) w += 0.68;
+        else w += 0.52;
+      }
+      return w * size;
+    }
 
     var secs = fichaDatos(p);
     var claves = Object.keys(p.carteras || {});
@@ -2463,7 +2476,7 @@
     var COMODO   = { lineH:14,   rowPad:9, bandH:22, bandGap:8, secGap:8, fRow:10.5, fBand:10,  fTit:12, titLH:17, fHead:9.5, headTop:50, badH:28, wrapV:46, wrapT:72 };
     var COMPACTO = { lineH:11,   rowPad:3.5, bandH:14, bandGap:4, secGap:3, fRow:9.5, fBand:8.5, fTit:11, titLH:15, fHead:9, headTop:42, badH:24, wrapV:52, wrapT:80 };
     function altura(m){
-      var t = m.headTop + 42 + wrapTxt(p.nombre, m.wrapT).length * m.titLH + (claves.length ? 14 : 0) + 18;
+      var t = 102 + 2 * (m.fHead + 7) + wrapTxt(p.nombre, m.wrapT).length * m.titLH + (claves.length ? 14 : 0) + 18;
       secs.forEach(function(s){
         t += m.bandH + m.bandGap + m.secGap + 6;
         s.filas.forEach(function(f){ t += m.rowPad + wrapTxt(String(f[1]), m.wrapV).length * m.lineH; });
@@ -2472,15 +2485,17 @@
     }
     var m = altura(COMODO) <= H - 2 * M ? COMODO : COMPACTO;
 
-    /* Cabecera sobria: filete rojo institucional, membrete gris y título en negro */
+    /* Cabecera: banda institucional con OGMEI y fecha de corte, membrete debajo */
     var y = M;
     var tLines = wrapTxt(p.nombre, m.wrapT);
-    rect(M - 8, y, W - 2 * (M - 8), 2.5, "#C8102E");          /* filete superior */
-    y += 14;
-    texto(M - 8, y, "MINISTERIO DE VIVIENDA, CONSTRUCCIÓN Y SANEAMIENTO", 7.5, "#8A8A8A", true);
-    texto(W - M - 22, y, "OGMEI", 8.5, "#C8102E", true);
-    texto(W - M - 66, y + 10, "La torre de control", 7.5, "#8A8A8A", false);
-    y += 24;
+    var derecha = W - M + 8;                                   /* borde derecho del contenido */
+    rect(M - 8, y, W - 2 * (M - 8), 26, "#C8102E");
+    texto(M + 2, y + 17, "OGMEI · LA TORRE DE CONTROL", 9.5, "#FFFFFF", true);
+    var fecha = "Fecha de corte: 14 de agosto de 2026";
+    texto(derecha - 10 - anchoTxt(fecha, 8), y + 17, fecha, 8, "#FFFFFF", false);
+    y += 26 + 13;
+    texto(M - 8, y, "Ministerio de Vivienda, Construcción y Saneamiento", 8, "#8A8A8A", false);
+    y += 18;
     texto(M - 8, y, (p.dep + " - " + p.prov + " - " + p.dist).toUpperCase(), m.fHead, "#6B6B6B", false);
     y += m.fHead + 6;
     texto(M - 8, y, "CUI " + p.cui, m.fHead, "#1D1B1B", true);
