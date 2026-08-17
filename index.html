@@ -1210,6 +1210,16 @@
 
     <div class="section-head"><h2>Preferencias</h2></div>
     <div class="set-list">
+      <button class="set-row" id="row-instalar" hidden>
+        <span class="set-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg></span>
+        <span class="info"><span class="name">Instalar aplicación</span><span class="sub">Añádela a tu pantalla de inicio</span></span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+      <div class="set-body" id="body-instalar" hidden>
+        <p class="set-txt">En iPhone: abre esta página en <b>Safari</b>, toca el botón
+        <b>Compartir</b> (el cuadrado con flecha hacia arriba) y elige
+        <b>“Añadir a pantalla de inicio”</b>. La app quedará con el icono de la torre.</p>
+      </div>
       <button class="set-row" id="row-notif">
         <span class="set-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/></svg></span>
         <span class="info"><span class="name">Notificaciones</span><span class="sub">Alertas de avance y paralizaciones</span></span>
@@ -2237,6 +2247,25 @@
       cfg.texto = b.getAttribute("data-tam"); guardar(); aplicaTam();
     });
     aplicaTam();
+
+    /* Instalar la app (PWA): en Android dispara el aviso nativo; en iPhone muestra instrucciones */
+    var rowInst = document.getElementById("row-instalar");
+    var bodyInst = document.getElementById("body-instalar");
+    var promptInstalar = null;
+    var yaInstalada = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+    window.addEventListener("beforeinstallprompt", function(e){
+      e.preventDefault();
+      promptInstalar = e;
+      if(rowInst && !yaInstalada) rowInst.hidden = false;
+    });
+    if(rowInst && !yaInstalada && /iPhone|iPad|iPod/.test(navigator.userAgent)){
+      rowInst.hidden = false;
+    }
+    if(rowInst) rowInst.addEventListener("click", function(){
+      if(promptInstalar){ promptInstalar.prompt(); promptInstalar = null; return; }
+      bodyInst.hidden = !bodyInst.hidden;
+    });
+    window.addEventListener("appinstalled", function(){ if(rowInst) rowInst.hidden = true; });
 
     /* Tema: paleta de color + claro/oscuro (botón en Inicio y sección en Ajustes) */
     var btnTema = document.getElementById("btn-tema");
