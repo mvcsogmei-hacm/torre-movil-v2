@@ -2452,60 +2452,55 @@
 
     /* Dos juegos de medidas: cómodo y compacto */
     var COMODO   = { lineH:14,   rowPad:9, bandH:22, bandGap:8, secGap:8, fRow:10.5, fBand:10,  fTit:12, titLH:17, fHead:9.5, headTop:50, badH:28, wrapV:46, wrapT:72 };
-    var COMPACTO = { lineH:11.5, rowPad:4, bandH:16, bandGap:5, secGap:5, fRow:9.5,  fBand:8.5, fTit:11, titLH:15, fHead:9,   headTop:42, badH:24, wrapV:52, wrapT:80 };
+    var COMPACTO = { lineH:11,   rowPad:3.5, bandH:14, bandGap:4, secGap:3, fRow:9.5, fBand:8.5, fTit:11, titLH:15, fHead:9, headTop:42, badH:24, wrapV:52, wrapT:80 };
     function altura(m){
-      var t = m.headTop + wrapTxt(p.nombre, m.wrapT).length * m.titLH + (claves.length ? m.badH : 6) + 16;
+      var t = m.headTop + 34 + wrapTxt(p.nombre, m.wrapT).length * m.titLH + (claves.length ? 14 : 0) + 18;
       secs.forEach(function(s){
-        t += m.bandH + m.bandGap + m.secGap;
+        t += m.bandH + m.bandGap + m.secGap + 6;
         s.filas.forEach(function(f){ t += m.rowPad + wrapTxt(String(f[1]), m.wrapV).length * m.lineH; });
       });
       return t;
     }
     var m = altura(COMODO) <= H - 2 * M ? COMODO : COMPACTO;
 
-    /* Cabecera: panel limón como el indicador de Inicio */
+    /* Cabecera sobria: filete rojo institucional, membrete gris y título en negro */
     var y = M;
     var tLines = wrapTxt(p.nombre, m.wrapT);
-    var headH = m.headTop + tLines.length * m.titLH + (claves.length ? m.badH : 6);
-    rect(M - 8, y, W - 2 * (M - 8), headH, "#C8102E");
-    var ty = y + 18;
-    texto(M + 8, ty, (p.dep + " - " + p.prov + " - " + p.dist).toUpperCase(), m.fHead, "#F7C8C2", true); ty += m.fHead + 5;
-    texto(M + 8, ty, "CUI " + p.cui, m.fHead, "#F7C8C2", true); ty += m.fHead + 9;
-    tLines.forEach(function(l){ texto(M + 8, ty, l, m.fTit, "#FFFFFF", true); ty += m.titLH; });
+    rect(M - 8, y, W - 2 * (M - 8), 2.5, "#C8102E");          /* filete superior */
+    y += 14;
+    texto(M - 8, y, "MINISTERIO DE VIVIENDA, CONSTRUCCIÓN Y SANEAMIENTO", 7.5, "#8A8A8A", true);
+    texto(W - M - 132, y, "FICHA DE PROYECTO · LA TORRE", 7.5, "#8A8A8A", true);
+    y += 16;
+    texto(M - 8, y, (p.dep + " - " + p.prov + " - " + p.dist).toUpperCase(), m.fHead, "#6B6B6B", false);
+    y += m.fHead + 6;
+    texto(M - 8, y, "CUI " + p.cui, m.fHead, "#1D1B1B", true);
+    y += m.fHead + 8;
+    tLines.forEach(function(l){ texto(M - 8, y, l, m.fTit, "#1D1B1B", true); y += m.titLH; });
     if(claves.length){
-      ty += 5;
-      var bx = M + 8;
-      claves.forEach(function(k){
-        var lab = CARTERAS[k].label, wB = lab.length * 5.4 + 20;
-        rect(bx, ty - 12, wB, 17, "#FFFFFF");
-        texto(bx + 10, ty, lab, 8.5, CARTERAS[k].color, true);
-        bx += wB + 8;
-      });
+      y += 4;
+      texto(M - 8, y, "Carteras: " + claves.map(function(k){ return CARTERAS[k].label; }).join("  ·  "), 8.5, "#6B6B6B", false);
+      y += 10;
     }
-    y += headH + 14;
-
-    var PDF_COLS = {
-      gen:["#DCEFE5","#1C5B41"], benef:["#F8E8DC","#9A5A1F"], fin:["#E2EBFB","#2B4F9E"], sit:["#FBEDD9","#9A6A1F"],
-      preset:["#E2EBFB","#2B4F9E"], obras:["#DCEFE5","#1C5B41"], transferencias:["#EDE4F9","#6A3FB5"], paralizadas:["#FBE3E1","#B3261E"]
-    };
+    y += 4;
+    rect(M - 8, y, W - 2 * (M - 8), 0.8, "#C9C9C9");          /* filete fino */
+    y += 14;
 
     secs.forEach(function(s){
       if(y > H - 100){ nuevaPagina(); y = M; }
-      var pc = PDF_COLS[s.id] || ["#E4EDE8", "#3A5548"];
-      rect(M - 8, y, W - 2 * (M - 8), m.bandH, pc[0]);
-      texto(M + 8, y + m.bandH * 0.7, s.titulo.toUpperCase(), m.fBand, pc[1], true);
-      y += m.bandH + m.bandGap;
+      texto(M - 8, y + m.bandH * 0.7, s.titulo.toUpperCase(), m.fBand, "#1D1B1B", true);
+      rect(M - 8, y + m.bandH, W - 2 * (M - 8), 0.8, "#C8102E");   /* subrayado fino rojo */
+      y += m.bandH + m.bandGap + 2;
       s.filas.forEach(function(f, i){
         var vLines = wrapTxt(String(f[1]), m.wrapV);
         var rh = m.rowPad + vLines.length * m.lineH;
         if(y + rh > H - M){ nuevaPagina(); y = M; }
-        if(i % 2 === 1) rect(M - 8, y, W - 2 * (M - 8), rh, "#F3F7F4");
         var base = y + m.rowPad * 0.5 + m.lineH * 0.78;
-        texto(M + 8, base, f[0], m.fRow, "#6B756F", false);
-        vLines.forEach(function(vl){ texto(315, base, vl, m.fRow, "#141816", true); base += m.lineH; });
+        texto(M - 2, base, f[0], m.fRow, "#6B6B6B", false);
+        vLines.forEach(function(vl){ texto(315, base, vl, m.fRow, "#1D1B1B", true); base += m.lineH; });
         y += rh;
+        if(i < s.filas.length - 1) rect(M - 2, y, W - 2 * (M - 8) - 6, 0.5, "#E4E4E4");  /* separador hilo */
       });
-      y += m.secGap;
+      y += m.secGap + 4;
     });
 
     /* Ensamblado del archivo PDF */
