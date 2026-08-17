@@ -624,8 +624,8 @@
   }
   .bottom-nav button svg{ width:22px; height:22px; }
   .bottom-nav button.current{
-    background:#1D1B1B; color:#fff;
-    box-shadow:0 6px 14px rgba(23,54,42,.18);
+    background:#D6DAD6; color:#1D1B1B;
+    box-shadow:0 6px 14px rgba(23,54,42,.14);
   }
   .bottom-nav .nav-bot{
     width:58px; height:58px;
@@ -966,7 +966,7 @@
   <section class="screen active" id="screen-home" aria-label="Inicio">
     <header class="home-head">
       <span class="avatar av-leandro">L</span>
-      <span class="hi">¡Hola, Sr. Ministro!</span>
+      <span class="hi" id="saludo">¡Buenos días, Sr. Ministro!</span>
       <span class="actions">
         <button class="icon-btn solid" id="btn-tema" aria-label="Cambiar tema"></button>
         <button class="icon-btn solid" data-go="screen-ajustes" aria-label="Ajustes">
@@ -1195,10 +1195,10 @@
     </header>
 
     <div class="set-perfil">
-      <span class="avatar av-leandro">L</span>
+      <span class="avatar av-leandro">M</span>
       <span>
-        <span class="nm">Leandro</span><br>
-        <span class="rl">MVCS · Pliego 037</span>
+        <span class="nm">Sr. Ministro</span><br>
+        <span class="rl">Ministerio de Vivienda, Construcción y Saneamiento</span>
       </span>
     </div>
 
@@ -1738,6 +1738,15 @@
       card.classList.add("closed");
     }
   });
+
+  /* ── Saludo según la hora del día ── */
+  (function(){
+    var el = document.getElementById("saludo");
+    if(!el) return;
+    var h = new Date().getHours();
+    var s = h < 12 ? "¡Buenos días" : (h < 19 ? "¡Buenas tardes" : "¡Buenas noches");
+    el.textContent = s + ", Sr. Ministro!";
+  })();
 
   /* ── Inicio + detalle de Pliego + Entidades adscritas (hojas PLIEGO y ADSCRITAS) ── */
   (function(){
