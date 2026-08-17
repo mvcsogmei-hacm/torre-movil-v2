@@ -90,7 +90,11 @@
   html[data-tema="oscuro"] .pcard-pct.pct-pr,
   html[data-tema="oscuro"] .chip.proc{ color:#E8B554; }
   /* menú inferior: en oscuro la tinta se invierte, así que se redefine todo */
-  html[data-tema="oscuro"] .bottom-nav{ background:rgba(26,28,33,.78); }
+  html[data-tema="oscuro"] .bottom-nav{
+    background:rgba(30,32,38,.92);
+    border-color:#34373E;                 /* sin filo blanco: borde apenas más claro que la barra */
+    box-shadow:0 16px 34px rgba(0,0,0,.5);
+  }
   html[data-tema="oscuro"] .bottom-nav button{ color:#AEB3BA; }
   html[data-tema="oscuro"] .bottom-nav button.current{
     background:#3E434C; color:#FFFFFF;
@@ -620,8 +624,8 @@
   }
   .bottom-nav button svg{ width:22px; height:22px; }
   .bottom-nav button.current{
-    background:rgba(255,255,255,.95); color:var(--ink);
-    box-shadow:0 6px 14px rgba(23,54,42,.10);
+    background:#1D1B1B; color:#fff;
+    box-shadow:0 6px 14px rgba(23,54,42,.18);
   }
   .bottom-nav .nav-bot{
     width:58px; height:58px;
@@ -1962,12 +1966,42 @@
       cerrarTimer = setTimeout(function(){ panel.hidden = true; }, demora || 0);
     }
 
-    /* Si lo dictado son solo dígitos (de uno en uno, de dos en dos, con
-       espacios o guiones), se unen en un solo número: "21 55 621" -> "2155621" */
+    /* Si lo dictado es un número (en dígitos O en palabras, de uno en uno,
+       de dos en dos o mezclados), se escribe SIEMPRE en cifras y unido:
+       "dos uno 55 seiscientos veintiuno" no aplica, pero
+       "dos uno cincuenta y cinco seis dos uno" -> "2155621" */
+    var NUM_PAL = {
+      cero:0, uno:1, un:1, una:1, dos:2, tres:3, cuatro:4, cinco:5,
+      seis:6, siete:7, ocho:8, nueve:9, diez:10, once:11, doce:12,
+      trece:13, catorce:14, quince:15, dieciseis:16, diecisiete:17,
+      dieciocho:18, diecinueve:19, veinte:20, veintiuno:21, veintiun:21,
+      veintidos:22, veintitres:23, veinticuatro:24, veinticinco:25,
+      veintiseis:26, veintisiete:27, veintiocho:28, veintinueve:29,
+      treinta:30, cuarenta:40, cincuenta:50, sesenta:60, setenta:70,
+      ochenta:80, noventa:90, cien:100
+    };
     function normalizaDictado(t){
-      var limpio = t.replace(/[.,;:\-–]/g, " ").trim();
-      if(/^[\d\s]+$/.test(limpio)) return limpio.replace(/\s+/g, "");
-      return t;
+      var tokens = t.toLowerCase()
+        .normalize("NFD").replace(/[̀-ͯ]/g, "")   /* sin tildes */
+        .replace(/[.,;:\-–]/g, " ")
+        .split(/\s+/).filter(Boolean);
+      var partes = [], i = 0;
+      while(i < tokens.length){
+        var tk = tokens[i];
+        if(/^\d+$/.test(tk)){ partes.push(tk); i++; continue; }
+        if(NUM_PAL.hasOwnProperty(tk)){
+          var v = NUM_PAL[tk];
+          /* compuestos "treinta y cinco" */
+          if(v >= 30 && v <= 90 && v % 10 === 0 &&
+             tokens[i + 1] === "y" && NUM_PAL.hasOwnProperty(tokens[i + 2]) && NUM_PAL[tokens[i + 2]] <= 9){
+            v += NUM_PAL[tokens[i + 2]]; i += 3;
+          } else { i++; }
+          partes.push(String(v));
+          continue;
+        }
+        return t;   /* hay palabras que no son números: se deja el texto tal cual */
+      }
+      return partes.length ? partes.join("") : t;
     }
     rec.onresult = function(e){
       var texto = "", final = false;
