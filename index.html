@@ -1675,7 +1675,9 @@
       document.getElementById("pliegoD-amount").textContent = pctTxt(p0.todo);
       document.getElementById("pliegoD-delta").textContent =
         "Actividades " + pctTxt(p0.actividades) + " · Proyectos " + pctTxt(p0.proyectos);
-      document.getElementById("pliegoD-bar").style.width = Math.min(100, p0.todo) + "%";
+      var barP = document.getElementById("pliegoD-bar");
+      barP.style.width = Math.min(100, p0.todo) + "%";
+      barP.style.background = barColor(p0.todo);
       /* un card por cada fila restante de la hoja PLIEGO */
       document.getElementById("pliego-cards").innerHTML = filasP.slice(1).map(function(f){
         return seccionPct(f.nombre,
@@ -1689,7 +1691,7 @@
       document.getElementById("ent-grid").innerHTML = ads.map(function(a){
         return '<div class="ent">' +
           '<span class="top"><span class="name">' + a.nombre + '</span><span class="pct">' + pctTxt(a.pct) + '</span></span>' +
-          '<span class="meter"><i style="width:' + Math.min(100, a.pct) + '%"></i></span>' +
+          '<span class="meter"><i style="width:' + Math.min(100, a.pct) + '%;background:' + barColor(a.pct) + '"></i></span>' +
           '<span class="amt">S/ ' + fmtNum(Math.round(a.monto / 1000000)) + ' millones</span></div>';
       }).join("");
     }
@@ -1711,6 +1713,9 @@
   function pctTxt(n){ return String(n).replace(".", ",") + "%"; }
   function pctClass(n){ return n >= 60 ? "pct-ok" : (n >= 25 ? "pct-pr" : "pct-cr"); }
   function execColor(n){ return n >= 60 ? "#1FA23C" : (n >= 25 ? "#C98A00" : "#BF2E25"); }
+  /* Escala fija de las barras de % (independiente del tema):
+     verde ≥60 · amarillo 40–59 · naranja 25–39 · rojo <25 */
+  function barColor(n){ return n >= 60 ? "#4EA72E" : (n >= 40 ? "#FFFF00" : (n >= 25 ? "#E97132" : "#FF0000")); }
   function fmtMonto(n){
     return n >= 1000000 ? "S/ " + (n/1000000).toFixed(1).replace(".", ",") + " M"
                         : "S/ " + n.toLocaleString("es-PE");
@@ -1791,7 +1796,7 @@
         '<div><div class="k">PIM 2026</div><div class="pim">'+fmtSoles(p.pim)+'</div></div>'+
         '<div style="text-align:right"><div class="k">Avance físico</div><div class="pcard-pct '+pctClass(fis)+'">'+pctTxt(fis)+'</div></div>'+
       '</div>'+
-      '<div class="pcard-bar"><i style="width:'+fis+'%;background:'+execColor(fis)+'"></i></div>'+
+      '<div class="pcard-bar"><i style="width:'+fis+'%;background:'+barColor(fis)+'"></i></div>'+
     '</button>';
   }
 
@@ -1918,7 +1923,7 @@
     var c = colorFijo || execColor(pc);
     return '<div class="drb"><div class="dr"><span>' + nombre + '</span>' +
       '<b style="color:' + c + '">' + pctTxt(pc) + '</b></div>' +
-      '<div class="mtr"><i style="width:' + Math.min(100, pc) + '%;background:' + c + '"></i></div></div>';
+      '<div class="mtr"><i style="width:' + Math.min(100, pc) + '%;background:' + barColor(pc) + '"></i></div></div>';
   }
   function seccionPct(titulo, filas){
     return '<div class="section-head"><h2>' + titulo + '</h2></div>' +
@@ -1927,7 +1932,9 @@
   function indicadorPrincipal(pref, hecho, meta, etiqueta){
     var pct = Math.round(hecho / meta * 1000) / 10;
     document.getElementById(pref + "-pct").textContent = pctTxt(pct);
-    document.getElementById(pref + "-bar").style.width = Math.min(100, pct) + "%";
+    var barra = document.getElementById(pref + "-bar");
+    barra.style.width = Math.min(100, pct) + "%";
+    barra.style.background = barColor(pct);
     document.getElementById(pref + "-" + etiqueta).innerHTML = "<b>" + fmtNum(hecho) + "</b> " + etiqueta;
     document.getElementById(pref + "-meta").innerHTML = "Meta <b>" + fmtNum(meta) + "</b>";
   }
