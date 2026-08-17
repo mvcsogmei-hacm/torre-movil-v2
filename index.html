@@ -28,6 +28,23 @@
     --neg:       #BF2E25;
     --shadow-card: 0 10px 24px rgba(120,25,30,.08);
   }
+  /* ─ Paletas de color (elegibles en Ajustes → Tema de color) ─
+     Cada una redefine el color primario y los fondos claros.
+     Deben ir ANTES del bloque oscuro para que en modo oscuro
+     las superficies oscuras ganen. */
+  html[data-paleta="azul"]{
+    --mint:#123E73; --lemon:#1E5AA8; --lemon-b:#164581; --rosa:#C3D9F4;
+    --screen-a:#FAFCFE; --screen-b:#E7EEF7; --screen-c:#D8E4F2;
+  }
+  html[data-paleta="verde"]{
+    --mint:#0F5132; --lemon:#1F7A4D; --lemon-b:#175E3B; --rosa:#C4E8D4;
+    --screen-a:#FAFDFB; --screen-b:#E6F2EA; --screen-c:#D7EADF;
+  }
+  html[data-paleta="morado"]{
+    --mint:#4A2680; --lemon:#6A3FB5; --lemon-b:#53308F; --rosa:#DCCDF3;
+    --screen-a:#FCFBFE; --screen-b:#EEE8F7; --screen-c:#E2D8F1;
+  }
+
   /* ─ Tema oscuro (conmutable desde Inicio, persistido en Ajustes) ─ */
   html[data-tema="oscuro"]{
     --mint:      #26070A;
@@ -261,6 +278,20 @@
     font-size:13px; font-weight:600;
   }
   .btn-recarga:active{ transform:scale(.98); }
+  /* Selector de paleta de color */
+  .pal-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:6px; }
+  .pal-grid button{
+    display:grid; justify-items:center; gap:6px;
+    font-size:11px; font-weight:600; color:var(--muted);
+    padding:9px 2px; border-radius:12px;
+  }
+  .pal-grid button i{ width:30px; height:30px; border-radius:50%; border:3px solid transparent; }
+  .pal-grid button.active{ background:var(--key); color:var(--ink); }
+  .pal-grid button.active i{ border-color:var(--ink); }
+  .pal-osc{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-top:14px; font-size:13.5px; font-weight:600;
+  }
   .neu-actions{
     display:grid; grid-template-columns:1fr 1fr 1fr;
     padding:6px 0 2px;
@@ -443,7 +474,7 @@
   .grow-n{ font-size:14px; font-weight:700; color:var(--lemon-b); font-variant-numeric:tabular-nums; }
   .grow .chev{ width:17px; height:17px; color:#C3CCC6; flex:none; }
   .grow-bar{ height:6px; border-radius:999px; background:#EFE9E7; margin-top:9px; overflow:hidden; }
-  .grow-bar i{ display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,#E06A6E,var(--lemon)); }
+  .grow-bar i{ display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,var(--lemon-b),var(--lemon)); }
   .grow-name .lvl{ display:block; font-size:10px; color:var(--muted); font-weight:500; text-transform:none; letter-spacing:0; margin-top:2px; }
   .sug-h{ font-size:11.5px; font-weight:700; color:#5A665F; text-transform:uppercase; letter-spacing:.5px; margin:16px 2px 9px; }
   .sug-h:first-child{ margin-top:2px; }
@@ -1080,6 +1111,23 @@
         <span class="info"><span class="name">Notificaciones</span><span class="sub">Alertas de avance y paralizaciones</span></span>
         <span class="sw" id="sw-notif"></span>
       </button>
+      <button class="set-row" data-abre="body-paleta">
+        <span class="set-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18h1.2a2 2 0 0 0 1.5-3.3 2 2 0 0 1 1.5-3.3H19a2.9 2.9 0 0 0 3-2.9A8.7 8.7 0 0 0 12 3z"/><circle cx="7.5" cy="11" r="1.1"/><circle cx="11" cy="7.5" r="1.1"/><circle cx="15.5" cy="8.5" r="1.1"/></svg></span>
+        <span class="info"><span class="name">Tema de color</span><span class="sub" id="sub-paleta">—</span></span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="set-body" id="body-paleta" hidden>
+        <div class="pal-grid" id="pal-grid">
+          <button data-pal="rojo"><i style="background:#C8102E"></i>Rojo</button>
+          <button data-pal="azul"><i style="background:#1E5AA8"></i>Azul</button>
+          <button data-pal="verde"><i style="background:#1F7A4D"></i>Verde</button>
+          <button data-pal="morado"><i style="background:#6A3FB5"></i>Morado</button>
+        </div>
+        <div class="pal-osc">
+          <span>Modo oscuro</span>
+          <span class="sw" id="sw-oscuro"></span>
+        </div>
+      </div>
       <button class="set-row" data-abre="body-texto">
         <span class="set-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5h16v2M12 5v14M9 19h6"/></svg></span>
         <span class="info"><span class="name">Tamaño de texto</span><span class="sub" id="sub-texto">Normal</span></span>
@@ -1974,19 +2022,37 @@
     });
     aplicaTam();
 
-    /* Tema claro / oscuro (botón en Inicio, se recuerda entre sesiones) */
+    /* Tema: paleta de color + claro/oscuro (botón en Inicio y sección en Ajustes) */
     var btnTema = document.getElementById("btn-tema");
     var ICO_LUNA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.6 6.6 0 0 0 9.8 9.8z"/></svg>';
     var ICO_SOL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg>';
+    var PALETAS = { rojo:"Rojo institucional", azul:"Azul", verde:"Verde", morado:"Morado" };
+    var palGrid = document.getElementById("pal-grid");
+    var swOsc = document.getElementById("sw-oscuro");
     function aplicaTema(){
       var osc = cfg.tema === "oscuro";
+      var pal = PALETAS[cfg.paleta] ? cfg.paleta : "rojo";
       document.documentElement.setAttribute("data-tema", osc ? "oscuro" : "claro");
+      document.documentElement.setAttribute("data-paleta", pal);
       if(btnTema) btnTema.innerHTML = osc ? ICO_SOL : ICO_LUNA;
       var mt = document.querySelector('meta[name="theme-color"]');
-      if(mt) mt.setAttribute("content", osc ? "#17181A" : "#FDFBFA");
+      if(mt) mt.setAttribute("content", osc ? "#0E0F12" : "#FDFBFA");
+      var sub = document.getElementById("sub-paleta");
+      if(sub) sub.textContent = PALETAS[pal] + (osc ? " · Oscuro" : " · Claro");
+      if(swOsc) swOsc.classList.toggle("on", osc);
+      if(palGrid) palGrid.querySelectorAll("button").forEach(function(b){
+        b.classList.toggle("active", b.getAttribute("data-pal") === pal);
+      });
     }
     if(btnTema) btnTema.addEventListener("click", function(){
       cfg.tema = (cfg.tema === "oscuro" ? "claro" : "oscuro"); guardar(); aplicaTema();
+    });
+    if(swOsc) swOsc.addEventListener("click", function(){
+      cfg.tema = (cfg.tema === "oscuro" ? "claro" : "oscuro"); guardar(); aplicaTema();
+    });
+    if(palGrid) palGrid.addEventListener("click", function(e){
+      var b = e.target.closest("[data-pal]"); if(!b) return;
+      cfg.paleta = b.getAttribute("data-pal"); guardar(); aplicaTema();
     });
     aplicaTema();
 
