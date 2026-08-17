@@ -135,6 +135,20 @@ def main():
         if titulos:
             indicadores["titulos"] = titulos
 
+    def num_celda(v):
+        """Número entero desde celda que puede venir como texto con espacio
+        duro (\\xa0) o comas: '\\xa09028' -> 9028."""
+        if v is None:
+            return None
+        if isinstance(v, str):
+            v = v.replace("\xa0", "").replace(",", "").strip()
+            if not v:
+                return None
+        try:
+            return num(v)
+        except (TypeError, ValueError):
+            return None
+
     def pct_celda(v):
         """Normaliza el % de las hojas de títulos: '52,1%' -> 52.1;
         fracción (0.56) -> 56; número >1 (22.9) ya es porcentaje."""
@@ -150,13 +164,19 @@ def main():
         v = float(v)
         return round(v * 100, 1) if v <= 1 else round(v, 1)
 
-    # Macro regiones (hoja MACROREGION TITULOS)
+    # Macro regiones (hoja MACROREGION TITULOS): %, ejecución y meta
     if "MACROREGION TITULOS" in wb.sheetnames and "titulos" in indicadores:
         macro = []
         for r in wb["MACROREGION TITULOS"].iter_rows(values_only=True):
             nombre, val = limpio(r[1]), pct_celda(r[2])
             if nombre and val is not None:
-                macro.append({"nombre": nombre, "pct": val})
+                fila = {"nombre": nombre, "pct": val}
+                ejec, meta = num_celda(r[3]), num_celda(r[4])
+                if ejec is not None:
+                    fila["ejec"] = ejec
+                if meta is not None:
+                    fila["meta"] = meta
+                macro.append(fila)
         indicadores["titulos"]["macro"] = macro
 
     # Bonos (hojas INDICADORES BONOS, MODALIDAS BONOS, POR REGION BONOS)
@@ -170,20 +190,26 @@ def main():
                 bonos["desembolsados"] = num(r[2])
         if bonos:
             indicadores["bonos"] = bonos
+    def filas_con_detalle(hoja):
+        """Filas nombre + % + desembolso/meta (hojas de bonos)."""
+        filas = []
+        for r in wb[hoja].iter_rows(values_only=True):
+            nombre, val = limpio(r[1]), pct_celda(r[2])
+            if not nombre or val is None:
+                continue
+            fila = {"nombre": nombre, "pct": val}
+            des, meta = num_celda(r[3]), num_celda(r[4])
+            if des is not None:
+                fila["desembolso"] = des
+            if meta is not None:
+                fila["meta"] = meta
+            filas.append(fila)
+        return filas
+
     if "MODALIDAS BONOS" in wb.sheetnames and "bonos" in indicadores:
-        modalidades = []
-        for r in wb["MODALIDAS BONOS"].iter_rows(values_only=True):
-            nombre, val = limpio(r[1]), pct_celda(r[2])
-            if nombre and val is not None:
-                modalidades.append({"nombre": nombre, "pct": val})
-        indicadores["bonos"]["modalidades"] = modalidades
+        indicadores["bonos"]["modalidades"] = filas_con_detalle("MODALIDAS BONOS")
     if "POR REGION BONOS" in wb.sheetnames and "bonos" in indicadores:
-        reg_bonos = []
-        for r in wb["POR REGION BONOS"].iter_rows(values_only=True):
-            nombre, val = limpio(r[1]), pct_celda(r[2])
-            if nombre and val is not None:
-                reg_bonos.append({"nombre": nombre, "pct": val})
-        indicadores["bonos"]["regiones"] = reg_bonos
+        indicadores["bonos"]["regiones"] = filas_con_detalle("POR REGION BONOS")
 
     # Pliego (hoja PLIEGO): fila PLIEGO = indicador principal de Inicio;
     # las demás filas = un card por fila en el detalle
@@ -239,8 +265,10 @@ def main():
             nombre, val = limpio(r[1]), pct_celda(r[2])
             if not nombre:
                 continue
-            if val is None:
-                macro_actual = nombre          # fila de cabecera (NORTE, CENTRO...)
+            # cabecera de grupo (NORTE, CENTRO…): trae ejecución/meta en las
+            # columnas 3-4 (los mismos totales de la hoja MACROREGION) o no trae %
+            if num_celda(r[3]) is not None or val is None:
+                macro_actual = nombre
             else:
                 regiones.append({"macro": macro_actual, "nombre": nombre, "pct": val})
         indicadores["titulos"]["regiones"] = regiones

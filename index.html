@@ -803,6 +803,7 @@
   .detail-card .drb:last-child{ border-bottom:0; }
   .detail-card .drb .dr{ padding:0 0 8px; border-bottom:0; }
   .detail-card .drb .dr span{ color:var(--ink); font-weight:600; }
+  .detail-card .drb .dr-det{ font-size:11px; color:var(--muted); margin:-4px 0 7px; }
   .detail-card .drb .mtr{ height:6px; border-radius:999px; background:#EFE9E7; overflow:hidden; }
   .detail-card .drb .mtr i{ display:block; height:100%; border-radius:999px; }
   .tx .chev{ width:16px; height:16px; color:var(--muted); flex:none; }
@@ -2164,14 +2165,16 @@
   /* ── Actividades: componentes compartidos de las pestañas de indicadores ──
      Mismo formato que la ficha de proyecto: título de sección + tarjeta de
      filas, cada fila con su barra de porcentaje. */
-  function filaPct(nombre, pc, colorFijo){
+  function filaPct(nombre, pc, colorFijo, detalle){
     var c = colorFijo || execColor(pc);
     return '<div class="drb"><div class="dr"><span>' + nombre + '</span>' +
       '<b style="color:' + c + '">' + pctTxt(pc) + '</b></div>' +
+      (detalle ? '<div class="dr-det">' + detalle + '</div>' : '') +
       '<div class="mtr"><i style="width:' + Math.min(100, pc) + '%;background:' + c + '"></i></div></div>';
   }
-  function seccionPct(titulo, filas){
-    return '<div class="section-head"><h2>' + titulo + '</h2></div>' +
+  function seccionPct(titulo, filas, extra){
+    return '<div class="section-head"><h2>' + titulo + '</h2>' +
+      (extra ? '<span class="link">' + extra + '</span>' : '') + '</div>' +
       '<div class="detail-card">' + filas + '</div>';
   }
   function indicadorPrincipal(pref, hecho, meta, etiqueta){
@@ -2196,21 +2199,31 @@
     if(!t || !t.meta) return;
     indicadorPrincipal("tit", t.entregados, t.meta, "entregados");
     var listas = document.getElementById("tit-listas");
+    /* totales de cada macro región (ejecución/meta) para las cabeceras de grupo */
+    var macroMap = {};
+    (t.macro || []).forEach(function(mr){ macroMap[mr.nombre] = mr; });
+    function totalesMacro(nombre){
+      var mr = macroMap[nombre];
+      return (mr && mr.meta) ? fmtNum(mr.ejec || 0) + " de " + fmtNum(mr.meta) : "";
+    }
     function render(vista){
       if(vista === "macro"){
         listas.innerHTML = seccionPct("Por macro región",
-          (t.macro || []).map(function(mr){ return filaPct(mr.nombre, mr.pct); }).join(""));
+          (t.macro || []).map(function(mr){
+            var det = mr.meta ? "Ejecución " + fmtNum(mr.ejec || 0) + " · Meta " + fmtNum(mr.meta) : "";
+            return filaPct(mr.nombre, mr.pct, null, det);
+          }).join(""));
         return;
       }
       var html = "", actual = null, filas = "";
       (t.regiones || []).forEach(function(r){
         if(r.macro !== actual){
-          if(actual !== null) html += seccionPct(actual, filas);
+          if(actual !== null) html += seccionPct(actual, filas, totalesMacro(actual));
           actual = r.macro; filas = "";
         }
         filas += filaPct(r.nombre, r.pct);
       });
-      if(actual !== null) html += seccionPct(actual, filas);
+      if(actual !== null) html += seccionPct(actual, filas, totalesMacro(actual));
       listas.innerHTML = html;
     }
     render("macro");
@@ -2223,14 +2236,17 @@
     if(!b || !b.meta) return;
     indicadorPrincipal("bon", b.desembolsados, b.meta, "desembolsados");
     var listas = document.getElementById("bon-listas");
+    function detBono(x){
+      return x.meta ? "Desembolso " + fmtNum(x.desembolso || 0) + " · Meta " + fmtNum(x.meta) : "";
+    }
     function render(vista){
       if(vista === "modalidad"){
         listas.innerHTML = seccionPct("Bonos por modalidad",
-          (b.modalidades || []).map(function(m){ return filaPct(m.nombre, m.pct); }).join(""));
+          (b.modalidades || []).map(function(m){ return filaPct(m.nombre, m.pct, null, detBono(m)); }).join(""));
         return;
       }
       listas.innerHTML = seccionPct("Bonos por región",
-        (b.regiones || []).map(function(r){ return filaPct(r.nombre, r.pct); }).join(""));
+        (b.regiones || []).map(function(r){ return filaPct(r.nombre, r.pct, null, detBono(r)); }).join(""));
     }
     render("modalidad");
     segControl("bon-seg", render);
