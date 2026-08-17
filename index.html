@@ -702,10 +702,17 @@
 
   .note-field{
     display:flex; align-items:center; gap:9px;
-    background:#EFF3EB; border-radius:999px;
+    background:var(--card); border-radius:999px;
     padding:13px 18px; margin:26px 0 18px;
+    border:1.5px solid #EBD3CF;
+    box-shadow:var(--shadow-card);
+    transition:border-color .15s ease, box-shadow .15s ease;
   }
-  .note-field svg{ width:17px; height:17px; color:var(--muted); flex:none; }
+  .note-field:focus-within{
+    border-color:var(--lemon);
+    box-shadow:0 10px 26px rgba(200,16,46,.16);
+  }
+  .note-field svg{ width:17px; height:17px; color:var(--lemon); flex:none; }
   .note-field input{
     border:0; background:transparent; font:inherit; font-size:16px; /* ≥16px evita el zoom automático de iOS al enfocar */
     width:100%; color:var(--ink);
