@@ -2302,8 +2302,14 @@
     var promptInstalar = null;
     var yaInstalada = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
     var esIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-    function bannerVisto(){ try{ return localStorage.getItem("torre-inst-visto") === "1"; }catch(e){ return true; } }
-    function marcaVisto(){ try{ localStorage.setItem("torre-inst-visto", "1"); }catch(e){} }
+    /* El aviso descartado reaparece a las 24 h mientras la app no esté instalada */
+    function bannerVisto(){
+      try{
+        var t = Number(localStorage.getItem("torre-inst-visto") || 0);
+        return t && (Date.now() - t) < 24 * 60 * 60 * 1000;
+      }catch(e){ return true; }
+    }
+    function marcaVisto(){ try{ localStorage.setItem("torre-inst-visto", String(Date.now())); }catch(e){} }
     function cierraBanner(){ banner.hidden = true; marcaVisto(); }
 
     window.addEventListener("beforeinstallprompt", function(e){
