@@ -14,9 +14,9 @@
      para no tocar todo el CSS; --lemon es ahora el ROJO institucional. */
   :root{
     --mint:      #A6161F;   /* fondo detrás del teléfono (rojo profundo) */
-    --screen-a:  #FDFBFA;   /* degradado de pantalla, arriba              */
-    --screen-b:  #F5E9E7;
-    --screen-c:  #EDDAD6;   /* degradado de pantalla, abajo               */
+    --screen-a:  #F8EDEA;   /* degradado de pantalla, arriba              */
+    --screen-b:  #F2E1DD;
+    --screen-c:  #EAD3CE;   /* degradado de pantalla, abajo               */
     --lemon:     #C8102E;   /* rojo institucional (tarjetas principales)  */
     --lemon-b:   #A50D23;   /* rojo oscuro para el degradado              */
     --rosa:      #F7C8C2;   /* texto secundario sobre rojo                */
@@ -41,15 +41,15 @@
      las superficies oscuras ganen. */
   html[data-paleta="azul"]{
     --mint:#123E73; --lemon:#1E5AA8; --lemon-b:#164581; --rosa:#C3D9F4;
-    --screen-a:#FAFCFE; --screen-b:#E7EEF7; --screen-c:#D8E4F2;
+    --screen-a:#ECF2F9; --screen-b:#E2EBF5; --screen-c:#D5E2F0;
   }
   html[data-paleta="verde"]{
     --mint:#0F5132; --lemon:#1F7A4D; --lemon-b:#175E3B; --rosa:#C4E8D4;
-    --screen-a:#FAFDFB; --screen-b:#E6F2EA; --screen-c:#D7EADF;
+    --screen-a:#EBF5EF; --screen-b:#E1EFE7; --screen-c:#D4E8DC;
   }
   html[data-paleta="morado"]{
     --mint:#4A2680; --lemon:#6A3FB5; --lemon-b:#53308F; --rosa:#DCCDF3;
-    --screen-a:#FCFBFE; --screen-b:#EEE8F7; --screen-c:#E2D8F1;
+    --screen-a:#F2EDF9; --screen-b:#EAE3F5; --screen-c:#DFD4EF;
   }
 
   /* ─ Tema oscuro (conmutable desde Inicio, persistido en Ajustes) ─ */
@@ -835,6 +835,36 @@
   .note-field .mic svg{ width:19px; height:19px; }
   .note-field .mic.rec{ color:#FF3B30; animation:pulso-mic 1s ease-in-out infinite; }
   @keyframes pulso-mic{ 50%{ opacity:.3; } }
+  /* Panel de escucha por voz */
+  .voz-backdrop{
+    position:absolute; inset:0; z-index:70;
+    background:rgba(20,24,22,.5);
+    display:grid; place-items:center; padding:0 26px;
+  }
+  .voz-box{
+    background:var(--card); border-radius:22px;
+    padding:26px 24px 20px; width:100%; max-width:320px;
+    display:grid; gap:10px; justify-items:center; text-align:center;
+    box-shadow:0 26px 60px rgba(0,0,0,.35);
+  }
+  .voz-mic{
+    width:60px; height:60px; border-radius:50%;
+    background:var(--lemon); color:#fff;
+    display:grid; place-items:center;
+    animation:pulso-voz 1.2s ease-in-out infinite;
+  }
+  .voz-mic svg{ width:26px; height:26px; }
+  @keyframes pulso-voz{
+    0%,100%{ box-shadow:0 0 0 0 rgba(200,16,46,.35); }
+    50%    { box-shadow:0 0 0 16px rgba(200,16,46,0); }
+  }
+  .voz-t{ font-size:15.5px; font-weight:700; }
+  .voz-txt{ font-size:13.5px; color:var(--muted); min-height:20px; line-height:1.4; }
+  .voz-cancel{
+    margin-top:4px; padding:9px 22px; border-radius:999px;
+    background:var(--key); color:var(--ink); font-size:13px; font-weight:600;
+  }
+  .voz-cancel:active{ opacity:.7; }
 
   .keypad{
     display:grid; grid-template-columns:repeat(3,1fr);
@@ -1267,10 +1297,6 @@
         </span>
         <span class="pct">15,5%</span>
       </div>
-      <button class="more-link">
-        Ver más detalles
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-      </button>
       </div></div>
     </div>
 
@@ -1326,10 +1352,6 @@
         </span>
         <span class="pct">33%</span>
       </div>
-      <button class="more-link">
-        Ver más detalles
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-      </button>
       </div></div>
     </div>
 
@@ -1399,10 +1421,6 @@
         </span>
         <span class="pct">61%</span>
       </div>
-      <button class="more-link">
-        Ver más detalles
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-      </button>
       </div></div>
     </div>
 
@@ -1451,10 +1469,6 @@
         </span>
         <span class="pct">34%</span>
       </div>
-      <button class="more-link">
-        Ver más detalles
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-      </button>
       </div></div>
     </div>
 
@@ -1475,10 +1489,6 @@
         <span class="pctv pct-cr" id="preset-card-pct">—</span>
       </div>
       <div class="body"><div id="preset-card-body">
-      <button class="more-link">
-        Ver más detalles
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-      </button>
       </div></div>
     </div>
 
@@ -1594,6 +1604,18 @@
     </header>
     <div id="ficha"></div>
   </section>
+
+  <!-- ═══ PANEL DE ESCUCHA (búsqueda por voz) ═══ -->
+  <div class="voz-backdrop" id="voz-panel" hidden>
+    <div class="voz-box">
+      <span class="voz-mic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0"/><path d="M12 17.5V21"/></svg>
+      </span>
+      <div class="voz-t" id="voz-estado">Escuchando…</div>
+      <div class="voz-txt" id="voz-txt">Habla ahora</div>
+      <button class="voz-cancel" id="voz-cancel">Cancelar</button>
+    </div>
+  </div>
 
   <!-- ═══ NAV INFERIOR ═══ -->
   <nav class="bottom-nav" aria-label="Principal">
@@ -1890,31 +1912,71 @@
   /* Eventos de busqueda y filtros */
   sInput.addEventListener("input", function(e){ state.texto = e.target.value.trim(); state.page = 1; renderBuscador(); });
 
-  /* ── Búsqueda por voz (Web Speech API; el botón solo aparece si el navegador la soporta) ── */
+  /* ── Búsqueda por voz con panel de escucha y transcripción en vivo ── */
   (function(){
     var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     var btnVoz = document.getElementById("btn-voz");
     if(!SR || !btnVoz) return;
     btnVoz.hidden = false;
+    var panel = document.getElementById("voz-panel");
+    var estado = document.getElementById("voz-estado");
+    var vozTxt = document.getElementById("voz-txt");
     var rec = new SR();
     rec.lang = "es-PE";
-    rec.interimResults = false;
+    rec.interimResults = true;          /* transcripción en vivo en el panel */
     rec.maxAlternatives = 1;
-    var grabando = false;
+    var grabando = false, cerrarTimer = null;
+
+    function abrirPanel(){
+      clearTimeout(cerrarTimer);
+      estado.textContent = "Escuchando…";
+      vozTxt.textContent = "Habla ahora";
+      panel.hidden = false;
+    }
+    function cerrarPanel(demora){
+      clearTimeout(cerrarTimer);
+      cerrarTimer = setTimeout(function(){ panel.hidden = true; }, demora || 0);
+    }
+
     rec.onresult = function(e){
-      var dicho = e.results[0][0].transcript.trim();
-      sInput.value = dicho;
-      state.texto = dicho; state.page = 1; renderBuscador();
+      var texto = "", final = false;
+      for(var i = 0; i < e.results.length; i++){
+        texto += e.results[i][0].transcript;
+        if(e.results[i].isFinal) final = true;
+      }
+      texto = texto.trim();
+      vozTxt.textContent = "“" + texto + "”";
+      if(final && texto){
+        estado.textContent = "Listo, buscando:";
+        sInput.value = texto;
+        state.texto = texto; state.page = 1; renderBuscador();
+        rec.stop();
+        cerrarPanel(900);               /* deja ver lo transcrito un instante */
+      }
     };
-    rec.onend = function(){ grabando = false; btnVoz.classList.remove("rec"); };
-    rec.onerror = function(){ grabando = false; btnVoz.classList.remove("rec"); };
+    rec.onend = function(){
+      grabando = false; btnVoz.classList.remove("rec");
+      if(!panel.hidden && estado.textContent === "Escuchando…") cerrarPanel(200);
+    };
+    rec.onerror = function(ev){
+      grabando = false; btnVoz.classList.remove("rec");
+      estado.textContent = ev.error === "not-allowed" ? "Permiso de micrófono denegado" : "No te escuché bien";
+      vozTxt.textContent = "Toca el micrófono para intentar de nuevo";
+      cerrarPanel(1600);
+    };
     btnVoz.addEventListener("click", function(e){
       e.preventDefault();               /* que el label no robe el foco */
       if(grabando){ rec.stop(); return; }
       try{
         rec.start();
         grabando = true; btnVoz.classList.add("rec");
+        abrirPanel();
       }catch(err){ grabando = false; btnVoz.classList.remove("rec"); }
+    });
+    document.getElementById("voz-cancel").addEventListener("click", function(){
+      try{ rec.abort(); }catch(e){}
+      grabando = false; btnVoz.classList.remove("rec");
+      panel.hidden = true;
     });
   })();
   function openFilters(){ renderFilters(); fBack.hidden=false; fSheet.hidden=false; }
@@ -2106,8 +2168,9 @@
       document.documentElement.setAttribute("data-tema", osc ? "oscuro" : "claro");
       document.documentElement.setAttribute("data-paleta", pal);
       if(btnTema) btnTema.innerHTML = osc ? ICO_SOL : ICO_LUNA;
+      var CLAROS = { rojo:"#F8EDEA", azul:"#ECF2F9", verde:"#EBF5EF", morado:"#F2EDF9" };
       var mt = document.querySelector('meta[name="theme-color"]');
-      if(mt) mt.setAttribute("content", osc ? "#0E0F12" : "#FDFBFA");
+      if(mt) mt.setAttribute("content", osc ? "#0E0F12" : (CLAROS[pal] || "#F8EDEA"));
       var sub = document.getElementById("sub-paleta");
       if(sub) sub.textContent = PALETAS[pal] + (osc ? " · Oscuro" : " · Claro");
       if(swOsc) swOsc.classList.toggle("on", osc);
