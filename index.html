@@ -30,28 +30,41 @@
   }
   /* ─ Tema oscuro (conmutable desde Inicio, persistido en Ajustes) ─ */
   html[data-tema="oscuro"]{
-    --mint:      #3E0B10;
-    --screen-a:  #17181A;
-    --screen-b:  #1C1D20;
-    --screen-c:  #222125;
-    --card:      #26272B;
-    --key:       #313236;
-    --ink:       #F1EFEE;
-    --muted:     #9C9B99;
-    --shadow-card: 0 10px 24px rgba(0,0,0,.40);
+    --mint:      #26070A;
+    --screen-a:  #0E0F12;
+    --screen-b:  #121317;
+    --screen-c:  #16171B;
+    --card:      #282B32;
+    --key:       #3A3E47;
+    --ink:       #FFFFFF;
+    --muted:     #B4B8BF;
+    --shadow-card: 0 10px 24px rgba(0,0,0,.55);
   }
   html[data-tema="oscuro"] .detail-card .dr,
   html[data-tema="oscuro"] .detail-card .drb,
   html[data-tema="oscuro"] .set-row,
-  html[data-tema="oscuro"] .set-body{ border-color:#3B3C41; }
+  html[data-tema="oscuro"] .set-body{ border-color:#454A53; }
   html[data-tema="oscuro"] .grow-bar,
   html[data-tema="oscuro"] .pcard-bar,
   html[data-tema="oscuro"] .detail-card .drb .mtr,
-  html[data-tema="oscuro"] .meter{ background:#3B3C41; }
-  html[data-tema="oscuro"] .note-field{ border-color:#4A393C; }
+  html[data-tema="oscuro"] .meter{ background:#454A53; }
+  html[data-tema="oscuro"] .note-field{ border-color:#5A4247; }
   html[data-tema="oscuro"] .neu-actions button{ color:var(--ink); }
-  html[data-tema="oscuro"] .neu-actions button + button::before{ background:rgba(255,255,255,.12); }
-  html[data-tema="oscuro"] .set-txt{ color:#B9B6B4; }
+  html[data-tema="oscuro"] .neu-actions button + button::before{ background:rgba(255,255,255,.16); }
+  html[data-tema="oscuro"] .set-txt{ color:#C6C9CE; }
+  /* tarjetas con borde sutil para despegarlas del fondo */
+  html[data-tema="oscuro"] .neu-card,
+  html[data-tema="oscuro"] .detail-card,
+  html[data-tema="oscuro"] .set-list,
+  html[data-tema="oscuro"] .cartera-card,
+  html[data-tema="oscuro"] .pcard,
+  html[data-tema="oscuro"] .grow,
+  html[data-tema="oscuro"] .ent,
+  html[data-tema="oscuro"] .tab-empty,
+  html[data-tema="oscuro"] .btn-white{ border:1px solid #383C44; }
+  /* el semáforo ámbar y los enlaces grises suben medio tono para leerse sobre oscuro */
+  html[data-tema="oscuro"] .pcard-pct.pct-pr,
+  html[data-tema="oscuro"] .chip.proc{ color:#E8B554; }
   *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body{ height:100%; overscroll-behavior:none; }
   body{
@@ -1467,7 +1480,7 @@
       </button>
       <h1>Búsqueda</h1>
       <button class="icon-btn solid" id="open-filters" aria-label="Filtros">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8.5V19l-4 2v-7.5z"/></svg>
         <span class="fbadge" id="filter-count" hidden></span>
       </button>
     </header>
