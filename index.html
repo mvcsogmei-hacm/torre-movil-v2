@@ -107,11 +107,11 @@
   .icon-btn:active{ background:rgba(20,24,22,.06); }
   /* Variante visible: círculo en tinta con icono claro */
   .icon-btn.solid{
-    width:41px; height:41px;
+    width:35px; height:35px;
     background:var(--ink); color:var(--card);
     box-shadow:var(--shadow-card);
   }
-  .icon-btn.solid svg{ width:19px; height:19px; }
+  .icon-btn.solid svg{ width:16px; height:16px; }
   .icon-btn.solid:active{ opacity:.8; }
   .icon-btn:focus-visible, button:focus-visible, input:focus-visible{
     outline:2px solid var(--ink); outline-offset:2px;
@@ -892,9 +892,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <h1>Actividades</h1>
-      <button class="icon-btn solid" data-go="screen-search" aria-label="Buscar">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      </button>
+      <span></span>
     </header>
 
     <div class="neu-card act-tabs">
@@ -1468,7 +1466,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <h1>Búsqueda</h1>
-      <button class="icon-btn" id="open-filters" aria-label="Filtros">
+      <button class="icon-btn solid" id="open-filters" aria-label="Filtros">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
         <span class="fbadge" id="filter-count" hidden></span>
       </button>
