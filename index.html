@@ -28,6 +28,30 @@
     --neg:       #BF2E25;
     --shadow-card: 0 10px 24px rgba(120,25,30,.08);
   }
+  /* ─ Tema oscuro (conmutable desde Inicio, persistido en Ajustes) ─ */
+  html[data-tema="oscuro"]{
+    --mint:      #3E0B10;
+    --screen-a:  #17181A;
+    --screen-b:  #1C1D20;
+    --screen-c:  #222125;
+    --card:      #26272B;
+    --key:       #313236;
+    --ink:       #F1EFEE;
+    --muted:     #9C9B99;
+    --shadow-card: 0 10px 24px rgba(0,0,0,.40);
+  }
+  html[data-tema="oscuro"] .detail-card .dr,
+  html[data-tema="oscuro"] .detail-card .drb,
+  html[data-tema="oscuro"] .set-row,
+  html[data-tema="oscuro"] .set-body{ border-color:#3B3C41; }
+  html[data-tema="oscuro"] .grow-bar,
+  html[data-tema="oscuro"] .pcard-bar,
+  html[data-tema="oscuro"] .detail-card .drb .mtr,
+  html[data-tema="oscuro"] .meter{ background:#3B3C41; }
+  html[data-tema="oscuro"] .note-field{ border-color:#4A393C; }
+  html[data-tema="oscuro"] .neu-actions button{ color:var(--ink); }
+  html[data-tema="oscuro"] .neu-actions button + button::before{ background:rgba(255,255,255,.12); }
+  html[data-tema="oscuro"] .set-txt{ color:#B9B6B4; }
   *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body{ height:100%; overscroll-behavior:none; }
   body{
@@ -81,6 +105,14 @@
     display:grid; place-items:center; position:relative;
   }
   .icon-btn:active{ background:rgba(20,24,22,.06); }
+  /* Variante visible: círculo en tinta con icono claro */
+  .icon-btn.solid{
+    width:41px; height:41px;
+    background:var(--ink); color:var(--card);
+    box-shadow:var(--shadow-card);
+  }
+  .icon-btn.solid svg{ width:19px; height:19px; }
+  .icon-btn.solid:active{ opacity:.8; }
   .icon-btn:focus-visible, button:focus-visible, input:focus-visible{
     outline:2px solid var(--ink); outline-offset:2px;
   }
@@ -143,7 +175,7 @@
   }
   /* ─ Indicador principal: tarjeta neumórfica ─────────────────── */
   .neu-card{
-    background:#FFFFFF;
+    background:var(--card);
     border-radius:18px;
     padding:10px;
   }
@@ -518,7 +550,7 @@
   /* ═ INVERSIONES ══════════════════════════════════════════════ */
   .btn-white{
     display:flex; align-items:center; justify-content:center; gap:8px;
-    width:100%; background:#fff; color:var(--ink);
+    width:100%; background:var(--card); color:var(--ink);
     border-radius:999px; padding:14px; margin-top:14px;
     font-size:15px; font-weight:600;
     box-shadow:0 8px 18px rgba(120,25,30,.10);
@@ -794,7 +826,8 @@
       <span class="avatar av-leandro">L</span>
       <span class="hi">¡Hola, Leandro!</span>
       <span class="actions">
-        <button class="icon-btn" data-go="screen-ajustes" aria-label="Ajustes">
+        <button class="icon-btn solid" id="btn-tema" aria-label="Cambiar tema"></button>
+        <button class="icon-btn solid" data-go="screen-ajustes" aria-label="Ajustes">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34 1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87 1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/></svg>
         </button>
       </span>
@@ -859,7 +892,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <h1>Actividades</h1>
-      <button class="icon-btn" aria-label="Buscar">
+      <button class="icon-btn solid" data-go="screen-search" aria-label="Buscar">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
       </button>
     </header>
@@ -1087,9 +1120,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <h1>Inversiones</h1>
-      <button class="icon-btn" data-go="screen-orden" aria-label="Detalles de la orden">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>
-      </button>
+      <span></span>
     </header>
 
     <div class="cartera-card closed">
@@ -1931,6 +1962,22 @@
       cfg.texto = b.getAttribute("data-tam"); guardar(); aplicaTam();
     });
     aplicaTam();
+
+    /* Tema claro / oscuro (botón en Inicio, se recuerda entre sesiones) */
+    var btnTema = document.getElementById("btn-tema");
+    var ICO_LUNA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.6 6.6 0 0 0 9.8 9.8z"/></svg>';
+    var ICO_SOL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg>';
+    function aplicaTema(){
+      var osc = cfg.tema === "oscuro";
+      document.documentElement.setAttribute("data-tema", osc ? "oscuro" : "claro");
+      if(btnTema) btnTema.innerHTML = osc ? ICO_SOL : ICO_LUNA;
+      var mt = document.querySelector('meta[name="theme-color"]');
+      if(mt) mt.setAttribute("content", osc ? "#17181A" : "#FDFBFA");
+    }
+    if(btnTema) btnTema.addEventListener("click", function(){
+      cfg.tema = (cfg.tema === "oscuro" ? "claro" : "oscuro"); guardar(); aplicaTema();
+    });
+    aplicaTema();
 
     /* Filas expandibles */
     document.querySelectorAll(".set-row[data-abre]").forEach(function(r){
