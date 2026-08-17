@@ -808,10 +808,7 @@
     font-size:11px; color:var(--muted);
   }
   .detail-card .drb .dr-det{ margin:-4px 0 7px; }
-  .detail-card .dr-det-top{
-    padding:11px 0 3px; font-size:11.5px; font-weight:600;
-    border-bottom:1px solid #EEF1EA;
-  }
+  #tit-listas .section-head .link{ font-size:11.5px; }
   .detail-card .drb .mtr{ height:6px; border-radius:999px; background:#EFE9E7; overflow:hidden; }
   .detail-card .drb .mtr i{ display:block; height:100%; border-radius:999px; }
   .tx .chev{ width:16px; height:16px; color:var(--muted); flex:none; }
@@ -2182,10 +2179,6 @@
       '<b style="color:' + c + '">' + pctTxt(pc) + '</b></div>' + det +
       '<div class="mtr"><i style="width:' + Math.min(100, pc) + '%;background:' + c + '"></i></div></div>';
   }
-  /* Línea de totales al inicio de una tarjeta: ejecución a la izquierda, meta a la derecha */
-  function filaTotales(izq, der){
-    return '<div class="dr-det dr-det-top"><span>' + izq + '</span><span>' + der + '</span></div>';
-  }
   function seccionPct(titulo, filas, extra){
     return '<div class="section-head"><h2>' + titulo + '</h2>' +
       (extra ? '<span class="link">' + extra + '</span>' : '') + '</div>' +
@@ -2213,13 +2206,14 @@
     if(!t || !t.meta) return;
     indicadorPrincipal("tit", t.entregados, t.meta, "entregados");
     var listas = document.getElementById("tit-listas");
-    /* totales de cada macro región (ejecución/meta) para el inicio de cada grupo */
+    /* totales de cada macro región (ejecución/meta): van en la cabecera del
+       grupo, NO dentro de la tarjeta, porque pertenecen a la macro región */
     var macroMap = {};
     (t.macro || []).forEach(function(mr){ macroMap[mr.nombre] = mr; });
     function totalesMacro(nombre){
       var mr = macroMap[nombre];
       return (mr && mr.meta)
-        ? filaTotales("Ejecución: " + fmtNum(mr.ejec || 0), "Meta: " + fmtNum(mr.meta))
+        ? "Ejecución: " + fmtNum(mr.ejec || 0) + " · Meta: " + fmtNum(mr.meta)
         : "";
     }
     function render(vista){
@@ -2235,12 +2229,12 @@
       var html = "", actual = null, filas = "";
       (t.regiones || []).forEach(function(r){
         if(r.macro !== actual){
-          if(actual !== null) html += seccionPct(actual, filas);
-          actual = r.macro; filas = totalesMacro(r.macro);
+          if(actual !== null) html += seccionPct(actual, filas, totalesMacro(actual));
+          actual = r.macro; filas = "";
         }
         filas += filaPct(r.nombre, r.pct);
       });
-      if(actual !== null) html += seccionPct(actual, filas);
+      if(actual !== null) html += seccionPct(actual, filas, totalesMacro(actual));
       listas.innerHTML = html;
     }
     render("macro");
