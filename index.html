@@ -2072,10 +2072,10 @@
   }
 
   /* ── Acciones de la ficha: descargar PDF y compartir ── */
-  /* PDF generado a mano (sin librerías): descarga directa como archivo .pdf.
+  /* PDF generado a mano (sin librerías): se usa para descargar y para compartir.
      Diseño adaptativo: aireado por defecto; si el proyecto tiene muchas
      secciones, compacta lo justo para caber en una sola hoja A4. */
-  function descargarPdf(p){
+  function generarPdfBlob(p){
     var W = 595, H = 842, M = 36;                 /* A4 en puntos */
     var pages = [], ops;
     function nuevaPagina(){ ops = []; pages.push(ops); }
@@ -2202,9 +2202,14 @@
 
     var bytes = new Uint8Array(pdf.length);
     for(i = 0; i < pdf.length; i++){ var c = pdf.charCodeAt(i); bytes[i] = c <= 255 ? c : 63; }
+    return { bytes: bytes, nombre: "Proyecto-CUI-" + p.cui + ".pdf" };
+  }
+
+  function descargarPdf(p){
+    var pdf = generarPdfBlob(p);
     var a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
-    a.download = "Proyecto-CUI-" + p.cui + ".pdf";
+    a.href = URL.createObjectURL(new Blob([pdf.bytes], { type: "application/pdf" }));
+    a.download = pdf.nombre;
     document.body.appendChild(a);
     a.click();
     setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 800);
@@ -2220,6 +2225,18 @@
   }
   function compartir(p){
     var texto = textoCompartir(p);
+    /* Preferencia 1: compartir el PDF como archivo adjunto (WhatsApp, correo, etc.) */
+    if(navigator.canShare && typeof File === "function"){
+      try{
+        var pdf = generarPdfBlob(p);
+        var archivo = new File([pdf.bytes], pdf.nombre, { type: "application/pdf" });
+        if(navigator.canShare({ files: [archivo] })){
+          navigator.share({ files: [archivo], title: "Proyecto CUI " + p.cui, text: texto }).catch(function(){});
+          return;
+        }
+      }catch(e){ /* si el navegador no soporta File/share de archivos, seguimos abajo */ }
+    }
+    /* Preferencia 2: compartir el resumen como texto */
     if(navigator.share){
       navigator.share({ title: "Proyecto CUI " + p.cui, text: texto }).catch(function(){});
       return;
