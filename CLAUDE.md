@@ -5,6 +5,7 @@ App móvil tipo fintech ("La torre") para monitoreo de proyectos de inversión p
 ## Estructura
 
 - Un solo `index.html` autocontenido (HTML + CSS + JS, sin dependencias externas), más `Data/proyectos.js` con los datos reales.
+- **PWA instalable** (17-ago-2026): `manifest.json` + `sw.js` (red primero, caché de respaldo) + `iconos/` (torre blanca sobre rojo, generados con `Pillow`). El botón central del **BOT se retiró del menú** (la pantalla `screen-bot` queda para el futuro); el menú inferior tiene 4 botones. Cabecera del PDF: membrete izquierdo del MVCS y a la derecha "OGMEI / La torre de control".
 - Estética (desde 17-ago-2026): **colores institucionales del sector Vivienda / Estado peruano** — rojo institucional `#C8102E` (degradado a `#A50D23`) como color primario, texto blanco/rosado `#F7C8C2` sobre paneles rojos, fondos neutros cálidos. Fuente Space Grotesk, marco de teléfono en escritorio. OJO: las variables CSS conservan sus nombres históricos (`--lemon` = rojo institucional, `--mint` = rojo profundo del fondo); hay una nueva `--rosa`. El PDF descargable también usa el tema rojo. El tema anterior (menta/limón) sobrevive solo en `Propuestas/`.
 - Carpeta `Propuestas/`: variaciones aisladas (favicon, splash, menús, galerías), documentadas en `Propuestas/LEEME.md`.
 - Carpeta `Data/`: el Excel fuente (`31.07.2026 - Matriz Única de Monitoreo - Consolidado.xlsx`) y el `proyectos.js` generado desde él.
