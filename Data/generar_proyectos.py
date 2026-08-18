@@ -249,6 +249,16 @@ def main():
             if rk:
                 indicadores[clave] = rk
 
+    # Inversiones (hoja INVERSIONES): cartera, n.º de proyectos, inversión (millones S/)
+    if "INVERSIONES" in wb.sheetnames:
+        inv = []
+        for r in wb["INVERSIONES"].iter_rows(values_only=True):
+            nombre, n, monto = limpio(r[1]), num(r[2]), num(r[3])
+            if nombre and n is not None:
+                inv.append({"nombre": nombre, "proyectos": int(n), "inversion": monto})
+        if inv:
+            indicadores["inversiones"] = inv
+
     # Pliegos (hoja PLIEGOS): tarjetas de Inicio — entidad, PIM, devengado, % ejecución
     if "PLIEGOS" in wb.sheetnames:
         pliegos = []

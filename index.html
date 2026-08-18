@@ -267,6 +267,18 @@
   /* Ranking (pantalla Ranking): 3 tarjetas con título + mini segmentador (% / PIM) y lista Top 5 */
   .section-head.sh-sub{ display:grid; gap:2px; }
   .section-head.sh-sub .sub{ font-size:12px; color:var(--muted); }
+  /* Inversiones: tarjetas de cartera (hoja INVERSIONES) */
+  .inv-card{
+    background:var(--card); border-radius:13px; padding:14px 16px; box-shadow:var(--shadow-card);
+    display:grid; grid-template-columns:auto 1fr; gap:2px 14px; align-items:center;
+  }
+  .inv-card + .inv-card{ margin-top:12px; }
+  .inv-card .bic{ grid-row:span 3; width:54px; height:54px; border-radius:15px; display:grid; place-items:center; }
+  .inv-card .bic svg{ width:29px; height:29px; }
+  .inv-card .name{ font-size:17px; font-weight:700; line-height:1.2; }
+  .inv-card .n{ font-size:13px; color:var(--muted); }
+  .inv-card .m{ font-size:13px; color:var(--muted); }
+  .inv-card .m b{ color:var(--ink); font-weight:700; }
   .rank-card{
     background:var(--card); border-radius:13px; padding:14px 16px 4px;
     box-shadow:var(--shadow-card); margin-top:14px;
@@ -1420,176 +1432,7 @@
       <span></span>
     </header>
 
-    <div class="cartera-card closed">
-      <button class="hd" aria-label="Mostrar u ocultar Cartera priorizada">
-        <span class="hd-txt">
-          <span class="t">Cartera priorizada</span>
-          <span class="s">Avance de ejecución financiera</span>
-        </span>
-        <span class="caret"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
-      </button>
-      <div class="summary">
-        <span class="bic b-cartera">
-          <svg viewBox="0 0 24 24" fill="#fff"><rect x="5" y="2.5" width="2.2" height="19" rx="1.1"/><path d="M9 4h9.5L16 8l2.5 4H9z"/></svg>
-        </span>
-        <span class="name">Cartera priorizada</span>
-        <span class="sub">Avance de ejecución financiera</span>
-        <span class="pctv pct-pr">41,5%</span>
-      </div>
-      <div class="body"><div>
-      <div class="prog ok">
-        <span class="info">
-          <span class="name">PASLC</span>
-          <span class="meta">4 proyectos <span class="chip ok"><i></i>Óptimo</span></span>
-        </span>
-        <span class="pct">71,9%</span>
-      </div>
-      <div class="prog proc">
-        <span class="info">
-          <span class="name">PNSU</span>
-          <span class="meta">9 proyectos <span class="chip proc"><i></i>En proceso</span></span>
-        </span>
-        <span class="pct">39%</span>
-      </div>
-      <div class="prog proc">
-        <span class="info">
-          <span class="name">COFOPRI</span>
-          <span class="meta">1 proyecto <span class="chip proc"><i></i>En proceso</span></span>
-        </span>
-        <span class="pct">39,5%</span>
-      </div>
-      <div class="prog crit">
-        <span class="info">
-          <span class="name">PNSR</span>
-          <span class="meta">1 proyecto <span class="chip crit"><i></i>Crítico</span></span>
-        </span>
-        <span class="pct">15,5%</span>
-      </div>
-      </div></div>
-    </div>
-
-    <div class="cartera-card closed">
-      <button class="hd" aria-label="Mostrar u ocultar Paralizadas">
-        <span class="hd-txt">
-          <span class="t">Paralizadas</span>
-          <span class="s">Reactivación meta 2026</span>
-        </span>
-        <span class="caret"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
-      </button>
-      <div class="summary">
-        <span class="bic b-paraliz">
-          <svg viewBox="0 0 24 24" fill="#fff"><path fill-rule="evenodd" d="M12 2.8L22.4 21H1.6zM11.1 9.5h1.8v5.2h-1.8zm0 6.7h1.8v1.9h-1.8z"/></svg>
-        </span>
-        <span class="name">Paralizadas</span>
-        <span class="sub">Reactivación meta 2026</span>
-        <span class="pctv pct-pr">41,2%</span>
-      </div>
-      <div class="body"><div>
-      <div class="prog ok">
-        <span class="info">
-          <span class="name">PASLC</span>
-          <span class="meta">2 proyectos <span class="chip ok"><i></i>Completo</span></span>
-        </span>
-        <span class="pct">100%</span>
-      </div>
-      <div class="prog crit">
-        <span class="info">
-          <span class="name">PMIB</span>
-          <span class="meta">1 proyecto <span class="chip crit"><i></i>Sin avance</span></span>
-        </span>
-        <span class="pct">0%</span>
-      </div>
-      <div class="prog proc">
-        <span class="info">
-          <span class="name">PNSR</span>
-          <span class="meta">20 proyectos <span class="chip proc"><i></i>En proceso</span></span>
-        </span>
-        <span class="pct">40%</span>
-      </div>
-      <div class="prog proc">
-        <span class="info">
-          <span class="name">PNSU</span>
-          <span class="meta">21 proyectos <span class="chip proc"><i></i>En proceso</span></span>
-        </span>
-        <span class="pct">33%</span>
-      </div>
-      <div class="prog proc">
-        <span class="info">
-          <span class="name">SENCICO</span>
-          <span class="meta">3 proyectos <span class="chip proc"><i></i>En proceso</span></span>
-        </span>
-        <span class="pct">33%</span>
-      </div>
-      </div></div>
-    </div>
-
-      <div class="cartera-card closed">
-      <button class="hd" aria-label="Mostrar u ocultar Transferencias 2026">
-        <span class="hd-txt">
-          <span class="t">Transferencias 2026</span>
-          <span class="s">Avance de ejecución transferido</span>
-        </span>
-        <span class="caret"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
-      </button>
-      <div class="summary">
-        <span class="bic b-transf">
-          <svg viewBox="0 0 24 24" fill="#fff"><path d="M15.5 3l5 4.5-5 4.5V9H5V6h10.5z"/><path d="M8.5 12l-5 4.5 5 4.5V18H19v-3H8.5z"/></svg>
-        </span>
-        <span class="name">Transferencias 2026</span>
-        <span class="sub">Avance de ejecución transferido</span>
-        <span class="pctv pct-cr">18,2%</span>
-      </div>
-      <div class="body"><div>
-      <div class="prog crit">
-        <span class="info">
-          <span class="name">PNSR</span>
-          <span class="meta">958 transferencias <span class="chip crit"><i></i>Crítico</span></span>
-        </span>
-        <span class="pct">24%</span>
-      </div>
-      <div class="prog proc">
-        <span class="info">
-          <span class="name">PMIB</span>
-          <span class="meta">291 transferencias <span class="chip proc"><i></i>En proceso</span></span>
-        </span>
-        <span class="pct">25%</span>
-      </div>
-      <div class="prog crit">
-        <span class="info">
-          <span class="name">PNSU</span>
-          <span class="meta">165 transferencias <span class="chip crit"><i></i>Crítico</span></span>
-        </span>
-        <span class="pct">9%</span>
-      </div>
-      <div class="prog proc">
-        <span class="info">
-          <span class="name">PNC</span>
-          <span class="meta">5 transferencias <span class="chip proc"><i></i>En proceso</span></span>
-        </span>
-        <span class="pct">34%</span>
-      </div>
-      </div></div>
-    </div>
-
-    <div class="cartera-card closed">
-      <button class="hd" aria-label="Mostrar u ocultar PRESET">
-        <span class="hd-txt">
-          <span class="t">PRESET</span>
-          <span class="s">Aptos respecto al total</span>
-        </span>
-        <span class="caret"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
-      </button>
-      <div class="summary">
-        <span class="bic b-preset">
-          <svg viewBox="0 0 24 24" fill="#fff"><path d="M9 2.8h6a1.6 1.6 0 0 1 1.6 1.6V6H7.4V4.4A1.6 1.6 0 0 1 9 2.8z"/><path d="M5.6 5H7.4v2.6h9.2V5h1.8a1.4 1.4 0 0 1 1.4 1.4v13.2A1.4 1.4 0 0 1 18.4 21H5.6a1.4 1.4 0 0 1-1.4-1.4V6.4A1.4 1.4 0 0 1 5.6 5z" fill-rule="evenodd"/><path d="M8.3 14.2l2.4 2.4 5-5-1.3-1.3-3.7 3.7-1.1-1.1z" fill="#3D7EF7"/></svg>
-        </span>
-        <span class="name">PRESET</span>
-        <span class="sub">Aptos respecto al total</span>
-        <span class="pctv pct-cr" id="preset-card-pct">—</span>
-      </div>
-      <div class="body"><div id="preset-card-body">
-      </div></div>
-    </div>
+    <div id="inv-cards"></div>
 
   </section>
 
@@ -2203,32 +2046,31 @@
 
   renderBuscador();
 
-  /* ── Inversiones: tarjeta PRESET dinámica (% de aptos sobre el total) ── */
+  /* ── Inversiones: tarjetas de cartera desde la hoja INVERSIONES
+     (nombre · n.º de proyectos · inversión en millones de soles) ── */
   (function(){
-    var pctEl = document.getElementById("preset-card-pct");
-    var cont  = document.getElementById("preset-card-body");
-    if(!pctEl || !cont) return;
-    var agg = {}, tot = 0, aptos = 0;
-    PROYECTOS.forEach(function(p){
-      var c = p.carteras && p.carteras.preset; if(!c) return;
-      var a = agg[p.programa] || (agg[p.programa] = { n:0, aptos:0 });
-      a.n++; tot++;
-      if(String(c.etapa || "").toUpperCase() === "APTO"){ a.aptos++; aptos++; }
-    });
-    var pctG = tot ? Math.round(aptos / tot * 1000) / 10 : 0;
-    pctEl.textContent = pctTxt(pctG);
-    pctEl.className = "pctv " + pctClass(pctG);
-    var filas = Object.keys(agg).sort(function(a, b){ return agg[b].n - agg[a].n; }).map(function(prog){
-      var a = agg[prog], pc = Math.round(a.aptos / a.n * 1000) / 10;
-      var cls = pc >= 60 ? "ok" : (pc >= 25 ? "proc" : "crit");
-      var chip = pc >= 60 ? "Óptimo" : (pc >= 25 ? "En proceso" : "Crítico");
-      return '<div class="prog ' + cls + '"><span class="info">' +
-        '<span class="name">' + prog + '</span>' +
-        '<span class="meta">' + fmtNum(a.n) + (a.n === 1 ? ' proyecto ' : ' proyectos ') +
-          '<span class="chip ' + cls + '"><i></i>' + chip + '</span></span></span>' +
-        '<span class="pct">' + pctTxt(pc) + '</span></div>';
+    var cont = document.getElementById("inv-cards");
+    var inv = (window.INDICADORES || {}).inversiones || [];
+    if(!cont || !inv.length) return;
+    var ICONOS = {
+      "Cartera priorizada": ["b-cartera", '<svg viewBox="0 0 24 24" fill="#fff"><rect x="5" y="2.5" width="2.2" height="19" rx="1.1"/><path d="M9 4h9.5L16 8l2.5 4H9z"/></svg>'],
+      "Paralizadas": ["b-paraliz", '<svg viewBox="0 0 24 24" fill="#fff"><path fill-rule="evenodd" d="M12 2.8L22.4 21H1.6zM11.1 9.5h1.8v5.2h-1.8zm0 6.7h1.8v1.9h-1.8z"/></svg>'],
+      "Transferencias 2026": ["b-transf", '<svg viewBox="0 0 24 24" fill="#fff"><path d="M15.5 3l5 4.5-5 4.5V9H5V6h10.5z"/><path d="M8.5 12l-5 4.5 5 4.5V18H19v-3H8.5z"/></svg>'],
+      "PRESET": ["b-preset", '<svg viewBox="0 0 24 24" fill="#fff"><path d="M9 2.8h6a1.6 1.6 0 0 1 1.6 1.6V6H7.4V4.4A1.6 1.6 0 0 1 9 2.8z"/><path d="M5.6 5H7.4v2.6h9.2V5h1.8a1.4 1.4 0 0 1 1.4 1.4v13.2A1.4 1.4 0 0 1 18.4 21H5.6a1.4 1.4 0 0 1-1.4-1.4V6.4A1.4 1.4 0 0 1 5.6 5z" fill-rule="evenodd"/><path d="M8.3 14.2l2.4 2.4 5-5-1.3-1.3-3.7 3.7-1.1-1.1z" fill="#3D7EF7"/></svg>']
+    };
+    function icono(nombre){
+      var k = Object.keys(ICONOS).filter(function(x){ return x.toLowerCase() === nombre.toLowerCase(); })[0];
+      return k ? ICONOS[k] : ["b-cartera", ""];
+    }
+    function titulo(n){ return n.charAt(0).toUpperCase() + n.slice(1); }
+    cont.innerHTML = inv.map(function(c){
+      var ic = icono(c.nombre);
+      return '<div class="inv-card">' +
+        '<span class="bic ' + ic[0] + '">' + ic[1] + '</span>' +
+        '<span class="name">' + titulo(c.nombre) + '</span>' +
+        '<span class="n">' + fmtNum(c.proyectos) + (c.proyectos === 1 ? ' proyecto' : ' proyectos') + '</span>' +
+        '<span class="m">Inversión: <b>S/ ' + fmtNum(Math.round(c.inversion || 0)) + '</b></span></div>';
     }).join("");
-    cont.insertAdjacentHTML("afterbegin", filas);
   })();
 
   /* ── Actividades: componentes compartidos de las pestañas de indicadores ──

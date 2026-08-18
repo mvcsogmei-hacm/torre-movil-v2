@@ -64,9 +64,9 @@ Retitulada de "Movimientos" a "Actividades". Tres pestañas estilo accesos de In
 - El generador normaliza los % de esas hojas (`pct_celda`): texto "52,1%" → 52.1; fracción ≤1 → ×100; número >1 ya es %.
 - El contenido demo fintech de esta pantalla se eliminó (queda demo solo en la pantalla "Pagar").
 
-### Pantalla Inversiones
+### Pantalla Inversiones (rehecha 18-ago-2026)
 
-Las tarjetas originales estáticas son ahora 3: Cartera priorizada, Paralizadas y Transferencias 2026 (decisión del usuario, 16-ago-2026; **la de Obras directas se retiró el 18-ago-2026** — la cartera `obras` sigue existiendo en datos, buscador y ficha). Se añadió una 5.ª tarjeta **PRESET dinámica**: % de proyectos en etapa APTO sobre el total de la cartera, global y por programa, calculado desde `window.PROYECTOS` al cargar (hoy: 10,8% global).
+Tarjetas generadas desde la hoja **`INVERSIONES`** del Excel (`INDICADORES.inversiones[{nombre, proyectos, inversion}]`, inversión en millones de soles): una tarjeta `.inv-card` por fila (hoy Cartera priorizada, Paralizadas, Transferencias 2026, PRESET) con icono de color (los SVG históricos, en el mapa `ICONOS` de la UI, emparejados por nombre sin distinguir mayúsculas), **nombre**, debajo **"N proyectos"** y debajo **"Inversión: S/ N"** (sin unidad, regla de cifras). Las 4 tarjetas estáticas plegables anteriores y la tarjeta PRESET dinámica se retiraron; "primeramente" según el usuario — vendrán más cambios en esta pantalla.
 
 ### Ficha de proyecto — módulos
 
