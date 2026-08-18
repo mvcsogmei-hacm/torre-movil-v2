@@ -2605,7 +2605,7 @@
     /* Caso PRESET: en la matriz los proyectos con ETAPA DE EVALUACIÓN casi nunca
        traen "PRESET" en ESTADO SSP (viene vacío), así que manda la pertenencia a
        la cartera. El chip azul de cartera ya dice "PRESET"; aquí va la etapa. */
-    if(etapa) return ["PRESET"].concat([etapa]);
+    if(etapa) return [etapa];   /* el chip azul de cartera ya dice PRESET: no se repite */
     if(ssp.toUpperCase() === "PRESET") return ["PRESET"];
     if(!ssp || ssp === "-"){
       var et = String(p.estadoET || "").trim();
