@@ -14,7 +14,7 @@ App móvil tipo fintech ("La torre") para monitoreo de proyectos de inversión p
 
 ## Formato de cifras en soles (regla desde 18-ago-2026)
 
-**Sin abreviaturas** en todo el aplicativo: nada de "M", "MM", "mill." ni "millones". Las cifras agregadas (tarjetas de pliegos en Inicio, indicador y rankings de la pantalla Ranking) se muestran en millones **solo con el número** ("S/ 4,279"); la unidad se declara una sola vez en Inicio, en el título "A nivel de pliegos del sector **(en millones de soles)**". En la ficha de proyecto y el PDF (`fmtMonto`) los montos van **completos en soles** ("S/ 1,234,567").
+**Sin abreviaturas** en todo el aplicativo: nada de "M", "MM", "mill." ni "millones". Las cifras agregadas (tarjetas de pliegos en Inicio, indicador y rankings de la pantalla Ranking) se muestran en millones **solo con el número** ("S/ 4,279"); la unidad se declara una sola vez en Inicio, bajo el título "A nivel de pliegos del sector" como subtítulo gris **"En millones de soles"** (`.section-head.sh-sub .sub`). En la ficha de proyecto y el PDF (`fmtMonto`) los montos van **completos en soles** ("S/ 1,234,567").
 
 ## Importante
 

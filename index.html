@@ -265,7 +265,8 @@
   .balance-card .montos{ display:grid; gap:4px; margin-top:12px; font-size:14px; color:var(--rosa); }
   .balance-card .montos b{ color:#fff; font-weight:600; }
   /* Ranking (pantalla Ranking): 3 tarjetas con título + mini segmentador (% / PIM) y lista Top 5 */
-  .section-head h2 small{ font-size:12px; font-weight:500; color:var(--muted); }
+  .section-head.sh-sub{ display:grid; gap:2px; }
+  .section-head.sh-sub .sub{ font-size:12px; color:var(--muted); }
   .rank-card{
     background:var(--card); border-radius:13px; padding:14px 16px 4px;
     box-shadow:var(--shadow-card); margin-top:14px;
@@ -1077,7 +1078,7 @@
       </div>
     </div>
 
-    <div class="section-head"><h2>A nivel de pliegos del sector <small>(en millones de soles)</small></h2></div>
+    <div class="section-head sh-sub"><h2>A nivel de pliegos del sector</h2><span class="sub">En millones de soles</span></div>
     <div class="ent-grid" id="ent-grid">
       <div class="ent">
         <span class="top"><span class="name">SBN</span><span class="pct">32%</span></span>
