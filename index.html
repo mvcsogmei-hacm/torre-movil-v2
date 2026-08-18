@@ -2601,13 +2601,15 @@
        · Estado SSP vacío o "-"        → ["Expediente técnico: " + ESTADO ET] */
   function estadoChips(p){
     var ssp = String(p.ssp || "").trim();
+    var etapa = p.carteras && p.carteras.preset && p.carteras.preset.etapa;
+    /* Caso PRESET: en la matriz los proyectos con ETAPA DE EVALUACIÓN casi nunca
+       traen "PRESET" en ESTADO SSP (viene vacío), así que manda la pertenencia a
+       la cartera. El chip azul de cartera ya dice "PRESET"; aquí va la etapa. */
+    if(etapa) return ["PRESET"].concat([etapa]);
+    if(ssp.toUpperCase() === "PRESET") return ["PRESET"];
     if(!ssp || ssp === "-"){
       var et = String(p.estadoET || "").trim();
       return (et && et !== "-") ? ["Expediente técnico: " + et] : [];
-    }
-    if(ssp.toUpperCase() === "PRESET"){
-      var etapa = p.carteras && p.carteras.preset && p.carteras.preset.etapa;
-      return ["PRESET"].concat(etapa ? [etapa] : []);
     }
     var sub = String(p.subSsp || "").trim();
     return [ssp].concat((sub && sub !== "-") ? [sub] : []);
