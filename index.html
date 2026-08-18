@@ -1266,6 +1266,20 @@
       <button data-seg="pim">Por PIM</button>
     </div>
     <div class="detail-card rank-card" id="rank-tabla"></div>
+
+    <div class="section-head"><h2>Ranking por inversiones</h2></div>
+    <div class="seg" id="rankInv-seg">
+      <button class="active" data-seg="pct">Por ejecución presupuestal</button>
+      <button data-seg="pim">Por PIM</button>
+    </div>
+    <div class="detail-card rank-card" id="rankInv-tabla"></div>
+
+    <div class="section-head"><h2>Ranking por actividades</h2></div>
+    <div class="seg" id="rankAct-seg">
+      <button class="active" data-seg="pct">Por ejecución presupuestal</button>
+      <button data-seg="pim">Por PIM</button>
+    </div>
+    <div class="detail-card rank-card" id="rankAct-tabla"></div>
   </section>
 
   <!-- ═══ AJUSTES ═══ -->
@@ -1877,9 +1891,10 @@
       document.getElementById("rank-pim").textContent = "S/ " + fmtNum(Math.round((pr.pim || 0) / 1000000)) + " M";
       document.getElementById("rank-dev").textContent = "S/ " + fmtNum(Math.round((pr.devengado || 0) / 1000000)) + " M";
     }
-    /* Ranking total Gobierno Nacional (hoja RANKING SECTOR): por % o por PIM */
-    var rk = ind.rankingSector || [];
-    if(rk.length){
+    /* Rankings frente al Gobierno Nacional (hojas RANKING SECTOR / INVERSIONES /
+       ACTIVIDADES): Top 5 por % o por PIM, con segmentador propio cada uno */
+    function montarRanking(rk, pref){
+      if(!rk.length) return;
       var maxPim = Math.max.apply(null, rk.map(function(r){ return r.pim; }));
       function renderRank(modo){
         var lista = rk.slice().sort(function(a, b){ return modo === "pim" ? b.pim - a.pim : b.pct - a.pct; });
@@ -1896,11 +1911,14 @@
         var html = lista.slice(0, 5).map(fila).join("");
         var iMio = lista.findIndex(function(r){ return /VIVIENDA/.test(r.nombre); });
         if(iMio >= 5) html += '<div class="rank-sep">···</div>' + fila(lista[iMio], iMio);
-        document.getElementById("rank-tabla").innerHTML = html;
+        document.getElementById(pref + "-tabla").innerHTML = html;
       }
       renderRank("pct");
-      segControl("rank-seg", renderRank);
+      segControl(pref + "-seg", renderRank);
     }
+    montarRanking(ind.rankingSector || [], "rank");
+    montarRanking(ind.rankingInversiones || [], "rankInv");
+    montarRanking(ind.rankingActividades || [], "rankAct");
     var filasP = ind.mvcs || [];
     if(filasP.length){
       var p0 = filasP[0];   /* fila PLIEGO */

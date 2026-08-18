@@ -229,9 +229,10 @@ def main():
 
     # Ranking del sector frente al Gobierno Nacional (hoja RANKING SECTOR):
     # columnas nombre ("NN: SECTOR"), PIM, % avance. Orden lo hace la UI.
-    if "RANKING SECTOR" in wb.sheetnames:
+    # Mismo formato en RANKING INVERSIONES y RANKING ACTIVIDADES.
+    def leer_ranking(hoja):
         rk = []
-        for r in wb["RANKING SECTOR"].iter_rows(values_only=True):
+        for r in wb[hoja].iter_rows(values_only=True):
             nombre, pim, val = limpio(r[0]), num(r[1]), pct_celda(r[2])
             if not nombre or pim is None or val is None:
                 continue
@@ -239,8 +240,14 @@ def main():
             if ":" in nombre:
                 cod, nombre = [x.strip() for x in nombre.split(":", 1)]
             rk.append({"cod": cod, "nombre": nombre, "pim": pim, "pct": val})
-        if rk:
-            indicadores["rankingSector"] = rk
+        return rk
+    for hoja, clave in (("RANKING SECTOR", "rankingSector"),
+                        ("RANKING INVERSIONES", "rankingInversiones"),
+                        ("RANKING ACTIVIDADES", "rankingActividades")):
+        if hoja in wb.sheetnames:
+            rk = leer_ranking(hoja)
+            if rk:
+                indicadores[clave] = rk
 
     # Pliegos (hoja PLIEGOS): tarjetas de Inicio — entidad, PIM, devengado, % ejecución
     if "PLIEGOS" in wb.sheetnames:
