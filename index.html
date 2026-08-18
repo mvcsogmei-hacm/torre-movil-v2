@@ -2630,18 +2630,19 @@
     return secs;
   }
 
-  /* Chips de estado bajo el título (regla del usuario, 18-ago-2026):
-       · Estado SSP con valor y ≠ PRESET → [Estado SSP, Sub estado SSP]
-       · Estado SSP = PRESET           → [PRESET, Etapa de evaluación (PRESET)]
-       · Estado SSP vacío o "-"        → ["Expediente técnico: " + ESTADO ET] */
+  /* Chips de estado bajo el título (regla del usuario, 18-ago-2026) — manda solo ESTADO SSP:
+       · = PRESET                 → [Estado SSP, Etapa de evaluación]
+       · = PARALIZADO/PARALIZADA  → [Estado SSP, Hito de reactivación]
+       · vacío o "-"              → ["EXPEDIENTE TÉCNICO", ESTADO ET]
+       · cualquier otro           → [Estado SSP, Sub estado SSP] */
   function estadoChips(p){
     var ssp = String(p.ssp || "").trim();
-    var etapa = p.carteras && p.carteras.preset && p.carteras.preset.etapa;
-    /* Caso PRESET: en la matriz los proyectos con ETAPA DE EVALUACIÓN casi nunca
-       traen "PRESET" en ESTADO SSP (viene vacío), así que manda la pertenencia a
-       la cartera. El chip azul de cartera ya dice "PRESET"; aquí va la etapa. */
-    if(etapa) return ["PRESET", etapa];   /* PRESET es un estado SSP: chip PRESET + etapa */
-    if(ssp.toUpperCase() === "PRESET") return ["PRESET"];
+    /* Solo manda ESTADO SSP (regla del usuario): si dice PRESET → Estado SSP + etapa de evaluación */
+    if(ssp.toUpperCase() === "PRESET"){
+      var etapa = p.carteras && p.carteras.preset && p.carteras.preset.etapa;
+      etapa = String(etapa || "").trim();
+      return [ssp].concat((etapa && etapa !== "-") ? [etapa] : []);
+    }
     if(!ssp || ssp === "-"){
       var et = String(p.estadoET || "").trim();
       return (et && et !== "-") ? ["EXPEDIENTE TÉCNICO", et] : [];   /* dos chips separados */
