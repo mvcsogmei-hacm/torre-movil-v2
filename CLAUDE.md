@@ -64,9 +64,9 @@ Retitulada de "Movimientos" a "Actividades". Tres pestañas estilo accesos de In
 - El generador normaliza los % de esas hojas (`pct_celda`): texto "52,1%" → 52.1; fracción ≤1 → ×100; número >1 ya es %.
 - El contenido demo fintech de esta pantalla se eliminó (queda demo solo en la pantalla "Pagar").
 
-### Pantalla Inversiones (rehecha 18-ago-2026)
+### Pantalla Inversiones
 
-Tarjetas generadas desde la hoja **`INVERSIONES`** del Excel (`INDICADORES.inversiones[{nombre, proyectos, inversion}]`, inversión en millones de soles): una tarjeta `.inv-card` por fila (hoy Cartera priorizada, Paralizadas, Transferencias 2026, PRESET) con icono de color (los SVG históricos, en el mapa `ICONOS` de la UI, emparejados por nombre sin distinguir mayúsculas), **nombre** (PRESET lleva subtítulo "Plataforma para evaluar Exp. Técnicos de los gobiernos subnacionales"), debajo **"N proyectos"** y debajo **"Inversión: S/ N"** (sin unidad, regla de cifras); a la derecha el **%** grande con semáforo: la hoja INVERSIONES no trae porcentaje, así que se conservan los valores históricos fijos (Cartera priorizada 41,5 · Paralizadas 41,2 · Transferencias 18,2, mapa `PCT_FIJO`) y PRESET se calcula (aptos ÷ total desde `PROYECTOS`, hoy 10,8%). Pendiente: traer el % desde el Excel cuando exista la columna. Las 4 tarjetas estáticas plegables anteriores y la tarjeta PRESET dinámica se retiraron; "primeramente" según el usuario — vendrán más cambios en esta pantalla.
+Las 4 tarjetas plegables (`.cartera-card`: Cartera priorizada, Paralizadas, Transferencias 2026 con desglose estático por programa; PRESET con desglose calculado desde `PROYECTOS`) **se mantienen** con su % a la derecha (fijos 41,5 / 41,2 / 18,2; PRESET = aptos ÷ total). Desde 18-ago-2026 el **resumen** de cada tarjeta muestra bajo el nombre: (solo PRESET) el subtítulo "Plataforma para evaluar Exp. Técnicos de los gobiernos subnacionales", **"N proyectos"** e **"Inversión: S/ N"** (millones, sin unidad), tomados de la hoja **`INVERSIONES`** (`INDICADORES.inversiones[{nombre, proyectos, inversion}]`, emparejada por nombre sin mayúsculas; JS "resumen de cada tarjeta"). La tarjeta Obras directas se retiró el 18-ago-2026. Vendrán más cambios en esta pantalla.
 
 ### Ficha de proyecto — módulos
 
