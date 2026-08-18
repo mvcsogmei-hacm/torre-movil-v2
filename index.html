@@ -651,7 +651,6 @@
   }
   .share-opt:active{ opacity:.7; }
   .badge{ color:#fff; font-size:11px; font-weight:600; border-radius:999px; padding:5px 11px; }
-  .badge.badge-est{ background:#4A4A52; }
 
   /* ─ Menú cristal: barra translúcida con desenfoque ──────────── */
   .bottom-nav{
@@ -2609,14 +2608,17 @@
     if(ssp.toUpperCase() === "PRESET") return ["PRESET"];
     if(!ssp || ssp === "-"){
       var et = String(p.estadoET || "").trim();
-      return (et && et !== "-") ? ["Expediente técnico", et] : [];   /* dos chips separados */
+      return (et && et !== "-") ? ["EXPEDIENTE TÉCNICO", et] : [];   /* dos chips separados */
     }
     var sub = String(p.subSsp || "").trim();
     return [ssp].concat((sub && sub !== "-") ? [sub] : []);
   }
   /* Bajo el título solo van los chips de estado (los de cartera se retiraron el 18-ago-2026) */
+  var CHIP_COLORS = ["#3D7EF7", "#8E5CD9", "#16A2A2", "#E8833A"];   /* un color por chip, en orden */
   function fichaBadges(p){
-    return estadoChips(p).map(function(e){ return '<span class="badge badge-est">' + e + '</span>'; }).join("");
+    return estadoChips(p).map(function(e, i){
+      return '<span class="badge" style="background:' + CHIP_COLORS[i % CHIP_COLORS.length] + '">' + e + '</span>';
+    }).join("");
   }
   function fichaSecciones(p){
     return fichaDatos(p).map(function(s){
