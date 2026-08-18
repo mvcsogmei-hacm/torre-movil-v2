@@ -149,3 +149,11 @@ y demos, pero si la página va a usarse a diario conviene acortarla o quitarla.
 
 Para pasar una propuesta a `index.html`, avísame y copio solo el bloque
 correspondiente (la línea del favicon y/o la sección de splash).
+
+## Galería de ranking (`galeria-ranking.html`, 18-ago-2026)
+
+10 propuestas visuales para la tabla **Top 5** de la pantalla Ranking
+(hoja `RANKING SECTOR`, tema rojo actual): 1 actual (referencia), 2 podio,
+3 medallas, 4 tabla con PIM y % a la vez, 5 tarjetas por puesto, 6 gráfico de
+barras, 7 Vivienda protagonista ("Puesto N / 30"), 8 código como insignia,
+9 columnas, 10 número tenue de fondo. El segmentador es igual en todas.

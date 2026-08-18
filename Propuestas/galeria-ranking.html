@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La torre — Ranking Top 5: 10 propuestas</title>
+<style>
+  :root{
+    --lemon:#C8102E; --lemon-b:#A50D23; --rosa:#F7C8C2; --ink:#1B1B1F; --muted:#7A7A80;
+    --key:#F3EFEA; --card:#fff; --track:rgba(27,27,31,.10);
+    --ok:#1FA23C; --pr:#C98A00; --cr:#BF2E25;
+    --oro:#E3B341; --plata:#B7BCC4; --bronce:#C77E4A;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{
+    background:#F4F0EC; color:var(--ink);
+    font-family:"Space Grotesk",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    padding:36px 22px 60px;
+  }
+  header{ max-width:1180px; margin:0 auto 28px; }
+  header h1{ font-size:26px; letter-spacing:-.01em; }
+  header p{ color:#5B5B62; margin-top:8px; font-size:15px; line-height:1.55; max-width:760px; }
+  .grid{
+    max-width:1180px; margin:0 auto;
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:28px 22px;
+  }
+  figure{ display:grid; gap:10px; align-content:start; }
+  .mock{
+    border-radius:26px; padding:20px 16px 22px;
+    background:linear-gradient(165deg,#FBF8F5 0%,#F1E9E4 100%);
+    box-shadow:0 14px 34px rgba(80,20,25,.12);
+    display:grid; align-content:start; gap:12px; min-height:330px;
+  }
+  figcaption{ padding:0 4px; }
+  figcaption strong{ font-size:14px; display:block; }
+  figcaption span{ font-size:12.5px; color:#66666E; line-height:1.45; display:block; margin-top:2px; }
+  .num{ display:inline-grid; place-items:center; width:22px; height:22px; border-radius:7px; background:var(--lemon); color:#fff; font-size:12px; font-weight:700; margin-right:6px; vertical-align:middle; }
+
+  /* piezas comunes */
+  .section-head h2{ font-size:16px; font-weight:700; }
+  .seg{ display:grid; grid-template-columns:1fr 1fr; background:var(--key); border-radius:999px; padding:4px; }
+  .seg span{ padding:8px 4px; border-radius:999px; font-size:12px; font-weight:600; color:#5A5A62; text-align:center; }
+  .seg span.on{ background:#fff; color:var(--ink); font-weight:700; box-shadow:0 4px 10px rgba(120,25,30,.10); }
+  .card{ background:var(--card); border-radius:13px; padding:4px 16px; box-shadow:0 10px 24px rgba(80,20,25,.08); }
+  .mtr{ height:6px; border-radius:999px; background:var(--track); overflow:hidden; margin:0 0 12px; }
+  .mtr i{ display:block; height:100%; border-radius:999px; }
+  .ok{ color:var(--ok) } .pr{ color:var(--pr) } .cr{ color:var(--cr) }
+  .b-ok{ background:var(--ok) } .b-pr{ background:var(--pr) } .b-cr{ background:var(--cr) }
+  .mio{ color:var(--lemon) !important; font-weight:700 !important; }
+
+  /* 1 · actual */
+  .r1 .dr{ display:flex; justify-content:space-between; gap:12px; padding:13px 0 8px; font-size:12.5px; align-items:center; }
+  .r1 .dr .l{ display:flex; align-items:center; gap:8px; color:var(--muted); }
+  .r1 .pos{ flex:0 0 22px; height:22px; border-radius:999px; background:var(--key); display:inline-grid; place-items:center; font-size:11px; font-weight:700; color:var(--ink); }
+  .r1 .mio .pos{ background:var(--lemon); color:#fff; }
+  .r1 .dr b{ font-weight:600; white-space:nowrap; }
+  .r1 .sep{ text-align:center; color:var(--muted); letter-spacing:.2em; font-weight:700; padding:2px 0 6px; }
+
+  /* 2 · podio */
+  .podio{ display:grid; grid-template-columns:1fr 1.15fr 1fr; gap:8px; align-items:end; }
+  .podio .p{ background:#fff; border-radius:14px; padding:12px 8px 10px; text-align:center; box-shadow:0 10px 24px rgba(80,20,25,.08); display:grid; gap:4px; }
+  .podio .p .n{ font-size:11px; color:var(--muted); line-height:1.2; min-height:27px; }
+  .podio .p .v{ font-size:20px; font-weight:700; }
+  .podio .p .med{ width:26px; height:26px; border-radius:999px; margin:0 auto 2px; display:grid; place-items:center; color:#fff; font-size:12px; font-weight:700; }
+  .podio .p.uno{ background:linear-gradient(150deg,var(--lemon),var(--lemon-b)); color:#fff; padding-top:18px; }
+  .podio .p.uno .n{ color:var(--rosa); } .podio .p.uno .med{ background:#fff; color:var(--lemon); }
+  .lista-s .dr{ display:flex; justify-content:space-between; padding:11px 0; border-bottom:1px solid #EEECE8; font-size:12.5px; color:var(--muted); }
+  .lista-s .dr:last-child{ border-bottom:0; } .lista-s .dr b{ color:var(--ink); }
+
+  /* 3 · medallas */
+  .r3 .dr{ display:flex; align-items:center; gap:10px; padding:12px 0; border-bottom:1px solid #EEECE8; font-size:12.5px; }
+  .r3 .dr:last-child{ border-bottom:0; }
+  .r3 .m{ flex:0 0 26px; height:26px; border-radius:999px; display:grid; place-items:center; font-size:11px; font-weight:800; color:#fff; background:#D9D6D2; }
+  .r3 .m.o{ background:var(--oro) } .r3 .m.p{ background:var(--plata) } .r3 .m.b{ background:var(--bronce) }
+  .r3 .n{ flex:1; color:var(--muted); line-height:1.2; }
+  .r3 b{ font-weight:700; }
+
+  /* 4 · tabla compacta */
+  table{ width:100%; border-collapse:collapse; font-size:12px; }
+  th{ text-align:left; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); padding:8px 0; border-bottom:1px solid #EEECE8; }
+  th.r, td.r{ text-align:right; }
+  td{ padding:11px 0; border-bottom:1px solid #EEECE8; color:var(--muted); vertical-align:middle; }
+  tr:last-child td{ border-bottom:0; }
+  td.p{ width:22px; font-weight:700; color:var(--ink); }
+  td b{ color:var(--ink); }
+
+  /* 5 · número grande a la izquierda */
+  .r5{ display:grid; gap:8px; }
+  .r5 .it{ background:#fff; border-radius:12px; padding:10px 14px; display:grid; grid-template-columns:34px 1fr auto; gap:10px; align-items:center; box-shadow:0 8px 20px rgba(80,20,25,.07); }
+  .r5 .big{ font-size:26px; font-weight:800; color:#D9D6D2; letter-spacing:-.03em; }
+  .r5 .it.mio-c{ background:linear-gradient(150deg,var(--lemon),var(--lemon-b)); color:#fff; }
+  .r5 .it.mio-c .big{ color:rgba(255,255,255,.55); } .r5 .it.mio-c .n{ color:var(--rosa); }
+  .r5 .n{ font-size:11.5px; color:var(--muted); line-height:1.2; }
+  .r5 .v{ font-size:18px; font-weight:700; }
+
+  /* 6 · barras gráfico */
+  .r6{ display:grid; gap:10px; }
+  .r6 .n{ font-size:11.5px; color:var(--muted); margin-bottom:4px; display:flex; justify-content:space-between; }
+  .r6 .bar{ height:22px; border-radius:7px; background:var(--track); overflow:hidden; position:relative; }
+  .r6 .bar i{ display:block; height:100%; border-radius:7px; background:#5A5A62; }
+  .r6 .bar b{ position:absolute; right:8px; top:0; line-height:22px; font-size:12px; color:var(--ink); }
+  .r6 .bar.mio-b i{ background:var(--lemon); } .r6 .bar.mio-b b{ color:#fff; }
+
+  /* 7 · tarjeta "Puesto N de 30" */
+  .r7 .hero{ background:linear-gradient(150deg,var(--lemon),var(--lemon-b)); border-radius:14px; color:#fff; padding:16px; display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:center; }
+  .r7 .hero .p{ font-size:44px; font-weight:800; letter-spacing:-.03em; line-height:1; }
+  .r7 .hero .p small{ display:block; font-size:11px; font-weight:600; color:var(--rosa); letter-spacing:.06em; text-transform:uppercase; }
+  .r7 .hero .n{ font-size:12px; color:var(--rosa); }
+  .r7 .hero .v{ font-size:22px; font-weight:700; margin-top:2px; }
+  .r7 .mini .dr{ display:flex; justify-content:space-between; gap:8px; padding:9px 0; border-bottom:1px solid #EEECE8; font-size:12px; color:var(--muted); }
+  .r7 .mini .dr:last-child{ border-bottom:0; } .r7 .mini b{ color:var(--ink); }
+  .r7 .mini .pos{ display:inline-block; width:18px; font-weight:700; color:var(--ink); }
+
+  /* 8 · siglas */
+  .r8 .dr{ display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid #EEECE8; font-size:12.5px; }
+  .r8 .dr:last-child{ border-bottom:0; }
+  .r8 .av{ flex:0 0 32px; height:32px; border-radius:10px; background:var(--key); color:var(--ink); display:grid; place-items:center; font-size:11px; font-weight:800; }
+  .r8 .av.mio-a{ background:var(--lemon); color:#fff; }
+  .r8 .tx{ flex:1; min-width:0; } .r8 .tx .n{ color:var(--ink); font-weight:600; font-size:12px; line-height:1.2; }
+  .r8 .tx .s{ color:var(--muted); font-size:11px; margin-top:2px; }
+  .r8 b{ font-weight:700; }
+
+  /* 9 · columnas */
+  .r9{ display:grid; grid-template-columns:repeat(5,1fr); gap:8px; align-items:end; height:190px; padding:0 4px; }
+  .r9 .c{ display:grid; gap:6px; align-content:end; text-align:center; height:100%; }
+  .r9 .c .v{ font-size:12px; font-weight:700; }
+  .r9 .c i{ display:block; border-radius:8px 8px 4px 4px; background:#B9B4AE; margin:0 auto; width:100%; }
+  .r9 .c i.mio-i{ background:var(--lemon); }
+  .r9 .c .n{ font-size:9.5px; color:var(--muted); line-height:1.15; height:34px; overflow:hidden; }
+  .r9 .c .p{ font-size:10px; font-weight:800; width:18px; height:18px; border-radius:999px; background:var(--key); display:grid; place-items:center; margin:0 auto; }
+
+  /* 10 · número tenue de fondo */
+  .r10 .it{ position:relative; padding:12px 12px 12px 56px; border-bottom:1px solid #EEECE8; overflow:hidden; }
+  .r10 .it:last-child{ border-bottom:0; }
+  .r10 .it .g{ position:absolute; left:6px; top:2px; font-size:44px; font-weight:800; color:#EFEAE5; letter-spacing:-.04em; line-height:1; }
+  .r10 .it.mio-t .g{ color:#F7D5D0; }
+  .r10 .n{ font-size:11.5px; color:var(--muted); line-height:1.2; position:relative; }
+  .r10 .row{ display:flex; justify-content:space-between; align-items:baseline; position:relative; margin-top:2px; }
+  .r10 .v{ font-size:17px; font-weight:700; }
+  .r10 .pim{ font-size:11px; color:var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Ranking Top 5 · 10 propuestas de diseño</h1>
+  <p>Todas usan los datos reales de la hoja <b>RANKING SECTOR</b> (modo "Por ejecución presupuestal": Vivienda 1.º con 70,8%). El segmentador se mantiene igual en todas; lo que cambia es la tabla. Cuando una propuesta cambia la lógica (p. ej. mostrar % y PIM a la vez) se indica en la nota.</p>
+</header>
+
+<div class="grid">
+
+<!-- 1 -->
+<figure>
+  <div class="mock">
+    <div class="section-head"><h2>Ranking total Gobierno Nacional</h2></div>
+    <div class="seg"><span class="on">Por ejecución presupuestal</span><span>Por PIM</span></div>
+    <div class="card r1">
+      <div class="mio"><div class="dr"><span class="l"><i class="pos">1</i><span class="mio">37: VIVIENDA CONSTRUCCION Y SANEAMIENTO</span></span><b class="ok">70,8%</b></div><div class="mtr"><i class="b-ok" style="width:70.8%"></i></div></div>
+      <div><div class="dr"><span class="l"><i class="pos">2</i>09: ECONOMIA Y FINANZAS</span><b class="ok">67,5%</b></div><div class="mtr"><i class="b-ok" style="width:67.5%"></i></div></div>
+      <div><div class="dr"><span class="l"><i class="pos">3</i>16: ENERGIA Y MINAS</span><b class="ok">66,1%</b></div><div class="mtr"><i class="b-ok" style="width:66.1%"></i></div></div>
+      <div><div class="dr"><span class="l"><i class="pos">4</i>22: MINISTERIO PUBLICO</span><b class="ok">66,0%</b></div><div class="mtr"><i class="b-ok" style="width:66%"></i></div></div>
+      <div><div class="dr"><span class="l"><i class="pos">5</i>01: PRESIDENCIA CONSEJO MINISTROS</span><b class="ok">64,2%</b></div><div class="mtr"><i class="b-ok" style="width:64.2%"></i></div></div>
+    </div>
+  </div>
+  <figcaption><strong><span class="num">1</span>Actual (referencia)</strong><span>Círculo de posición + nombre + % semáforo + barra fina. Es la que hoy está en la app.</span></figcaption>
+</figure>
+
+<!-- 2 -->
+<figure>
+  <div class="mock">
+    <div class="section-head"><h2>Ranking total Gobierno Nacional</h2></div>
+    <div class="seg"><span class="on">Por ejecución presupuestal</span><span>Por PIM</span></div>
+    <div class="podio">
+      <div class="p"><span class="med" style="background:var(--plata)">2</span><span class="n">09: ECONOMIA Y FINANZAS</span><span class="v">67,5%</span></div>
+      <div class="p uno"><span class="med">1</span><span class="n">37: VIVIENDA CONSTRUCCION Y SANEAMIENTO</span><span class="v">70,8%</span></div>
+      <div class="p"><span class="med" style="background:var(--bronce)">3</span><span class="n">16: ENERGIA Y MINAS</span><span class="v">66,1%</span></div>
+    </div>
+    <div class="card lista-s">
+      <div class="dr"><span>4 · 22: MINISTERIO PUBLICO</span><b>66,0%</b></div>
+      <div class="dr"><span>5 · 01: PRESIDENCIA CONSEJO MINISTROS</span><b>64,2%</b></div>
+    </div>
+  </div>
+  <figcaption><strong><span class="num">2</span>Podio</strong><span>Los 3 primeros como podio (el 1.º más alto y en rojo si es Vivienda); 4.º y 5.º en lista corta.</span></figcaption>
+</figure>
+
+<!-- 3 -->
+<figure>
+  <div class="mock">
+    <div class="section-head"><h2>Ranking total Gobierno Nacional</h2></div>
+    <div class="seg"><span class="on">Por ejecución presupuestal</span><span>Por PIM</span></div>
+    <div class="card r3">
+      <div class="dr"><span class="m o">1</span><span class="n mio">37: VIVIENDA CONSTRUCCION Y SANEAMIENTO</span><b class="ok">70,8%</b></div>
+      <div class="dr"><span class="m p">2</span><span class="n">09: ECONOMIA Y FINANZAS</span><b class="ok">67,5%</b></div>
+      <div class="dr"><span class="m b">3</span><span class="n">16: ENERGIA Y MINAS</span><b class="ok">66,1%</b></div>
+      <div class="dr"><span class="m">4</span><span class="n">22: MINISTERIO PUBLICO</span><b class="ok">66,0%</b></div>
+      <div class="dr"><span class="m">5</span><span class="n">01: PRESIDENCIA CONSEJO MINISTROS</span><b class="ok">64,2%</b></div>
+    </div>
+  </div>
+  <figcaption><strong><span class="num">3</span>Medallas</strong><span>Sin barras. Oro/plata/bronce para el Top 3, gris para 4 y 5. Lista más compacta y limpia.</span></figcaption>
+</figure>
+
+<!-- 4 -->
+<figure>
+  <div class="mock">
+    <div class="section-head"><h2>Ranking total Gobierno Nacional</h2></div>
+    <div class="seg"><span class="on">Ordenar por ejecución</span><span>Ordenar por PIM</span></div>
+    <div class="card">
+      <table>
+        <tr><th>#</th><th>Sector</th><th class="r">PIM</th><th class="r">Ejec.</th></tr>
+        <tr><td class="p">1</td><td class="mio">37: VIVIENDA CONST. Y SANEAM.</td><td class="r">S/ 4,279 M</td><td class="r"><b class="ok">70,8%</b></td></tr>
+        <tr><td class="p">2</td><td>09: ECONOMIA Y FINANZAS</td><td class="r">S/ 47,570 M</td><td class="r"><b class="ok">67,5%</b></td></tr>
+        <tr><td class="p">3</td><td>16: ENERGIA Y MINAS</td><td class="r">S/ 1,326 M</td><td class="r"><b class="ok">66,1%</b></td></tr>
+        <tr><td class="p">4</td><td>22: MINISTERIO PUBLICO</td><td class="r">S/ 2,955 M</td><td class="r"><b class="ok">66,0%</b></td></tr>
+        <tr><td class="p">5</td><td>01: PRESIDENCIA CONSEJO MIN.</td><td class="r">S/ 6,878 M</td><td class="r"><b class="ok">64,2%</b></td></tr>
+      </table>
+    </div>
+  </div>
+  <figcaption><strong><span class="num">4</span>Tabla con las dos cifras</strong><span>Cambia la lógica: PIM y % siempre visibles; el segmentador solo reordena. Más información por fila, sin barras.</span></figcaption>
+</figure>
+
+<!-- 5 -->
+<figure>
+  <div class="mock">
+    <div class="section-head"><h2>Ranking total Gobierno Nacional</h2></div>
+    <div class="seg"><span class="on">Por ejecución presupuestal</span><span>Por PIM</span></div>
+    <div class="r5">
+      <div class="it mio-c"><span class="big">1</span><span class="n">37: VIVIENDA CONSTRUCCION Y SANEAMIENTO</span><span class="v">70,8%</span></div>
+      <div class="it"><span class="big">2</span><span class="n">09: ECONOMIA Y FINANZAS</span><span class="v ok">67,5%</span></div>
+      <div class="it"><span class="big">3</span><span class="n">16: ENERGIA Y MINAS</span><span class="v ok">66,1%</span></div>
+      <div class="it"><span class="big">4</span><span class="n">22: MINISTERIO PUBLICO</span><span class="v ok">66,0%</span></div>
+      <div class="it"><span class="big">5</span><span class="n">01: PRESIDENCIA CONSEJO MINISTROS</span><span class="v ok">64,2%</span></div>
+    </div>
+  </div>
+  <figcaption><strong><span class="num">5</span>Tarjetas por puesto</strong><span>Una tarjeta por fila con el número grande a la izquierda; la de Vivienda en rojo institucional.</span></figcaption>
+</figure>
+
+<!-- 6 -->
+<figure>
+  <div class="mock">
+    <div class="section-head"><h2>Ranking total Gobierno Nacional</h2></div>
+    <div class="seg"><span class="on">Por ejecución presupuestal</span><span>Por PIM</span></div>
+    <div class="card" style="padding:14px 16px">
+      <div class="r6">
+        <div><div class="n"><span class="mio">1 · 37: VIVIENDA CONST. Y SANEAMIENTO</span></div><div class="bar mio-b"><i style="width:70.8%"></i><b>70,8%</b></div></div>
+        <div><div class="n"><span>2 · 09: ECONOMIA Y FINANZAS</span></div><div class="bar"><i style="width:67.5%"></i><b>67,5%</b></div></div>
+        <div><div class="n"><span>3 · 16: ENERGIA Y MINAS</span></div><div class="bar"><i style="width:66.1%"></i><b>66,1%</b></div></div>
+        <div><div class="n"><span>4 · 22: MINISTERIO PUBLICO</span></div><div class="bar"><i style="width:66%"></i><b>66,0%</b></div></div>
+        <div><div class="n"><span>5 · 01: PRESIDENCIA CONSEJO MINISTROS</span></div><div class="bar"><i style="width:64.2%"></i><b>64,2%</b></div></div>
+      </div>
+    </div>
+  </div>
+  <figcaption><strong><span class="num">6</span>Gráfico de barras</strong><span>Barras anchas tipo gráfico con el valor dentro; grises salvo Vivienda en rojo. Muy visual para comparar.</span></figcaption>
+</figure>
+
+<!-- 7 -->
+<figure>
+  <div class="mock r7">
+    <div class="section-head"><h2>Ranking total Gobierno Nacional</h2></div>
+    <div class="seg"><span class="on">Por ejecución presupuestal</span><span>Por PIM</span></div>
+    <div class="hero"><div class="p"><small>Puesto</small>1<span style="font-size:18px;color:var(--rosa)">/30</span></div><div><div class="n">37: VIVIENDA CONSTRUCCION Y SANEAMIENTO</div><div class="v">70,8%</div></div></div>
+    <div class="card mini">
+      <div class="dr"><span><i class="pos">2</i>09: ECONOMIA Y FINANZAS</span><b>67,5%</b></div>
+      <div class="dr"><span><i class="pos">3</i>16: ENERGIA Y MINAS</span><b>66,1%</b></div>
+      <div class="dr"><span><i class="pos">4</i>22: MINISTERIO PUBLICO</span><b>66,0%</b></div>
+      <div class="dr"><span><i class="pos">5</i>01: PRESIDENCIA CONSEJO MINISTROS</span><b>64,2%</b></div>
+    </div>
+  </div>
+  <figcaption><strong><span class="num">7</span>Vivienda como protagonista</strong><span>Tarjeta roja "Puesto N / 30" para el sector, y debajo el resto del Top 5 en lista mini. Responde primero a "¿cómo vamos?".</span></figcaption>
+</figure>
+
+<!-- 8 -->
+<figure>
+  <div class="mock">
+    <div class="section-head"><h2>Ranking total Gobierno Nacional</h2></div>
+    <div class="seg"><span class="on">Por ejecución presupuestal</span><span>Por PIM</span></div>
+    <div class="card r8">
+      <div class="dr"><span class="av mio-a">37</span><span class="tx"><div class="n mio">VIVIENDA CONSTRUCCION Y SANEAMIENTO</div><div class="s">1.º · PIM S/ 4,279 M</div></span><b class="ok">70,8%</b></div>
+      <div class="dr"><span class="av">09</span><span class="tx"><div class="n">ECONOMIA Y FINANZAS</div><div class="s">2.º · PIM S/ 47,570 M</div></span><b class="ok">67,5%</b></div>
+      <div class="dr"><span class="av">16</span><span class="tx"><div class="n">ENERGIA Y MINAS</div><div class="s">3.º · PIM S/ 1,326 M</div></span><b class="ok">66,1%</b></div>
+      <div class="dr"><span class="av">22</span><span class="tx"><div class="n">MINISTERIO PUBLICO</div><div class="s">4.º · PIM S/ 2,955 M</div></span><b class="ok">66,0%</b></div>
+      <div class="dr"><span class="av">01</span><span class="tx"><div class="n">PRESIDENCIA CONSEJO MINISTROS</div><div class="s">5.º · PIM S/ 6,878 M</div></span><b class="ok">64,2%</b></div>
+    </div>
+  </div>
+  <figcaption><strong><span class="num">8</span>Código como insignia</strong><span>El código del pliego (37, 09…) en un cuadro a la izquierda, nombre en negrita y una segunda línea con puesto + PIM. Dos datos por fila sin barras.</span></figcaption>
+</figure>
+
+<!-- 9 -->
+<figure>
+  <div class="mock">
+    <div class="section-head"><h2>Ranking total Gobierno Nacional</h2></div>
+    <div class="seg"><span class="on">Por ejecución presupuestal</span><span>Por PIM</span></div>
+    <div class="card" style="padding:14px 10px 12px">
+      <div class="r9">
+        <div class="c"><span class="v mio">70,8%</span><i class="mio-i" style="height:110px"></i><span class="p">1</span><span class="n">37: VIVIENDA C. Y S.</span></div>
+        <div class="c"><span class="v">67,5%</span><i style="height:104px"></i><span class="p">2</span><span class="n">09: ECONOMIA Y FIN.</span></div>
+        <div class="c"><span class="v">66,1%</span><i style="height:100px"></i><span class="p">3</span><span class="n">16: ENERGIA Y MINAS</span></div>
+        <div class="c"><span class="v">66,0%</span><i style="height:99px"></i><span class="p">4</span><span class="n">22: MINIST. PUBLICO</span></div>
+        <div class="c"><span class="v">64,2%</span><i style="height:95px"></i><span class="p">5</span><span class="n">01: PCM</span></div>
+      </div>
+    </div>
+  </div>
+  <figcaption><strong><span class="num">9</span>Columnas</strong><span>Gráfico de columnas del Top 5, Vivienda en rojo. Muy gráfico, pero los nombres largos deben abreviarse.</span></figcaption>
+</figure>
+
+<!-- 10 -->
+<figure>
+  <div class="mock">
+    <div class="section-head"><h2>Ranking total Gobierno Nacional</h2></div>
+    <div class="seg"><span class="on">Por ejecución presupuestal</span><span>Por PIM</span></div>
+    <div class="card r10" style="padding:2px 12px">
+      <div class="it mio-t"><span class="g">1</span><div class="n mio">37: VIVIENDA CONSTRUCCION Y SANEAMIENTO</div><div class="row"><span class="v ok">70,8%</span><span class="pim">PIM S/ 4,279 M</span></div></div>
+      <div class="it"><span class="g">2</span><div class="n">09: ECONOMIA Y FINANZAS</div><div class="row"><span class="v ok">67,5%</span><span class="pim">PIM S/ 47,570 M</span></div></div>
+      <div class="it"><span class="g">3</span><div class="n">16: ENERGIA Y MINAS</div><div class="row"><span class="v ok">66,1%</span><span class="pim">PIM S/ 1,326 M</span></div></div>
+      <div class="it"><span class="g">4</span><div class="n">22: MINISTERIO PUBLICO</div><div class="row"><span class="v ok">66,0%</span><span class="pim">PIM S/ 2,955 M</span></div></div>
+      <div class="it"><span class="g">5</span><div class="n">01: PRESIDENCIA CONSEJO MINISTROS</div><div class="row"><span class="v ok">64,2%</span><span class="pim">PIM S/ 6,878 M</span></div></div>
+    </div>
+  </div>
+  <figcaption><strong><span class="num">10</span>Número tenue de fondo</strong><span>El puesto como cifra grande y tenue detrás; nombre arriba, % grande y PIM pequeño en la misma fila. Elegante y con las dos cifras.</span></figcaption>
+</figure>
+
+</div>
+</body>
+</html>
