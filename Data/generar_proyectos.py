@@ -211,7 +211,15 @@ def main():
     if "POR REGION BONOS" in wb.sheetnames and "bonos" in indicadores:
         indicadores["bonos"]["regiones"] = filas_con_detalle("POR REGION BONOS")
 
-    # Pliego (hoja PLIEGO): fila PLIEGO = indicador principal de Inicio;
+    # Indicador principal de Inicio (hoja INDICADOR PRINCIPAL): fila SECTOR → %
+    if "INDICADOR PRINCIPAL" in wb.sheetnames:
+        for r in wb["INDICADOR PRINCIPAL"].iter_rows(values_only=True):
+            nombre, val = limpio(r[1]), pct_celda(r[2])
+            if nombre and val is not None:
+                indicadores["principal"] = {"nombre": nombre, "pct": val}
+                break
+
+    # Pliego (hoja PLIEGO): fila PLIEGO = resumen del detalle de Pliego;
     # las demás filas = un card por fila en el detalle
     if "PLIEGO" in wb.sheetnames:
         filas_pliego = []
