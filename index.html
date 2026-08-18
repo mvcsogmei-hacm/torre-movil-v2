@@ -264,6 +264,17 @@
   .balance-card .delta{ font-size:16px; font-weight:600; margin-top:4px; }
   .balance-card .montos{ display:grid; gap:4px; margin-top:12px; font-size:14px; color:var(--rosa); }
   .balance-card .montos b{ color:#fff; font-weight:600; }
+  /* Tabla de ranking (pantalla Ranking) */
+  .rank-card .dr > span{ display:flex; align-items:center; gap:8px; min-width:0; }
+  .rank-card .dr .nm{ font-size:12.5px; line-height:1.2; }
+  .rank-card .dr b{ white-space:nowrap; }
+  .rank-card .pos{
+    flex:0 0 22px; height:22px; border-radius:999px; background:var(--key); color:var(--ink);
+    font-size:11px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; font-style:normal;
+  }
+  .rank-card .drb.mio .dr .nm{ font-weight:700; color:var(--lemon); }
+  .rank-card .drb.mio .pos{ background:var(--lemon); color:#fff; }
+  html[data-tema="oscuro"] .rank-card .drb.mio .dr .nm{ color:#F7C8C2 !important; }
   .balance-card .bar{
     height:8px; border-radius:999px; background:rgba(255,255,255,.30);
     margin-top:16px; overflow:hidden;
@@ -1248,7 +1259,12 @@
       </div>
     </div>
 
-    <div id="ranking-cards"></div>
+    <div class="section-head"><h2>Ranking total Gobierno Nacional</h2></div>
+    <div class="seg" id="rank-seg">
+      <button class="active" data-seg="pct">Por ejecución presupuestal</button>
+      <button data-seg="pim">Por PIM</button>
+    </div>
+    <div class="detail-card rank-card" id="rank-tabla"></div>
   </section>
 
   <!-- ═══ AJUSTES ═══ -->
@@ -1859,6 +1875,25 @@
       document.getElementById("rank-bar").style.width = Math.min(100, pr.pct) + "%";
       document.getElementById("rank-pim").textContent = "S/ " + fmtNum(Math.round((pr.pim || 0) / 1000000)) + " M";
       document.getElementById("rank-dev").textContent = "S/ " + fmtNum(Math.round((pr.devengado || 0) / 1000000)) + " M";
+    }
+    /* Ranking total Gobierno Nacional (hoja RANKING SECTOR): por % o por PIM */
+    var rk = ind.rankingSector || [];
+    if(rk.length){
+      var maxPim = Math.max.apply(null, rk.map(function(r){ return r.pim; }));
+      function renderRank(modo){
+        var lista = rk.slice().sort(function(a, b){ return modo === "pim" ? b.pim - a.pim : b.pct - a.pct; });
+        document.getElementById("rank-tabla").innerHTML = lista.map(function(r, i){
+          var mio = /VIVIENDA/.test(r.nombre) ? " mio" : "";
+          var val, ancho, color;
+          if(modo === "pim"){ val = "S/ " + fmtNum(Math.round(r.pim / 1000000)) + " M"; ancho = r.pim / maxPim * 100; color = "var(--ink)"; }
+          else { val = pctTxt(r.pct); ancho = r.pct; color = execColor(r.pct); }
+          return '<div class="drb' + mio + '"><div class="dr"><span><i class="pos">' + (i + 1) + '</i><span class="nm">' + r.nombre + '</span></span>' +
+            '<b style="color:' + color + '">' + val + '</b></div>' +
+            '<div class="mtr"><i style="width:' + Math.min(100, ancho) + '%;background:' + color + '"></i></div></div>';
+        }).join("");
+      }
+      renderRank("pct");
+      segControl("rank-seg", renderRank);
     }
     var filasP = ind.mvcs || [];
     if(filasP.length){

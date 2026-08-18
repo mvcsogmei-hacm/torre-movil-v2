@@ -227,6 +227,21 @@ def main():
         if "pct" in principal:
             indicadores["principal"] = principal
 
+    # Ranking del sector frente al Gobierno Nacional (hoja RANKING SECTOR):
+    # columnas nombre ("NN: SECTOR"), PIM, % avance. Orden lo hace la UI.
+    if "RANKING SECTOR" in wb.sheetnames:
+        rk = []
+        for r in wb["RANKING SECTOR"].iter_rows(values_only=True):
+            nombre, pim, val = limpio(r[0]), num(r[1]), pct_celda(r[2])
+            if not nombre or pim is None or val is None:
+                continue
+            cod = None
+            if ":" in nombre:
+                cod, nombre = [x.strip() for x in nombre.split(":", 1)]
+            rk.append({"cod": cod, "nombre": nombre, "pim": pim, "pct": val})
+        if rk:
+            indicadores["rankingSector"] = rk
+
     # Pliegos (hoja PLIEGOS): tarjetas de Inicio — entidad, PIM, devengado, % ejecución
     if "PLIEGOS" in wb.sheetnames:
         pliegos = []
