@@ -166,3 +166,11 @@ filas (barra, cebra, número simple/grande, medallas, código insignia, dos
 líneas con PIM, barra ancha, chip, fila Vivienda roja, compacta, tabla,
 barra corta, punto semáforo, nombre en tinta, puesto/30, Vivienda fija
 arriba) y del segmentador (texto, cuadrado). Datos reales de RANKING SECTOR.
+
+## Propuesta ranking 11 (`propuesta-ranking-11.html`, 18-ago-2026)
+
+Desarrollo de la propuesta 11 de la galería anterior (fila Vivienda en banda
+roja) con puesto en cuadro redondeado y botones Ejecución / PIM. Muestra el
+caso normal y 4 alternativas (A separador "···", B sin separador, C fila fija
+arriba "Tu sector", D pie "puesto 9 de 30") para cuando el sector queda fuera
+del Top 5.
