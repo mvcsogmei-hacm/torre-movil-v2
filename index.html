@@ -1975,17 +1975,24 @@
     var q = norm(state.texto), qr = state.texto.trim();
     var base = filtrar(state);
     var nivel = !state.dep ? "dep" : (!state.prov ? "prov" : (!state.dist ? "dist" : "lista"));
-    sInput.placeholder = nivel==="dep" ? "Buscar por CUI o departamento…"
-                       : nivel==="prov" ? "Buscar por CUI o provincia…"
-                       : nivel==="dist" ? "Buscar por CUI o distrito…"
+    sInput.placeholder = nivel==="dep" ? "Buscar por CUI, obra o departamento…"
+                       : nivel==="prov" ? "Buscar por CUI, obra o provincia…"
+                       : nivel==="dist" ? "Buscar por CUI, obra o distrito…"
                        : "Buscar por CUI o nombre de obra…";
     var top = breadcrumb() + activos();
     var body = "";
-    if(qr){
-      var cuiHits = PROYECTOS.filter(function(p){ return pasaFacetas(p) && p.cui.indexOf(qr) !== -1; });
-      if(cuiHits.length){
-        body += '<div class="sug-h">Proyectos · '+cuiHits.length+'</div>';
-        body += '<div class="cards">'+ ordenar(cuiHits).slice(0, PAGE).map(cardHTML).join("") +'</div>';
+    if(qr && nivel !== "lista"){
+      /* proyectos por CUI o por nombre dentro del ámbito navegado */
+      var hits = base.filter(function(p){
+        return p.cui.indexOf(qr) !== -1 || norm(p.nombre).indexOf(q) !== -1;
+      });
+      /* un CUI pegado se encuentra aunque no estés en su departamento */
+      if(!hits.length && /^\d+$/.test(qr)){
+        hits = PROYECTOS.filter(function(p){ return pasaFacetas(p) && p.cui.indexOf(qr) !== -1; });
+      }
+      if(hits.length){
+        body += '<div class="sug-h">Proyectos · '+hits.length+'</div>';
+        body += '<div class="cards">'+ ordenar(hits).slice(0, PAGE).map(cardHTML).join("") +'</div>';
       }
     }
     if(nivel !== "lista"){
@@ -2005,7 +2012,7 @@
       }
     } else {
       var lista = base;
-      if(q) lista = lista.filter(function(p){ return norm(p.nombre).indexOf(q) !== -1; });
+      if(q) lista = lista.filter(function(p){ return norm(p.nombre).indexOf(q) !== -1 || p.cui.indexOf(qr) !== -1; });
       if(lista.length){
         var orden = ordenar(lista);
         var shown = Math.min(state.page * PAGE, lista.length);
