@@ -265,6 +265,7 @@
   .balance-card .montos{ display:grid; gap:4px; margin-top:12px; font-size:14px; color:var(--rosa); }
   .balance-card .montos b{ color:#fff; font-weight:600; }
   /* Ranking (pantalla Ranking): 3 tarjetas con título + mini segmentador (% / PIM) y lista Top 5 */
+  .section-head h2 small{ font-size:12px; font-weight:500; color:var(--muted); }
   .rank-card{
     background:var(--card); border-radius:13px; padding:14px 16px 4px;
     box-shadow:var(--shadow-card); margin-top:14px;
@@ -1076,27 +1077,27 @@
       </div>
     </div>
 
-    <div class="section-head"><h2>A nivel de pliegos del sector</h2></div>
+    <div class="section-head"><h2>A nivel de pliegos del sector <small>(en millones de soles)</small></h2></div>
     <div class="ent-grid" id="ent-grid">
       <div class="ent">
         <span class="top"><span class="name">SBN</span><span class="pct">32%</span></span>
         <span class="meter"><i style="width:32%"></i></span>
-        <span class="amt">S/ 14 millones</span>
+        <span class="amt">PIM: S/ 41</span>
       </div>
       <div class="ent">
         <span class="top"><span class="name">SENCICO</span><span class="pct">23%</span></span>
         <span class="meter"><i style="width:23%"></i></span>
-        <span class="amt">S/ 34 millones</span>
+        <span class="amt">PIM: S/ 192</span>
       </div>
       <div class="ent">
         <span class="top"><span class="name">OTASS</span><span class="pct">46%</span></span>
         <span class="meter"><i style="width:46%"></i></span>
-        <span class="amt">S/ 55 millones</span>
+        <span class="amt">PIM: S/ 117</span>
       </div>
       <div class="ent">
         <span class="top"><span class="name">COFOPRI</span><span class="pct">39%</span></span>
         <span class="meter"><i style="width:39%"></i></span>
-        <span class="amt">S/ 66 millones</span>
+        <span class="amt">PIM: S/ 171</span>
       </div>
     </div>
 
@@ -1521,75 +1522,6 @@
       </div></div>
     </div>
 
-    <div class="cartera-card closed">
-      <button class="hd" aria-label="Mostrar u ocultar Obras directas">
-        <span class="hd-txt">
-          <span class="t">Obras directas</span>
-          <span class="s">Avance de ejecución financiera</span>
-        </span>
-        <span class="caret"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
-      </button>
-      <div class="summary">
-        <span class="bic b-obras">
-          <svg viewBox="0 0 24 24" fill="#fff"><path d="M4.5 14.5a7.5 7.5 0 0 1 15 0v1h-15z"/><rect x="3" y="16.8" width="18" height="2.6" rx="1.3"/><rect x="10.8" y="4" width="2.4" height="4" rx="1"/></svg>
-        </span>
-        <span class="name">Obras directas</span>
-        <span class="sub">Avance de ejecución financiera</span>
-        <span class="pctv pct-pr">45,4%</span>
-      </div>
-      <div class="body"><div>
-      <div class="prog crit">
-        <span class="info">
-          <span class="name">Ejecutora 01</span>
-          <span class="meta">17 obras <span class="chip crit"><i></i>Crítico</span></span>
-        </span>
-        <span class="pct">21%</span>
-      </div>
-      <div class="prog proc">
-        <span class="info">
-          <span class="name">PNSR</span>
-          <span class="meta">445 obras <span class="chip proc"><i></i>En proceso</span></span>
-        </span>
-        <span class="pct">48%</span>
-      </div>
-      <div class="prog proc">
-        <span class="info">
-          <span class="name">PNSU</span>
-          <span class="meta">54 obras <span class="chip proc"><i></i>En proceso</span></span>
-        </span>
-        <span class="pct">43%</span>
-      </div>
-      <div class="prog ok">
-        <span class="info">
-          <span class="name">PASLC</span>
-          <span class="meta">27 obras <span class="chip ok"><i></i>Óptimo</span></span>
-        </span>
-        <span class="pct">72%</span>
-      </div>
-      <div class="prog proc">
-        <span class="info">
-          <span class="name">SENCICO</span>
-          <span class="meta">8 obras <span class="chip proc"><i></i>En proceso</span></span>
-        </span>
-        <span class="pct">32%</span>
-      </div>
-      <div class="prog proc">
-        <span class="info">
-          <span class="name">OTASS</span>
-          <span class="meta">2 obras <span class="chip proc"><i></i>En proceso</span></span>
-        </span>
-        <span class="pct">41%</span>
-      </div>
-      <div class="prog ok">
-        <span class="info">
-          <span class="name">COFOPRI</span>
-          <span class="meta">1 obra <span class="chip ok"><i></i>Óptimo</span></span>
-        </span>
-        <span class="pct">61%</span>
-      </div>
-      </div></div>
-    </div>
-
       <div class="cartera-card closed">
       <button class="hd" aria-label="Mostrar u ocultar Transferencias 2026">
         <span class="hd-txt">
@@ -1914,8 +1846,8 @@
       /* pantalla Ranking: mismo indicador con barra, PIM y devengado */
       document.getElementById("rank-amount").textContent = pctTxt(pr.pct);
       document.getElementById("rank-bar").style.width = Math.min(100, pr.pct) + "%";
-      document.getElementById("rank-pim").textContent = "S/ " + fmtNum(Math.round((pr.pim || 0) / 1000000)) + " M";
-      document.getElementById("rank-dev").textContent = "S/ " + fmtNum(Math.round((pr.devengado || 0) / 1000000)) + " M";
+      document.getElementById("rank-pim").textContent = "S/ " + fmtNum(Math.round((pr.pim || 0) / 1000000));
+      document.getElementById("rank-dev").textContent = "S/ " + fmtNum(Math.round((pr.devengado || 0) / 1000000));
     }
     /* Rankings frente al Gobierno Nacional (hojas RANKING SECTOR / INVERSIONES /
        ACTIVIDADES): Top 5 por % o por PIM, con segmentador propio cada uno */
@@ -1925,7 +1857,7 @@
       function renderRank(modo){
         var lista = rk.slice().sort(function(a, b){ return modo === "pim" ? b.pim - a.pim : b.pct - a.pct; });
         var esMio = function(r){ return /VIVIENDA/.test(r.nombre); };
-        function valor(r){ return modo === "pim" ? "S/ " + fmtNum(Math.round(r.pim / 1000000)) + " M" : pctTxt(r.pct); }
+        function valor(r){ return modo === "pim" ? "S/ " + fmtNum(Math.round(r.pim / 1000000)) : pctTxt(r.pct); }
         function color(r){ return modo === "pim" ? "var(--ink)" : execColor(r.pct); }
         function fila(r, i){
           return '<div class="dr' + (esMio(r) ? ' mio' : '') + '"><span><i class="pos">' + (i + 1) + '</i>' +
@@ -1966,8 +1898,8 @@
         return '<div class="ent' + (i === 0 ? ' wide' : '') + '">' +
           '<span class="top"><span class="name">' + a.nombre + '</span><span class="pct">' + Math.round(a.pct) + '%</span></span>' +
           '<span class="meter"><i style="width:' + Math.min(100, a.pct) + '%"></i></span>' +
-          '<span class="amts"><span class="amt">PIM: S/ ' + fmtNum(Math.round(a.pim / 1000000)) + ' M</span>' +
-          '<span class="amt">Devengado: S/ ' + fmtNum(Math.round(a.devengado / 1000000)) + ' M</span></span></div>';
+          '<span class="amts"><span class="amt">PIM: S/ ' + fmtNum(Math.round(a.pim / 1000000)) + '</span>' +
+          '<span class="amt">Devengado: S/ ' + fmtNum(Math.round(a.devengado / 1000000)) + '</span></span></div>';
       }).join("");
     }
   })();
@@ -1988,10 +1920,8 @@
   function pctTxt(n){ return String(n).replace(".", ",") + "%"; }
   function pctClass(n){ return n >= 60 ? "pct-ok" : (n >= 25 ? "pct-pr" : "pct-cr"); }
   function execColor(n){ return n >= 60 ? "#1FA23C" : (n >= 25 ? "#C98A00" : "#BF2E25"); }
-  function fmtMonto(n){
-    return n >= 1000000 ? "S/ " + (n/1000000).toFixed(1).replace(".", ",") + " M"
-                        : "S/ " + n.toLocaleString("es-PE");
-  }
+  /* Montos de la ficha: cifra completa en soles (sin abreviaturas M/MM) */
+  function fmtMonto(n){ return "S/ " + Number(n || 0).toLocaleString("es-PE"); }
   function fmtSoles(n){ return "S/ " + Number(n || 0).toLocaleString("es-PE"); }
   function fmtNum(n){ return Number(n || 0).toLocaleString("es-PE"); }
   function txt(v){ return (v === 0 || v) && String(v) !== "" ? v : "—"; }

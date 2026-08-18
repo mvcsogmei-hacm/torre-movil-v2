@@ -12,6 +12,10 @@ App móvil tipo fintech ("La torre") para monitoreo de proyectos de inversión p
 - Pantallas: Inicio, Inversiones, BOT, Actividades, Búsqueda + ficha de proyecto.
 - La pantalla Búsqueda funciona con **datos reales**: `index.html` carga `data/proyectos.js` (define `window.PROYECTOS`, 21,528 proyectos).
 
+## Formato de cifras en soles (regla desde 18-ago-2026)
+
+**Sin abreviaturas** en todo el aplicativo: nada de "M", "MM", "mill." ni "millones". Las cifras agregadas (tarjetas de pliegos en Inicio, indicador y rankings de la pantalla Ranking) se muestran en millones **solo con el número** ("S/ 4,279"); la unidad se declara una sola vez en Inicio, en el título "A nivel de pliegos del sector **(en millones de soles)**". En la ficha de proyecto y el PDF (`fmtMonto`) los montos van **completos en soles** ("S/ 1,234,567").
+
 ## Importante
 
 Esta app es **totalmente independiente**: NO tiene relación con la carpeta `Desktop\la_torre` ni con sus datos, API o base de datos (aclarado por el usuario el 14-ago-2026). No usar ese proyecto como referencia.
@@ -62,7 +66,7 @@ Retitulada de "Movimientos" a "Actividades". Tres pestañas estilo accesos de In
 
 ### Pantalla Inversiones
 
-Las 4 tarjetas originales (Cartera priorizada, Paralizadas, Obras directas, Transferencias 2026) siguen **estáticas** (decisión del usuario, 16-ago-2026). Se añadió una 5.ª tarjeta **PRESET dinámica**: % de proyectos en etapa APTO sobre el total de la cartera, global y por programa, calculado desde `window.PROYECTOS` al cargar (hoy: 10,8% global).
+Las tarjetas originales estáticas son ahora 3: Cartera priorizada, Paralizadas y Transferencias 2026 (decisión del usuario, 16-ago-2026; **la de Obras directas se retiró el 18-ago-2026** — la cartera `obras` sigue existiendo en datos, buscador y ficha). Se añadió una 5.ª tarjeta **PRESET dinámica**: % de proyectos en etapa APTO sobre el total de la cartera, global y por programa, calculado desde `window.PROYECTOS` al cargar (hoy: 10,8% global).
 
 ### Ficha de proyecto — módulos
 
