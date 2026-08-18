@@ -277,9 +277,13 @@
   }
   .podio .p:nth-child(2) .med{ background:#E3B341; }   /* 1.º oro */
   .podio .p:nth-child(3) .med{ background:#C77E4A; }   /* 3.º bronce */
-  .podio .p .n{ font-size:11px; color:var(--muted); line-height:1.2; min-height:40px; }
-  .podio .p .v{ font-size:19px; font-weight:700; }
-  .podio .p.uno{ padding-top:18px; }
+  .podio .p .n{
+    font-size:11px; color:var(--muted); line-height:1.2; height:40px; overflow:hidden;
+    display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical;
+  }
+  .podio .p .v{ font-size:18px; font-weight:700; white-space:nowrap; letter-spacing:-.01em; }
+  .podio .p{ min-height:118px; }
+  .podio .p.uno{ padding-top:18px; min-height:130px; }
   .podio .p.mio{ background:linear-gradient(150deg,var(--lemon),var(--lemon-b)); color:#fff; }
   .podio .p.mio .n{ color:var(--rosa); } .podio .p.mio .v{ color:#fff !important; }
   .podio .p.mio .med{ background:#fff; color:var(--lemon); }
@@ -1918,12 +1922,19 @@
         var lista = rk.slice().sort(function(a, b){ return modo === "pim" ? b.pim - a.pim : b.pct - a.pct; });
         var esMio = function(r){ return /VIVIENDA/.test(r.nombre); };
         function valor(r){ return modo === "pim" ? "S/ " + fmtNum(Math.round(r.pim / 1000000)) + " M" : pctTxt(r.pct); }
+        /* En el podio la cifra va corta para que quepa en una línea:
+           ≥ 1,000 M → "S/ 47,6 MM" (miles de millones); si no, "S/ 736 M" */
+        function valorCorto(r){
+          if(modo !== "pim") return pctTxt(r.pct);
+          var m = r.pim / 1000000;
+          return m >= 1000 ? "S/ " + (m / 1000).toFixed(1).replace(".", ",") + " MM" : "S/ " + fmtNum(Math.round(m)) + " M";
+        }
         function color(r){ return modo === "pim" ? "var(--ink)" : execColor(r.pct); }
         function nombre(r){ return (r.cod ? r.cod + ": " : "") + r.nombre; }
         function podio(r, i){
           return '<div class="p' + (i === 0 ? ' uno' : '') + (esMio(r) ? ' mio' : '') + '">' +
             '<span class="med">' + (i + 1) + '</span><span class="n">' + nombre(r) + '</span>' +
-            '<span class="v" style="color:' + color(r) + '">' + valor(r) + '</span></div>';
+            '<span class="v" style="color:' + color(r) + '">' + valorCorto(r) + '</span></div>';
         }
         function fila(r, i){
           return '<div class="dr' + (esMio(r) ? ' mio' : '') + '"><span><i class="pos">' + (i + 1) + '</i><span class="nm">' + nombre(r) + '</span></span>' +
