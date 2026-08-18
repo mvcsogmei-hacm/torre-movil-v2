@@ -2614,10 +2614,9 @@
     var sub = String(p.subSsp || "").trim();
     return [ssp].concat((sub && sub !== "-") ? [sub] : []);
   }
+  /* Bajo el título solo van los chips de estado (los de cartera se retiraron el 18-ago-2026) */
   function fichaBadges(p){
-    return Object.keys(p.carteras||{}).map(function(k){
-      return '<span class="badge" style="background:' + CARTERAS[k].color + '">' + CARTERAS[k].label + '</span>';
-    }).join("") + estadoChips(p).map(function(e){ return '<span class="badge badge-est">' + e + '</span>'; }).join("");
+    return estadoChips(p).map(function(e){ return '<span class="badge badge-est">' + e + '</span>'; }).join("");
   }
   function fichaSecciones(p){
     return fichaDatos(p).map(function(s){
@@ -2748,14 +2747,9 @@
     texto(M - 8, y, "CUI " + p.cui, m.fHead, "#1D1B1B", true);
     y += m.fHead + 8;
     tLines.forEach(function(l){ texto(M - 8, y, l, m.fTit, "#1D1B1B", true); y += m.titLH; });
-    if(claves.length){
-      y += 4;
-      texto(M - 8, y, "Carteras: " + claves.map(function(k){ return CARTERAS[k].label; }).join("  ·  "), 8.5, "#6B6B6B", false);
-      y += 10;
-    }
     var estados = estadoChips(p);
     if(estados.length){
-      if(!claves.length) y += 4;
+      y += 4;
       texto(M - 8, y, "Estado: " + estados.join("  ·  "), 8.5, "#6B6B6B", false);
       y += 10;
     }
