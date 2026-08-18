@@ -264,18 +264,36 @@
   .balance-card .delta{ font-size:16px; font-weight:600; margin-top:4px; }
   .balance-card .montos{ display:grid; gap:4px; margin-top:12px; font-size:14px; color:var(--rosa); }
   .balance-card .montos b{ color:#fff; font-weight:600; }
-  /* Tabla de ranking (pantalla Ranking) */
-  .rank-card .dr > span{ display:flex; align-items:center; gap:8px; min-width:0; }
-  .rank-card .dr .nm{ font-size:12.5px; line-height:1.2; }
-  .rank-card .dr b{ white-space:nowrap; }
-  .rank-card .pos{
+  /* Ranking (pantalla Ranking): podio Top 3 + lista 4.º/5.º */
+  .rank-wrap{ display:grid; gap:10px; }
+  .podio{ display:grid; grid-template-columns:1fr 1.15fr 1fr; gap:8px; align-items:end; }
+  .podio .p{
+    background:var(--card); border-radius:14px; padding:12px 8px 10px; text-align:center;
+    box-shadow:var(--shadow-card); display:grid; gap:4px; align-content:start;
+  }
+  .podio .p .med{
+    width:26px; height:26px; border-radius:999px; margin:0 auto 2px; display:grid; place-items:center;
+    color:#fff; font-size:12px; font-weight:700; background:#B7BCC4;
+  }
+  .podio .p:nth-child(2) .med{ background:#E3B341; }   /* 1.º oro */
+  .podio .p:nth-child(3) .med{ background:#C77E4A; }   /* 3.º bronce */
+  .podio .p .n{ font-size:11px; color:var(--muted); line-height:1.2; min-height:40px; }
+  .podio .p .v{ font-size:19px; font-weight:700; }
+  .podio .p.uno{ padding-top:18px; }
+  .podio .p.mio{ background:linear-gradient(150deg,var(--lemon),var(--lemon-b)); color:#fff; }
+  .podio .p.mio .n{ color:var(--rosa); } .podio .p.mio .v{ color:#fff !important; }
+  .podio .p.mio .med{ background:#fff; color:var(--lemon); }
+  .rank-lista .dr span{ display:flex; align-items:center; gap:8px; }
+  .rank-lista .dr .nm{ font-size:12.5px; line-height:1.2; }
+  .rank-lista .dr b{ white-space:nowrap; }
+  .rank-lista .pos{
     flex:0 0 22px; height:22px; border-radius:999px; background:var(--key); color:var(--ink);
     font-size:11px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; font-style:normal;
   }
-  .rank-card .drb.mio .dr .nm{ font-weight:700; color:var(--lemon); }
-  .rank-card .drb.mio .pos{ background:var(--lemon); color:#fff; }
-  html[data-tema="oscuro"] .rank-card .drb.mio .dr .nm{ color:#F7C8C2 !important; }
-  .rank-card .rank-sep{ text-align:center; color:var(--muted); font-weight:700; letter-spacing:.2em; padding:4px 0; }
+  .rank-lista .dr.mio .nm{ font-weight:700; color:var(--lemon); }
+  .rank-lista .dr.mio .pos{ background:var(--lemon); color:#fff; }
+  html[data-tema="oscuro"] .rank-lista .dr.mio .nm{ color:#F7C8C2 !important; }
+  .rank-lista .rank-sep{ text-align:center; color:var(--muted); font-weight:700; letter-spacing:.2em; padding:4px 0; }
   .balance-card .bar{
     height:8px; border-radius:999px; background:rgba(255,255,255,.30);
     margin-top:16px; overflow:hidden;
@@ -1265,21 +1283,21 @@
       <button class="active" data-seg="pct">Por ejecución presupuestal</button>
       <button data-seg="pim">Por PIM</button>
     </div>
-    <div class="detail-card rank-card" id="rank-tabla"></div>
+    <div class="rank-wrap" id="rank-tabla"></div>
 
     <div class="section-head"><h2>Ranking por inversiones</h2></div>
     <div class="seg" id="rankInv-seg">
       <button class="active" data-seg="pct">Por ejecución presupuestal</button>
       <button data-seg="pim">Por PIM</button>
     </div>
-    <div class="detail-card rank-card" id="rankInv-tabla"></div>
+    <div class="rank-wrap" id="rankInv-tabla"></div>
 
     <div class="section-head"><h2>Ranking por actividades</h2></div>
     <div class="seg" id="rankAct-seg">
       <button class="active" data-seg="pct">Por ejecución presupuestal</button>
       <button data-seg="pim">Por PIM</button>
     </div>
-    <div class="detail-card rank-card" id="rankAct-tabla"></div>
+    <div class="rank-wrap" id="rankAct-tabla"></div>
   </section>
 
   <!-- ═══ AJUSTES ═══ -->
@@ -1898,19 +1916,29 @@
       var maxPim = Math.max.apply(null, rk.map(function(r){ return r.pim; }));
       function renderRank(modo){
         var lista = rk.slice().sort(function(a, b){ return modo === "pim" ? b.pim - a.pim : b.pct - a.pct; });
-        function fila(r, i){
-          var mio = /VIVIENDA/.test(r.nombre) ? " mio" : "";
-          var val, ancho, color;
-          if(modo === "pim"){ val = "S/ " + fmtNum(Math.round(r.pim / 1000000)) + " M"; ancho = r.pim / maxPim * 100; color = "var(--ink)"; }
-          else { val = pctTxt(r.pct); ancho = r.pct; color = execColor(r.pct); }
-          return '<div class="drb' + mio + '"><div class="dr"><span><i class="pos">' + (i + 1) + '</i><span class="nm">' + (r.cod ? r.cod + ": " : "") + r.nombre + '</span></span>' +
-            '<b style="color:' + color + '">' + val + '</b></div>' +
-            '<div class="mtr"><i style="width:' + Math.min(100, ancho) + '%;background:' + color + '"></i></div></div>';
+        var esMio = function(r){ return /VIVIENDA/.test(r.nombre); };
+        function valor(r){ return modo === "pim" ? "S/ " + fmtNum(Math.round(r.pim / 1000000)) + " M" : pctTxt(r.pct); }
+        function color(r){ return modo === "pim" ? "var(--ink)" : execColor(r.pct); }
+        function nombre(r){ return (r.cod ? r.cod + ": " : "") + r.nombre; }
+        function podio(r, i){
+          return '<div class="p' + (i === 0 ? ' uno' : '') + (esMio(r) ? ' mio' : '') + '">' +
+            '<span class="med">' + (i + 1) + '</span><span class="n">' + nombre(r) + '</span>' +
+            '<span class="v" style="color:' + color(r) + '">' + valor(r) + '</span></div>';
         }
-        /* Top 5; si Vivienda queda fuera, se añade al final con su puesto real */
-        var html = lista.slice(0, 5).map(fila).join("");
-        var iMio = lista.findIndex(function(r){ return /VIVIENDA/.test(r.nombre); });
-        if(iMio >= 5) html += '<div class="rank-sep">···</div>' + fila(lista[iMio], iMio);
+        function fila(r, i){
+          return '<div class="dr' + (esMio(r) ? ' mio' : '') + '"><span><i class="pos">' + (i + 1) + '</i><span class="nm">' + nombre(r) + '</span></span>' +
+            '<b style="color:' + color(r) + '">' + valor(r) + '</b></div>';
+        }
+        /* Podio 2-1-3 + lista con 4.º y 5.º; si Vivienda queda fuera del Top 5,
+           se añade al final con su puesto real */
+        var top = lista.slice(0, 3);
+        var html = '<div class="podio">' + [top[1], top[0], top[2]].map(function(r){
+          return r ? podio(r, lista.indexOf(r)) : '<span></span>';
+        }).join("") + '</div>';
+        var resto = lista.slice(3, 5).map(fila).join("");
+        var iMio = lista.findIndex(esMio);
+        if(iMio >= 5) resto += '<div class="rank-sep">···</div>' + fila(lista[iMio], iMio);
+        if(resto) html += '<div class="detail-card rank-lista">' + resto + '</div>';
         document.getElementById(pref + "-tabla").innerHTML = html;
       }
       renderRank("pct");
