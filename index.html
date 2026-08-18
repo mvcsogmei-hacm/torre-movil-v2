@@ -283,13 +283,22 @@
   .rank-lista .dr .nm{ font-size:12.5px; line-height:1.2; }
   .rank-lista .dr b{ white-space:nowrap; font-weight:600; }
   .rank-lista .pos{
-    flex:0 0 22px; height:22px; border-radius:999px; background:var(--key); color:var(--ink);
+    flex:0 0 24px; height:24px; border-radius:7px; background:var(--key); color:var(--ink);
     font-size:11px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; font-style:normal;
   }
-  .rank-lista .dr.mio .nm{ font-weight:700; color:var(--lemon); }
-  .rank-lista .dr.mio .pos{ background:var(--lemon); color:#fff; }
-  html[data-tema="oscuro"] .rank-lista .dr.mio .nm{ color:#F7C8C2 !important; }
-  .rank-lista .rank-sep{ text-align:center; color:var(--muted); font-weight:700; letter-spacing:.2em; padding:2px 0; }
+  /* Fila del sector Vivienda: banda roja completa (propuesta 11 / A) */
+  .rank-lista .dr.mio{
+    background:linear-gradient(150deg,var(--lemon),var(--lemon-b));
+    margin:4px -8px; padding:11px 10px; border-radius:10px; border-bottom:0;
+  }
+  .rank-lista .dr.mio > span{ color:#fff; }
+  .rank-lista .dr.mio .nm{ font-weight:700; color:#fff; }
+  .rank-lista .dr.mio b{ color:#fff !important; }
+  .rank-lista .dr.mio .pos{ background:#fff; color:var(--lemon); }
+  html[data-tema="oscuro"] .rank-lista .dr.mio .nm,
+  html[data-tema="oscuro"] .rank-lista .dr.mio > span,
+  html[data-tema="oscuro"] .rank-lista .dr.mio b{ color:#fff !important; }
+  .rank-lista .rank-sep{ text-align:center; color:var(--muted); font-weight:700; letter-spacing:.25em; padding:2px 0 4px; font-size:13px; }
   .balance-card .bar{
     height:8px; border-radius:999px; background:rgba(255,255,255,.30);
     margin-top:16px; overflow:hidden;
@@ -1278,7 +1287,7 @@
       <div class="hd">
         <span class="t">Ranking total Gobierno Nacional</span>
         <span class="mini-seg" id="rank-seg">
-          <button class="active" data-seg="pct">%</button>
+          <button class="active" data-seg="pct">Ejecución</button>
           <button data-seg="pim">PIM</button>
         </span>
       </div>
@@ -1288,7 +1297,7 @@
       <div class="hd">
         <span class="t">Ranking por inversiones</span>
         <span class="mini-seg" id="rankInv-seg">
-          <button class="active" data-seg="pct">%</button>
+          <button class="active" data-seg="pct">Ejecución</button>
           <button data-seg="pim">PIM</button>
         </span>
       </div>
@@ -1298,7 +1307,7 @@
       <div class="hd">
         <span class="t">Ranking por actividades</span>
         <span class="mini-seg" id="rankAct-seg">
-          <button class="active" data-seg="pct">%</button>
+          <button class="active" data-seg="pct">Ejecución</button>
           <button data-seg="pim">PIM</button>
         </span>
       </div>
