@@ -419,7 +419,8 @@
   .ent .top{ display:flex; justify-content:space-between; align-items:center; gap:8px; }
   .ent .name{ font-size:15px; font-weight:600; color:#5A665F; }
   .ent .pct{ font-size:28px; font-weight:700; letter-spacing:-.01em; }
-  .ent .amt{ font-size:14px; color:var(--muted); }
+  .ent .amts{ display:grid; gap:3px; }
+  .ent .amt{ font-size:13px; color:var(--muted); display:block; }
   .ent .meter{
     height:6px; border-radius:999px;
     background:rgba(20,24,22,.10); overflow:hidden;
@@ -1850,7 +1851,8 @@
         return '<div class="ent' + (i === 0 ? ' wide' : '') + '">' +
           '<span class="top"><span class="name">' + a.nombre + '</span><span class="pct">' + Math.round(a.pct) + '%</span></span>' +
           '<span class="meter"><i style="width:' + Math.min(100, a.pct) + '%"></i></span>' +
-          '<span class="amt">S/ ' + fmtNum(Math.round(a.devengado / 1000000)) + ' M de S/ ' + fmtNum(Math.round(a.pim / 1000000)) + ' M</span></div>';
+          '<span class="amts"><span class="amt">PIM: S/ ' + fmtNum(Math.round(a.pim / 1000000)) + ' M</span>' +
+          '<span class="amt">Devengado: S/ ' + fmtNum(Math.round(a.devengado / 1000000)) + ' M</span></span></div>';
       }).join("");
     }
   })();
