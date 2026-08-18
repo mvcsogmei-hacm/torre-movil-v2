@@ -2610,6 +2610,12 @@
       var et = String(p.estadoET || "").trim();
       return (et && et !== "-") ? ["EXPEDIENTE TÉCNICO", et] : [];   /* dos chips separados */
     }
+    /* PARALIZADO/A → Estado SSP + hito de reactivación (cartera Paralizadas) */
+    if(/^PARALIZAD[OA]$/i.test(ssp)){
+      var hito = p.carteras && p.carteras.paralizadas && p.carteras.paralizadas.hito;
+      hito = String(hito || "").trim();
+      return [ssp].concat((hito && hito !== "-") ? [hito] : []);
+    }
     var sub = String(p.subSsp || "").trim();
     return [ssp].concat((sub && sub !== "-") ? [sub] : []);
   }
