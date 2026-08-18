@@ -196,6 +196,11 @@
     align-items:center; margin-bottom:18px;
   }
   .topbar h1{ text-align:center; font-size:17px; font-weight:600; }
+  .topbar .h1wrap{ display:grid; justify-items:center; gap:1px; }
+  .topbar .h1wrap h1{ line-height:1.15; }
+  .corte{ font-size:11px; color:var(--muted); font-weight:500; white-space:nowrap; }
+  .home-head .hi-wrap{ flex:1; display:grid; gap:1px; }
+  .home-head .hi-wrap .hi{ flex:none; }
   .icon-btn{
     width:44px; height:44px; border-radius:50%;
     display:grid; place-items:center; position:relative;
@@ -1047,7 +1052,7 @@
   <section class="screen active" id="screen-home" aria-label="Inicio">
     <header class="home-head">
       <span class="avatar av-leandro">L</span>
-      <span class="hi" id="saludo">¡Buenos días, Sr. Ministro!</span>
+      <span class="hi-wrap"><span class="hi" id="saludo">¡Buenos días, Sr. Ministro!</span><span class="corte" data-corte="inicio"></span></span>
       <span class="actions">
         <button class="icon-btn solid" id="btn-tema" aria-label="Cambiar tema"></button>
         <button class="icon-btn solid" data-go="screen-ajustes" aria-label="Ajustes">
@@ -1841,6 +1846,36 @@
     el.textContent = s + ", Sr. Ministro!";
   })();
 
+  /* ── Fechas de corte de la información por vista principal (18-ago-2026).
+     Las vistas hijas heredan la de su padre. Se pintan bajo el título de la
+     topbar y bajo el saludo de Inicio; el PDF usa la de Búsqueda. ── */
+  var FECHAS_CORTE = { inicio:"18/08/2026", inversiones:"14/08/2026", actividades:"14/08/2026", busqueda:"14/08/2026" };
+  var CORTE_POR_PANTALLA = {
+    "screen-home":"inicio", "screen-pliego":"inicio", "screen-ranking":"inicio", "screen-ajustes":"inicio",
+    "screen-cuenta":"inversiones", "screen-recompensas":"inversiones", "screen-orden":"inversiones",
+    "screen-transactions":"actividades",
+    "screen-search":"busqueda", "screen-proyecto":"busqueda"
+  };
+  function fechaLarga(f){
+    var MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","setiembre","octubre","noviembre","diciembre"];
+    var d = f.split("/"); return parseInt(d[0], 10) + " de " + MESES[parseInt(d[1], 10) - 1] + " de " + d[2];
+  }
+  (function(){
+    Object.keys(CORTE_POR_PANTALLA).forEach(function(id){
+      var sec = document.getElementById(id); if(!sec) return;
+      var fecha = FECHAS_CORTE[CORTE_POR_PANTALLA[id]];
+      var h1 = sec.querySelector(":scope > .topbar > h1");
+      if(h1){
+        var wrap = document.createElement("div"); wrap.className = "h1wrap";
+        h1.parentNode.insertBefore(wrap, h1); wrap.appendChild(h1);
+        var c = document.createElement("span"); c.className = "corte"; c.textContent = "Información al " + fecha;
+        wrap.appendChild(c);
+      }
+    });
+    var ci = document.querySelector('[data-corte="inicio"]');
+    if(ci) ci.textContent = "Información al " + FECHAS_CORTE.inicio;
+  })();
+
   /* ── Inicio + detalle de Pliego MVCS + tarjetas Pliegos (hojas INDICADOR PRINCIPAL, MVCS y PLIEGOS) ── */
   (function(){
     var ind = window.INDICADORES || {};
@@ -2605,7 +2640,7 @@
     /* Caso PRESET: en la matriz los proyectos con ETAPA DE EVALUACIÓN casi nunca
        traen "PRESET" en ESTADO SSP (viene vacío), así que manda la pertenencia a
        la cartera. El chip azul de cartera ya dice "PRESET"; aquí va la etapa. */
-    if(etapa) return [etapa];   /* el chip azul de cartera ya dice PRESET: no se repite */
+    if(etapa) return ["PRESET", etapa];   /* PRESET es un estado SSP: chip PRESET + etapa */
     if(ssp.toUpperCase() === "PRESET") return ["PRESET"];
     if(!ssp || ssp === "-"){
       var et = String(p.estadoET || "").trim();
@@ -2746,7 +2781,7 @@
     var derecha = W - M + 8;                                   /* borde derecho del contenido */
     rect(M - 8, y, W - 2 * (M - 8), 26, "#C8102E");
     texto(M + 2, y + 17, "OGMEI · LA TORRE DE CONTROL", 9.5, "#FFFFFF", true);
-    var fecha = "Fecha de corte: 14 de agosto de 2026";
+    var fecha = "Fecha de corte: " + fechaLarga(FECHAS_CORTE.busqueda);
     texto(derecha - 10 - anchoTxt(fecha, 8), y + 17, fecha, 8, "#FFFFFF", false);
     y += 26 + 13;
     texto(M - 8, y, "Ministerio de Vivienda, Construcción y Saneamiento", 8, "#8A8A8A", false);
