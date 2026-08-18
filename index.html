@@ -2606,7 +2606,7 @@
           ["Conexiones nuevas de agua", p.cxAgua ? fmtNum(p.cxAgua) : "—"],
           ["Conexiones nuevas de alcant./UBS", p.cxAlc ? fmtNum(p.cxAlc) : "—"]
       ]},
-      { id:"fin", titulo:"Información financiera (en millones de soles)", filas:[
+      { id:"fin", titulo:"Información financiera", sub:"En millones de soles", filas:[
           ["Costo de inversión", fmtMonto(p.monto || 0)],
           ["Devengado acumulado", fmtMonto(p.devAc || 0)],
           ["PIM 2026", fmtMonto(p.pim || 0)],
@@ -2625,7 +2625,8 @@
       ]});
     }
     Object.keys(p.carteras||{}).forEach(function(k){
-      secs.push({ id:k, titulo:CARTERAS[k].label + (k === "transferencias" ? " (en millones de soles)" : ""), filas:carteraFilas(k, p.carteras[k]) });
+      if(k === "obras") return;   /* Obras directas: sin sección en la ficha ni en el PDF (18-ago-2026) */
+      secs.push({ id:k, titulo:CARTERAS[k].label, sub:(k === "transferencias" ? "En millones de soles" : null), filas:carteraFilas(k, p.carteras[k]) });
     });
     return secs;
   }
@@ -2665,7 +2666,8 @@
   }
   function fichaSecciones(p){
     return fichaDatos(p).map(function(s){
-      return '<div class="sec sec-' + s.id + '"><div class="section-head"><h2>' + s.titulo + '</h2></div>' +
+      return '<div class="sec sec-' + s.id + '"><div class="section-head' + (s.sub ? ' sh-sub' : '') + '"><h2>' + s.titulo + '</h2>' +
+        (s.sub ? '<span class="sub">' + s.sub + '</span>' : '') + '</div>' +
         '<div class="detail-card">' + s.filas.map(function(f){ return filaDr(f[0], f[1]); }).join("") + '</div></div>';
     }).join("");
   }
@@ -2805,6 +2807,7 @@
     secs.forEach(function(s){
       if(y > H - 100){ nuevaPagina(); y = M; }
       texto(M - 8, y + m.bandH * 0.7, s.titulo.toUpperCase(), m.fBand, "#1D1B1B", true);
+      if(s.sub) texto(M - 8 + anchoTxt(s.titulo.toUpperCase(), m.fBand) + 8, y + m.bandH * 0.7, "(" + s.sub.toLowerCase() + ")", m.fBand - 2, "#8A8A8A", false);
       rect(M - 8, y + m.bandH, W - 2 * (M - 8), 0.8, "#C8102E");   /* subrayado fino rojo */
       y += m.bandH + m.bandGap + 2;
       s.filas.forEach(function(f, i){
