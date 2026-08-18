@@ -66,7 +66,7 @@ Retitulada de "Movimientos" a "Actividades". Tres pestañas estilo accesos de In
 
 ### Pantalla Inversiones
 
-Las 4 tarjetas plegables (`.cartera-card`: Cartera priorizada, Paralizadas, Transferencias 2026 con desglose estático por programa; PRESET con desglose calculado desde `PROYECTOS`) **se mantienen** con su % a la derecha (fijos 41,5 / 41,2 / 18,2; PRESET = aptos ÷ total). Desde 18-ago-2026 el **resumen** de cada tarjeta muestra bajo el nombre: (solo PRESET) el subtítulo "Plataforma para evaluar Exp. Técnicos de los gobiernos subnacionales", **"N proyectos"** e **"Inversión: S/ N"** (millones, sin unidad), tomados de la hoja **`INVERSIONES`** (`INDICADORES.inversiones[{nombre, proyectos, inversion}]`, emparejada por nombre sin mayúsculas; JS "resumen de cada tarjeta"). La tarjeta Obras directas se retiró el 18-ago-2026. Vendrán más cambios en esta pantalla.
+Las 4 tarjetas plegables (`.cartera-card`: Cartera priorizada, Paralizadas, Transferencias 2026 con desglose estático por programa; PRESET con desglose calculado desde `PROYECTOS`) **se mantienen** con su % a la derecha (fijos 41,5 / 41,2 / 18,2; PRESET = aptos ÷ total). Desde 18-ago-2026 el **resumen** de cada tarjeta muestra bajo el nombre: (solo PRESET) el subtítulo "Plataforma para evaluar Exp. Técnicos de los GS", **"N proyectos"** e **"Inversión: S/ N"** (millones, sin unidad), tomados de la hoja **`INVERSIONES`** (`INDICADORES.inversiones[{nombre, proyectos, inversion}]`, emparejada por nombre sin mayúsculas; JS "resumen de cada tarjeta"). La tarjeta Obras directas se retiró el 18-ago-2026. Vendrán más cambios en esta pantalla.
 
 ### Ficha de proyecto — módulos
 

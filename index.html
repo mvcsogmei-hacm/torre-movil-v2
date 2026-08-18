@@ -2240,7 +2240,7 @@
   (function(){
     var inv = (window.INDICADORES || {}).inversiones || [];
     if(!inv.length) return;
-    var SUBT = { "preset": "Plataforma para evaluar Exp. Técnicos de los gobiernos subnacionales" };
+    var SUBT = { "preset": "Plataforma para evaluar Exp. Técnicos de los GS" };
     document.querySelectorAll("#screen-cuenta .cartera-card").forEach(function(card){
       var nameEl = card.querySelector(".summary .name"); if(!nameEl) return;
       var nombre = nameEl.textContent.trim().toLowerCase();
