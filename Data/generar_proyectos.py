@@ -232,12 +232,11 @@ def main():
         if pliegos:
             indicadores["pliegos"] = pliegos
 
-    # Detalle de Pliego MVCS (hoja MVCS, antes PLIEGO): fila PLIEGO = resumen;
+    # Detalle de Pliego MVCS (hoja MVCS): fila PLIEGO = resumen;
     # las demás filas = un card por fila en el detalle
-    hoja_mvcs = "MVCS" if "MVCS" in wb.sheetnames else "PLIEGO"
-    if hoja_mvcs in wb.sheetnames:
+    if "MVCS" in wb.sheetnames:
         filas_pliego = []
-        for r in wb[hoja_mvcs].iter_rows(values_only=True):
+        for r in wb["MVCS"].iter_rows(values_only=True):
             nombre = limpio(r[1])
             todo = pct_celda(r[2])
             if not nombre or todo is None:
