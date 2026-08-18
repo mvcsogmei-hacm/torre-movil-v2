@@ -250,16 +250,6 @@ def main():
         if filas_pliego:
             indicadores["pliego"] = filas_pliego
 
-    # Entidades adscritas (hoja ADSCRITAS): nombre, % y monto
-    if "ADSCRITAS" in wb.sheetnames:
-        adscritas = []
-        for r in wb["ADSCRITAS"].iter_rows(values_only=True):
-            nombre, val = limpio(r[1]), pct_celda(r[2])
-            if nombre and val is not None:
-                adscritas.append({"nombre": nombre, "pct": val, "monto": num(r[3])})
-        if adscritas:
-            indicadores["adscritas"] = adscritas
-
     # Wasiymi (hojas INDICADORES WAYSIMI y POR REGION WAYSIMI — así escritas en el Excel)
     if "INDICADORES WAYSIMI" in wb.sheetnames:
         wasiymi = {}
