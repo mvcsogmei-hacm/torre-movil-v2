@@ -262,8 +262,9 @@
     font-size:44px; font-weight:700; letter-spacing:-.02em; margin-top:10px;
   }
   .balance-card .delta{ font-size:16px; font-weight:600; margin-top:4px; }
-  .balance-card .montos{ display:grid; gap:4px; margin-top:12px; font-size:14px; color:var(--rosa); }
-  .balance-card .montos b{ color:#fff; font-weight:600; }
+  .balance-card .montos{ display:grid; gap:6px; margin-top:14px; font-size:14px; color:var(--rosa); }
+  .balance-card .montos span{ display:flex; align-items:baseline; gap:8px; }
+  .balance-card .montos b{ color:#fff; font-weight:700; font-size:22px; letter-spacing:-.01em; }
   .balance-card .bar{
     height:8px; border-radius:999px; background:rgba(255,255,255,.30);
     margin-top:16px; overflow:hidden;
@@ -1240,7 +1241,6 @@
 
     <div class="balance-card">
       <div class="cur">Sector</div>
-      <div class="rate">Vivienda, Construcción y Saneamiento</div>
       <div class="amount" id="rank-amount">—</div>
       <div class="bar"><i id="rank-bar" style="width:0"></i></div>
       <div class="montos">
