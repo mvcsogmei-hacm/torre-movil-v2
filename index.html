@@ -275,6 +275,7 @@
   .rank-card .drb.mio .dr .nm{ font-weight:700; color:var(--lemon); }
   .rank-card .drb.mio .pos{ background:var(--lemon); color:#fff; }
   html[data-tema="oscuro"] .rank-card .drb.mio .dr .nm{ color:#F7C8C2 !important; }
+  .rank-card .rank-sep{ text-align:center; color:var(--muted); font-weight:700; letter-spacing:.2em; padding:4px 0; }
   .balance-card .bar{
     height:8px; border-radius:999px; background:rgba(255,255,255,.30);
     margin-top:16px; overflow:hidden;
@@ -1882,15 +1883,20 @@
       var maxPim = Math.max.apply(null, rk.map(function(r){ return r.pim; }));
       function renderRank(modo){
         var lista = rk.slice().sort(function(a, b){ return modo === "pim" ? b.pim - a.pim : b.pct - a.pct; });
-        document.getElementById("rank-tabla").innerHTML = lista.map(function(r, i){
+        function fila(r, i){
           var mio = /VIVIENDA/.test(r.nombre) ? " mio" : "";
           var val, ancho, color;
           if(modo === "pim"){ val = "S/ " + fmtNum(Math.round(r.pim / 1000000)) + " M"; ancho = r.pim / maxPim * 100; color = "var(--ink)"; }
           else { val = pctTxt(r.pct); ancho = r.pct; color = execColor(r.pct); }
-          return '<div class="drb' + mio + '"><div class="dr"><span><i class="pos">' + (i + 1) + '</i><span class="nm">' + r.nombre + '</span></span>' +
+          return '<div class="drb' + mio + '"><div class="dr"><span><i class="pos">' + (i + 1) + '</i><span class="nm">' + (r.cod ? r.cod + ": " : "") + r.nombre + '</span></span>' +
             '<b style="color:' + color + '">' + val + '</b></div>' +
             '<div class="mtr"><i style="width:' + Math.min(100, ancho) + '%;background:' + color + '"></i></div></div>';
-        }).join("");
+        }
+        /* Top 5; si Vivienda queda fuera, se añade al final con su puesto real */
+        var html = lista.slice(0, 5).map(fila).join("");
+        var iMio = lista.findIndex(function(r){ return /VIVIENDA/.test(r.nombre); });
+        if(iMio >= 5) html += '<div class="rank-sep">···</div>' + fila(lista[iMio], iMio);
+        document.getElementById("rank-tabla").innerHTML = html;
       }
       renderRank("pct");
       segControl("rank-seg", renderRank);
