@@ -157,3 +157,12 @@ correspondiente (la línea del favicon y/o la sección de splash).
 3 medallas, 4 tabla con PIM y % a la vez, 5 tarjetas por puesto, 6 gráfico de
 barras, 7 Vivienda protagonista ("Puesto N / 30"), 8 código como insignia,
 9 columnas, 10 número tenue de fondo. El segmentador es igual en todas.
+
+## Galería de ranking en tarjeta (`galeria-ranking-tarjetas.html`, 18-ago-2026)
+
+20 propuestas bajo el formato ya adoptado (tarjeta blanca con título dentro,
+mini segmentador % / PIM arriba a la derecha, lista Top 5): variaciones de
+filas (barra, cebra, número simple/grande, medallas, código insignia, dos
+líneas con PIM, barra ancha, chip, fila Vivienda roja, compacta, tabla,
+barra corta, punto semáforo, nombre en tinta, puesto/30, Vivienda fija
+arriba) y del segmentador (texto, cuadrado). Datos reales de RANKING SECTOR.

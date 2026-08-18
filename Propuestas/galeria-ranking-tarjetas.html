@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La torre — Ranking en tarjeta: 20 propuestas</title>
+<style>
+  :root{
+    --lemon:#C8102E; --lemon-b:#A50D23; --rosa:#F7C8C2; --ink:#1B1B1F; --muted:#7A7A80;
+    --key:#F3EFEA; --card:#fff; --track:rgba(27,27,31,.10); --line:#EEF1EA;
+    --ok:#1FA23C; --pr:#C98A00; --cr:#BF2E25;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{ background:#F4F0EC; color:var(--ink); font-family:"Space Grotesk",-apple-system,"Segoe UI",Roboto,Arial,sans-serif; padding:36px 22px 60px; }
+  header{ max-width:1180px; margin:0 auto 28px; }
+  header h1{ font-size:26px; letter-spacing:-.01em; }
+  header p{ color:#5B5B62; margin-top:8px; font-size:15px; line-height:1.55; max-width:780px; }
+  .grid{ max-width:1180px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:28px 22px; }
+  figure{ display:grid; gap:10px; align-content:start; }
+  .mock{ border-radius:26px; padding:18px 14px; background:linear-gradient(165deg,#FBF8F5 0%,#F1E9E4 100%); box-shadow:0 14px 34px rgba(80,20,25,.12); }
+  figcaption{ padding:0 4px; }
+  figcaption strong{ font-size:14px; display:block; }
+  figcaption span{ font-size:12.5px; color:#66666E; line-height:1.45; display:block; margin-top:2px; }
+  .num{ display:inline-grid; place-items:center; width:22px; height:22px; border-radius:7px; background:var(--lemon); color:#fff; font-size:12px; font-weight:700; margin-right:6px; vertical-align:middle; }
+  button{ border:0; background:none; font:inherit; cursor:default; }
+
+  /* tarjeta base (= index.html actual) */
+  .rank-card{ background:var(--card); border-radius:13px; padding:14px 16px 4px; box-shadow:0 10px 24px rgba(80,20,25,.08); }
+  .rank-card .hd{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding-bottom:4px; }
+  .rank-card .hd .t{ font-size:15px; font-weight:700; line-height:1.2; }
+  .mini-seg{ display:inline-flex; background:var(--key); border-radius:999px; padding:3px; flex:none; }
+  .mini-seg button{ padding:4px 10px; border-radius:999px; font-size:11px; font-weight:700; color:#5A665F; }
+  .mini-seg button.active{ background:var(--card); color:var(--ink); box-shadow:0 3px 8px rgba(120,25,30,.12); }
+  .dr{ display:flex; justify-content:space-between; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid var(--line); font-size:14px; }
+  .dr:last-child{ border-bottom:0; }
+  .dr > span{ display:flex; align-items:center; gap:8px; min-width:0; color:var(--muted); }
+  .dr .nm{ font-size:12.5px; line-height:1.2; }
+  .dr b{ white-space:nowrap; font-weight:600; }
+  .pos{ flex:0 0 22px; height:22px; border-radius:999px; background:var(--key); color:var(--ink); font-size:11px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; font-style:normal; }
+  .dr.mio .nm{ font-weight:700; color:var(--lemon); }
+  .dr.mio .pos{ background:var(--lemon); color:#fff; }
+  .ok{ color:var(--ok) } .b-ok{ background:var(--ok) }
+  .mtr{ height:5px; border-radius:999px; background:var(--track); overflow:hidden; }
+  .mtr i{ display:block; height:100%; border-radius:999px; background:var(--ok); }
+
+  /* 2 barra bajo la fila */
+  .v2 .dr{ border-bottom:0; padding:10px 0 6px; }
+  .v2 .mtr{ margin-bottom:8px; }
+  /* 3 cebra */
+  .v3 .dr{ border-bottom:0; padding:10px 10px; margin:0 -10px; border-radius:9px; }
+  .v3 .dr:nth-child(odd){ background:#FAF7F4; }
+  /* 4 número simple */
+  .v4 .pos{ background:none; width:auto; flex:0 0 18px; font-size:13px; color:var(--muted); }
+  .v4 .dr.mio .pos{ background:none; color:var(--lemon); }
+  /* 5 número grande tenue */
+  .v5 .pos{ background:none; flex:0 0 26px; font-size:24px; font-weight:800; color:#DDD8D2; letter-spacing:-.04em; }
+  .v5 .dr.mio .pos{ background:none; color:#F0B4AE; }
+  /* 6 medallas */
+  .v6 .pos{ color:#fff; background:#D9D6D2; }
+  .v6 .dr:nth-child(1) .pos{ background:#E3B341; } .v6 .dr:nth-child(2) .pos{ background:#B7BCC4; } .v6 .dr:nth-child(3) .pos{ background:#C77E4A; }
+  .v6 .dr.mio .pos{ box-shadow:0 0 0 2px var(--lemon); }
+  /* 7 código insignia */
+  .v7 .pos{ border-radius:7px; flex:0 0 30px; height:26px; font-size:11px; }
+  /* 8 dos líneas */
+  .v8 .dr .tx{ display:grid; gap:2px; }
+  .v8 .dr .sub{ font-size:11px; color:var(--muted); }
+  .v8 .dr.mio .sub{ color:var(--muted); font-weight:400; }
+  /* 9 barra ancha con valor dentro */
+  .v9 .dr{ display:block; border-bottom:0; padding:7px 0; }
+  .v9 .lab{ display:flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); margin-bottom:5px; }
+  .v9 .bar{ height:20px; border-radius:6px; background:var(--track); position:relative; overflow:hidden; }
+  .v9 .bar i{ display:block; height:100%; background:#5A5A62; border-radius:6px; }
+  .v9 .bar b{ position:absolute; right:8px; top:0; line-height:20px; font-size:11.5px; }
+  .v9 .mio .bar i{ background:var(--lemon); } .v9 .mio .bar b{ color:#fff; }
+  .v9 .mio .lab{ color:var(--lemon); font-weight:700; }
+  /* 10 chip de valor */
+  .v10 .dr b{ background:#E9F6EC; color:var(--ok); padding:4px 9px; border-radius:999px; font-size:12px; }
+  /* 11 fila Vivienda en rojo */
+  .v11 .dr.mio{ background:linear-gradient(150deg,var(--lemon),var(--lemon-b)); margin:4px -8px; padding:11px 10px; border-radius:10px; border:0; }
+  .v11 .dr.mio .nm{ color:#fff; } .v11 .dr.mio b{ color:#fff !important; } .v11 .dr.mio .pos{ background:#fff; color:var(--lemon); }
+  /* 12 compacta */
+  .v12 .dr{ padding:7px 0; border-bottom:0; }
+  .v12 .dr .nm{ font-size:11.5px; } .v12 .pos{ flex:0 0 18px; height:18px; font-size:10px; }
+  .v12 .dr b{ font-size:12.5px; }
+  /* 13 tabla con cabecera */
+  .v13 .th{ display:flex; justify-content:space-between; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); padding:6px 0 4px; border-bottom:1px solid var(--line); }
+  .v13 .pos{ background:none; flex:0 0 18px; color:var(--muted); }
+  /* 14 barra en columna derecha */
+  .v14 .dr .right{ display:flex; align-items:center; gap:8px; }
+  .v14 .dr .right .mtr{ width:54px; }
+  /* 15 puntito semáforo */
+  .v15 .pos{ display:none; }
+  .v15 .dot{ width:9px; height:9px; border-radius:999px; background:var(--ok); flex:none; }
+  .v15 .dr b{ color:var(--ink) !important; }
+  .v15 .dr .n2{ font-size:11px; color:var(--muted); margin-left:4px; }
+  /* 16 nombre en tinta, valor muted */
+  .v16 .dr .nm{ color:var(--ink); font-weight:600; } .v16 .dr b{ color:var(--muted) !important; font-weight:600; }
+  .v16 .dr.mio .nm{ color:var(--lemon); }
+  /* 17 puesto/30 */
+  .v17 .dr b small{ display:block; font-size:10px; color:var(--muted); font-weight:600; text-align:right; }
+  /* 18 segmentador texto */
+  .v18 .mini-seg{ background:none; padding:0; gap:10px; }
+  .v18 .mini-seg button{ padding:0; border-radius:0; color:var(--muted); box-shadow:none; background:none; }
+  .v18 .mini-seg button.active{ color:var(--lemon); border-bottom:2px solid var(--lemon); }
+  /* 19 segmentador cuadrado */
+  .v19 .mini-seg{ border-radius:8px; }
+  .v19 .mini-seg button{ border-radius:6px; padding:4px 8px; }
+  /* 20 Vivienda fija arriba */
+  .v20 .top{ display:flex; justify-content:space-between; align-items:center; background:var(--key); border-radius:10px; padding:10px 12px; margin:4px 0 6px; }
+  .v20 .top .k{ font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700; }
+  .v20 .top .n{ font-size:12px; font-weight:700; color:var(--lemon); }
+  .v20 .top .p{ font-size:18px; font-weight:800; }
+  .v20 .top .p small{ font-size:11px; color:var(--muted); font-weight:600; }
+  /* 21 tarjeta roja completa (bonus incluido en 20: variante de cabecera) */
+  .v-hd-red .hd{ background:linear-gradient(150deg,var(--lemon),var(--lemon-b)); margin:-14px -16px 6px; padding:12px 16px; border-radius:13px 13px 0 0; color:#fff; }
+  .v-hd-red .mini-seg{ background:rgba(255,255,255,.18); } .v-hd-red .mini-seg button{ color:#fff; }
+  .v-hd-red .mini-seg button.active{ background:#fff; color:var(--lemon); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Ranking en tarjeta · 20 propuestas</h1>
+  <p>Mismo formato en todas: tarjeta blanca con el título dentro, mini segmentador <b>% / PIM</b> arriba a la derecha y lista <b>Top 5</b> (datos reales de <b>RANKING SECTOR</b>, modo %). Lo que cambia es el tratamiento de las filas o del segmentador. Vivienda siempre resaltada.</p>
+</header>
+<div class="grid" id="grid"></div>
+
+<script>
+var D = [
+  {c:"37", n:"VIVIENDA CONSTRUCCION Y SANEAMIENTO", pct:70.8, pim:4279, mio:true},
+  {c:"09", n:"ECONOMIA Y FINANZAS", pct:67.5, pim:47570},
+  {c:"16", n:"ENERGIA Y MINAS", pct:66.1, pim:1326},
+  {c:"22", n:"MINISTERIO PUBLICO", pct:66.0, pim:2955},
+  {c:"01", n:"PRESIDENCIA CONSEJO MINISTROS", pct:64.2, pim:6878}
+];
+function pct(v){ return String(v.toFixed(1)).replace(".", ",") + "%"; }
+function pim(v){ return "S/ " + v.toLocaleString("en-US") + " M"; }
+function std(r,i){ return '<div class="dr'+(r.mio?' mio':'')+'"><span><i class="pos">'+(i+1)+'</i><span class="nm">'+r.c+': '+r.n+'</span></span><b class="ok">'+pct(r.pct)+'</b></div>'; }
+var V = [
+ {t:"Actual (referencia)", d:"Círculo de posición, nombre con código, % semáforo a la derecha.", cls:"", row:std},
+ {t:"Barra bajo la fila", d:"Como la actual, más una barra fina de progreso debajo de cada fila (sin separadores).", cls:"v2",
+  row:function(r,i){ return std(r,i)+'<div class="mtr"><i style="width:'+r.pct+'%"></i></div>'; }},
+ {t:"Cebra", d:"Filas alternas con fondo suave y esquinas redondeadas; sin líneas divisorias.", cls:"v3", row:std},
+ {t:"Número simple", d:"Sin círculo: el puesto como número gris a la izquierda. Más ligera.", cls:"v4", row:std},
+ {t:"Número grande tenue", d:"El puesto en cifra grande y muy clara, como marca de agua a la izquierda.", cls:"v5", row:std},
+ {t:"Medallas", d:"Oro / plata / bronce para el Top 3, gris para 4 y 5; Vivienda con anillo rojo.", cls:"v6", row:std},
+ {t:"Código como insignia", d:"El código del pliego (37, 09…) en cuadro a la izquierda y el nombre sin código.", cls:"v7",
+  row:function(r,i){ return '<div class="dr'+(r.mio?' mio':'')+'"><span><i class="pos">'+r.c+'</i><span class="nm">'+r.n+'</span></span><b class="ok">'+pct(r.pct)+'</b></div>'; }},
+ {t:"Dos líneas: % y PIM", d:"Nombre arriba, PIM en línea pequeña debajo, % a la derecha. El segmentador solo cambia el orden.", cls:"v8",
+  row:function(r,i){ return '<div class="dr'+(r.mio?' mio':'')+'"><span><i class="pos">'+(i+1)+'</i><span class="tx"><span class="nm">'+r.c+': '+r.n+'</span><span class="sub">PIM '+pim(r.pim)+'</span></span></span><b class="ok">'+pct(r.pct)+'</b></div>'; }},
+ {t:"Barra ancha con valor dentro", d:"Estilo gráfico: nombre encima y barra gruesa con el % dentro; Vivienda en rojo.", cls:"v9",
+  row:function(r,i){ return '<div class="dr'+(r.mio?' mio':'')+'"><div class="lab"><i class="pos">'+(i+1)+'</i>'+r.c+': '+r.n+'</div><div class="bar"><i style="width:'+r.pct+'%"></i><b>'+pct(r.pct)+'</b></div></div>'; }},
+ {t:"Valor en chip", d:"El % dentro de una píldora verde/ámbar/roja según semáforo.", cls:"v10", row:std},
+ {t:"Fila Vivienda en rojo", d:"La fila del sector como banda roja completa dentro de la lista; el resto igual que la actual.", cls:"v11", row:std},
+ {t:"Compacta", d:"Filas más bajas, texto 11,5 px, sin separadores. Cabe más en pantalla.", cls:"v12", row:std},
+ {t:"Tabla con cabecera", d:"Cabecera pequeña en mayúsculas (# SECTOR / EJEC.) y números sin círculo.", cls:"v13",
+  pre:'<div class="th"><span># &nbsp;Sector</span><span>Ejec.</span></div>', row:std},
+ {t:"Barra corta a la derecha", d:"Nombre a la izquierda; a la derecha una barra corta y el % juntos.", cls:"v14",
+  row:function(r,i){ return '<div class="dr'+(r.mio?' mio':'')+'"><span><i class="pos">'+(i+1)+'</i><span class="nm">'+r.c+': '+r.n+'</span></span><span class="right"><span class="mtr"><i style="width:'+r.pct+'%"></i></span><b class="ok">'+pct(r.pct)+'</b></span></div>'; }},
+ {t:"Punto semáforo", d:"Sin círculo de posición: un punto de color antes del nombre, puesto en gris pequeño y valor en tinta.", cls:"v15",
+  row:function(r,i){ return '<div class="dr'+(r.mio?' mio':'')+'"><span><i class="dot"></i><span class="nm">'+r.c+': '+r.n+'</span><span class="n2">'+(i+1)+'.º</span></span><b>'+pct(r.pct)+'</b></div>'; }},
+ {t:"Nombre en tinta", d:"Invierte el peso: nombre en negro semibold y valor en gris. Más lectura, menos cifra.", cls:"v16", row:std},
+ {t:"Puesto sobre 30", d:"Debajo del % una línea mínima con “N / 30”. Contextualiza el ranking completo.", cls:"v17",
+  row:function(r,i){ return '<div class="dr'+(r.mio?' mio':'')+'"><span><i class="pos">'+(i+1)+'</i><span class="nm">'+r.c+': '+r.n+'</span></span><b class="ok">'+pct(r.pct)+'<small>'+(i+1)+' / 30</small></b></div>'; }},
+ {t:"Segmentador como pestañas de texto", d:"El control % / PIM como dos textos con subrayado rojo en el activo, sin píldora.", cls:"v18", row:std},
+ {t:"Segmentador cuadrado", d:"El control con esquinas rectas (8 px) en lugar de píldora; combina con la tarjeta.", cls:"v19", row:std},
+ {t:"Vivienda fija arriba + Top 5", d:"Banda gris “Tu sector · Puesto 1 / 30” siempre visible arriba, y debajo el Top 5 normal.", cls:"v20",
+  pre:'<div class="top"><span><span class="k">Tu sector</span><br><span class="n">37: VIVIENDA C. Y S.</span></span><span class="p">1 <small>/ 30</small></span></div>', row:std}
+];
+var g = document.getElementById("grid");
+V.forEach(function(v, k){
+  var fig = document.createElement("figure");
+  fig.innerHTML = '<div class="mock"><div class="rank-card '+v.cls+'">' +
+    '<div class="hd"><span class="t">Ranking total Gobierno Nacional</span><span class="mini-seg"><button class="active">%</button><button>PIM</button></span></div>' +
+    '<div class="rank-lista">' + (v.pre||"") + D.map(v.row).join("") + '</div></div></div>' +
+    '<figcaption><strong><span class="num">'+(k+1)+'</span>'+v.t+'</strong><span>'+v.d+'</span></figcaption>';
+  g.appendChild(fig);
+});
+</script>
+</body>
+</html>
