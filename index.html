@@ -270,14 +270,16 @@
   /* Inversiones: tarjetas de cartera (hoja INVERSIONES) */
   .inv-card{
     background:var(--card); border-radius:13px; padding:14px 16px; box-shadow:var(--shadow-card);
-    display:grid; grid-template-columns:auto 1fr; gap:2px 14px; align-items:center;
+    display:grid; grid-template-columns:auto 1fr auto; gap:2px 14px; align-items:center;
   }
   .inv-card + .inv-card{ margin-top:12px; }
-  .inv-card .bic{ grid-row:span 3; width:54px; height:54px; border-radius:15px; display:grid; place-items:center; }
+  .inv-card .bic{ grid-row:span 4; width:54px; height:54px; border-radius:15px; display:grid; place-items:center; align-self:center; }
   .inv-card .bic svg{ width:29px; height:29px; }
-  .inv-card .name{ font-size:17px; font-weight:700; line-height:1.2; }
-  .inv-card .n{ font-size:13px; color:var(--muted); }
-  .inv-card .m{ font-size:13px; color:var(--muted); }
+  .inv-card .name{ font-size:17px; font-weight:700; line-height:1.2; grid-column:2; }
+  .inv-card .pctv{ grid-column:3; grid-row:1 / span 4; align-self:center; font-size:19px; font-weight:700; }
+  .inv-card .sub{ grid-column:2; font-size:11.5px; color:var(--muted); line-height:1.25; }
+  .inv-card .n{ font-size:13px; color:var(--muted); grid-column:2; }
+  .inv-card .m{ font-size:13px; color:var(--muted); grid-column:2; }
   .inv-card .m b{ color:var(--ink); font-weight:700; }
   .rank-card{
     background:var(--card); border-radius:13px; padding:14px 16px 4px;
@@ -2063,11 +2065,27 @@
       return k ? ICONOS[k] : ["b-cartera", ""];
     }
     function titulo(n){ return n.charAt(0).toUpperCase() + n.slice(1); }
+    /* % de la derecha: la hoja INVERSIONES no trae porcentaje; se conservan los
+       valores históricos de las tarjetas estáticas y PRESET se calcula (aptos/total) */
+    var PCT_FIJO = { "cartera priorizada": 41.5, "paralizadas": 41.2, "transferencias 2026": 18.2 };
+    var SUBT = { "preset": "Plataforma para evaluar Exp. Técnicos de los gobiernos subnacionales" };
+    var presetTot = 0, presetAptos = 0;
+    PROYECTOS.forEach(function(p){
+      var c = p.carteras && p.carteras.preset; if(!c) return;
+      presetTot++; if(String(c.etapa || "").toUpperCase() === "APTO") presetAptos++;
+    });
+    function pctDe(nombre){
+      var k = nombre.toLowerCase();
+      if(k === "preset") return presetTot ? Math.round(presetAptos / presetTot * 1000) / 10 : null;
+      return PCT_FIJO[k] != null ? PCT_FIJO[k] : null;
+    }
     cont.innerHTML = inv.map(function(c){
-      var ic = icono(c.nombre);
+      var ic = icono(c.nombre), pc = pctDe(c.nombre), sub = SUBT[c.nombre.toLowerCase()];
       return '<div class="inv-card">' +
         '<span class="bic ' + ic[0] + '">' + ic[1] + '</span>' +
         '<span class="name">' + titulo(c.nombre) + '</span>' +
+        (pc != null ? '<span class="pctv ' + pctClass(pc) + '">' + pctTxt(pc) + '</span>' : '<span></span>') +
+        (sub ? '<span class="sub">' + sub + '</span>' : '') +
         '<span class="n">' + fmtNum(c.proyectos) + (c.proyectos === 1 ? ' proyecto' : ' proyectos') + '</span>' +
         '<span class="m">Inversión: <b>S/ ' + fmtNum(Math.round(c.inversion || 0)) + '</b></span></div>';
     }).join("");
