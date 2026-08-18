@@ -2595,13 +2595,27 @@
     return secs;
   }
 
-  /* Estado situacional del proyecto para el chip: Estado SSP; si no hay, SSI */
-  function estadoChip(p){ return p.ssp || p.ssi || null; }
+  /* Chips de estado bajo el título (regla del usuario, 18-ago-2026):
+       · Estado SSP con valor y ≠ PRESET → [Estado SSP, Sub estado SSP]
+       · Estado SSP = PRESET           → [PRESET, Etapa de evaluación (PRESET)]
+       · Estado SSP vacío o "-"        → ["Expediente técnico: " + ESTADO ET] */
+  function estadoChips(p){
+    var ssp = String(p.ssp || "").trim();
+    if(!ssp || ssp === "-"){
+      var et = String(p.estadoET || "").trim();
+      return (et && et !== "-") ? ["Expediente técnico: " + et] : [];
+    }
+    if(ssp.toUpperCase() === "PRESET"){
+      var etapa = p.carteras && p.carteras.preset && p.carteras.preset.etapa;
+      return ["PRESET"].concat(etapa ? [etapa] : []);
+    }
+    var sub = String(p.subSsp || "").trim();
+    return [ssp].concat((sub && sub !== "-") ? [sub] : []);
+  }
   function fichaBadges(p){
-    var est = estadoChip(p);
     return Object.keys(p.carteras||{}).map(function(k){
       return '<span class="badge" style="background:' + CARTERAS[k].color + '">' + CARTERAS[k].label + '</span>';
-    }).join("") + (est ? '<span class="badge badge-est">' + est + '</span>' : '');
+    }).join("") + estadoChips(p).map(function(e){ return '<span class="badge badge-est">' + e + '</span>'; }).join("");
   }
   function fichaSecciones(p){
     return fichaDatos(p).map(function(s){
@@ -2737,9 +2751,10 @@
       texto(M - 8, y, "Carteras: " + claves.map(function(k){ return CARTERAS[k].label; }).join("  ·  "), 8.5, "#6B6B6B", false);
       y += 10;
     }
-    if(estadoChip(p)){
+    var estados = estadoChips(p);
+    if(estados.length){
       if(!claves.length) y += 4;
-      texto(M - 8, y, "Estado: " + estadoChip(p), 8.5, "#6B6B6B", false);
+      texto(M - 8, y, "Estado: " + estados.join("  ·  "), 8.5, "#6B6B6B", false);
       y += 10;
     }
     y += 4;
