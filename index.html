@@ -1994,8 +1994,9 @@
 
   function cardHTML(p){
     var fis = (typeof p.fisico === "number") ? p.fisico : 0;
-    var badges = Object.keys(p.carteras||{}).map(function(k){
-      return '<span class="pcard-badge" style="background:'+CARTERAS[k].color+'">'+CARTERAS[k].label+'</span>';
+    /* mismos chips de estado que la ficha (regla estadoChips), sin chips de cartera */
+    var badges = estadoChips(p).map(function(e, i){
+      return '<span class="pcard-badge" style="background:'+CHIP_COLORS[i % CHIP_COLORS.length]+'">'+e+'</span>';
     }).join("");
     return '<button class="pcard" data-cui="'+p.cui+'">'+
       '<div class="pcard-top"><span class="pcard-cui">CUI '+p.cui+'</span><span class="pcard-prog">'+p.programa+'</span>'+
