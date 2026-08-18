@@ -47,7 +47,7 @@ Objetivo (acordado 13-ago-2026): hacer funcional el buscador de proyectos con da
 
 ### Pantalla Actividades
 
-Retitulada de "Movimientos" a "Actividades". Tres pestañas estilo accesos de Inicio: **Títulos de propiedad** (activa), **Bonos** y **Wasiymi** — desde 18-ago-2026 los 3 botones van **dentro de la misma tarjeta del indicador** (como el indicador de Inicio: panel rojo arriba + `neu-actions` debajo); el bloque `#act-tabs` es único y el JS lo mueve a la tarjeta `.tit-ind` de la pestaña activa; el botón activo se marca en rojo institucional. Las tres comparten estructura y helpers (`filaPct`, `seccionPct`, `indicadorPrincipal`, `segControl`), con datos del Excel exportados como `window.INDICADORES`:
+Retitulada de "Movimientos" a "Actividades". Tres pestañas estilo accesos de Inicio: **Títulos de propiedad** (activa), **Bonos** y **Wasiymi** — desde 18-ago-2026 los 3 botones van **dentro de la misma tarjeta del indicador** (como el indicador de Inicio: panel rojo arriba + `neu-actions` debajo); el bloque `#act-tabs` es único y el JS lo mueve a la tarjeta `.tit-ind` de la pestaña activa; el botón activo se marca con sombreado gris (`--key`), no en rojo. Las tres comparten estructura y helpers (`filaPct`, `seccionPct`, `indicadorPrincipal`, `segControl`), con datos del Excel exportados como `window.INDICADORES`:
 
 **Bonos** (`INDICADORES.bonos`, hojas `INDICADORES BONOS` / `MODALIDAS BONOS` / `POR REGION BONOS`): indicador diseño 4 (desembolsados÷meta, hoy 25,3% — 8,768 de 34,685) + sub-pestañas **Por modalidad** y **Por región**, ambas con el semáforo estándar de avance (≥60 verde / 25–59 ámbar / <25 rojo) — el usuario pidió el semáforo también para modalidades (16-ago-2026).
 

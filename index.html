@@ -414,10 +414,12 @@
 
   /* ─ Pestañas de Actividades: dentro de la tarjeta del indicador, como los
        accesos de Inicio (el JS mueve #act-tabs a la tarjeta de la pestaña activa) ─ */
-  .neu-actions.act-tabs{ padding:6px 0 2px; }
-  .neu-actions.act-tabs button{ font-size:11.5px; line-height:1.2; text-align:center; }
-  .neu-actions.act-tabs button.active{ font-weight:700; color:var(--lemon); }
-  html[data-tema="oscuro"] .neu-actions.act-tabs button.active{ color:#F7C8C2; }
+  .neu-actions.act-tabs{ padding:6px 4px 4px; gap:0; }
+  .neu-actions.act-tabs button{ font-size:11.5px; line-height:1.2; text-align:center; border-radius:12px; }
+  .neu-actions.act-tabs button.active{ background:var(--key); font-weight:700; color:var(--ink); }
+  .neu-actions.act-tabs button.active::before,
+  .neu-actions.act-tabs button.active + button::before{ display:none; }
+  html[data-tema="oscuro"] .neu-actions.act-tabs button.active{ background:rgba(255,255,255,.10); color:#fff; }
   .tab-empty{
     background:var(--card); border-radius:16px; box-shadow:var(--shadow-card);
     padding:30px 20px; text-align:center; color:var(--muted); font-size:13.5px;
