@@ -212,12 +212,20 @@ def main():
         indicadores["bonos"]["regiones"] = filas_con_detalle("POR REGION BONOS")
 
     # Indicador principal de Inicio (hoja INDICADOR PRINCIPAL): fila SECTOR → %
+    # filas: SECTOR (%), PIM, DEVENGADO
     if "INDICADOR PRINCIPAL" in wb.sheetnames:
+        principal = {}
         for r in wb["INDICADOR PRINCIPAL"].iter_rows(values_only=True):
-            nombre, val = limpio(r[1]), pct_celda(r[2])
-            if nombre and val is not None:
-                indicadores["principal"] = {"nombre": nombre, "pct": val}
-                break
+            nombre = (limpio(r[1]) or "").upper()
+            if nombre == "PIM":
+                principal["pim"] = num(r[2])
+            elif nombre == "DEVENGADO":
+                principal["devengado"] = num(r[2])
+            elif nombre and "pct" not in principal and pct_celda(r[2]) is not None:
+                principal["nombre"] = limpio(r[1])
+                principal["pct"] = pct_celda(r[2])
+        if "pct" in principal:
+            indicadores["principal"] = principal
 
     # Pliegos (hoja PLIEGOS): tarjetas de Inicio — entidad, PIM, devengado, % ejecución
     if "PLIEGOS" in wb.sheetnames:

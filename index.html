@@ -262,6 +262,8 @@
     font-size:44px; font-weight:700; letter-spacing:-.02em; margin-top:10px;
   }
   .balance-card .delta{ font-size:16px; font-weight:600; margin-top:4px; }
+  .balance-card .montos{ display:grid; gap:4px; margin-top:12px; font-size:14px; color:var(--rosa); }
+  .balance-card .montos b{ color:#fff; font-weight:600; }
   .balance-card .bar{
     height:8px; border-radius:999px; background:rgba(255,255,255,.30);
     margin-top:16px; overflow:hidden;
@@ -1018,11 +1020,11 @@
     </header>
 
     <div class="neu-card">
-      <div class="neu-top" data-go="screen-pliego">
+      <div class="neu-top" data-go="screen-ranking">
         <div class="cur">Sector</div>
         <div class="rate" id="pliego-rate">Vivienda, Construcción y Saneamiento</div>
         <div class="amount" id="pliego-amount">—</div>
-        <button class="detail-btn" data-go="screen-pliego">
+        <button class="detail-btn" data-go="screen-ranking">
           Ver ranking
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
@@ -1224,6 +1226,30 @@
     </div>
 
     <div id="pliego-cards"></div>
+  </section>
+
+  <!-- ═══ RANKING (desde "Ver ranking" en Inicio) ═══ -->
+  <section class="screen" id="screen-ranking" aria-label="Ranking">
+    <header class="topbar">
+      <button class="icon-btn" data-go="screen-home" aria-label="Atrás">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <h1>Ranking</h1>
+      <span></span>
+    </header>
+
+    <div class="balance-card">
+      <div class="cur">Sector</div>
+      <div class="rate">Vivienda, Construcción y Saneamiento</div>
+      <div class="amount" id="rank-amount">—</div>
+      <div class="bar"><i id="rank-bar" style="width:0"></i></div>
+      <div class="montos">
+        <span>PIM: <b id="rank-pim">—</b></span>
+        <span>Devengado: <b id="rank-dev">—</b></span>
+      </div>
+    </div>
+
+    <div id="ranking-cards"></div>
   </section>
 
   <!-- ═══ AJUSTES ═══ -->
@@ -1827,7 +1853,13 @@
     var ind = window.INDICADORES || {};
     /* Indicador principal de Inicio: fila SECTOR de la hoja INDICADOR PRINCIPAL */
     if(ind.principal){
-      document.getElementById("pliego-amount").textContent = Math.round(ind.principal.pct) + "%";
+      var pr = ind.principal;
+      document.getElementById("pliego-amount").textContent = Math.round(pr.pct) + "%";
+      /* pantalla Ranking: mismo indicador con barra, PIM y devengado */
+      document.getElementById("rank-amount").textContent = pctTxt(pr.pct);
+      document.getElementById("rank-bar").style.width = Math.min(100, pr.pct) + "%";
+      document.getElementById("rank-pim").textContent = "S/ " + fmtNum(Math.round((pr.pim || 0) / 1000000)) + " M";
+      document.getElementById("rank-dev").textContent = "S/ " + fmtNum(Math.round((pr.devengado || 0) / 1000000)) + " M";
     }
     var filasP = ind.mvcs || [];
     if(filasP.length){
