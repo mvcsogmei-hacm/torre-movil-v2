@@ -425,6 +425,7 @@
     background:rgba(20,24,22,.10); overflow:hidden;
   }
   .ent .meter i{ display:block; height:100%; border-radius:999px; background:var(--ink); }
+  .ent.wide{ grid-column:1 / -1; }
 
   .action-row{
     display:grid; grid-template-columns:1fr 1fr 1fr;
@@ -1041,7 +1042,7 @@
       </div>
     </div>
 
-    <div class="section-head"><h2>Entidades adscritas</h2></div>
+    <div class="section-head"><h2>Pliegos</h2></div>
     <div class="ent-grid" id="ent-grid">
       <div class="ent">
         <span class="top"><span class="name">SBN</span><span class="pct">32%</span></span>
@@ -1820,7 +1821,7 @@
     el.textContent = s + ", Sr. Ministro!";
   })();
 
-  /* ── Inicio + detalle de Pliego + Entidades adscritas (hojas PLIEGO y ADSCRITAS) ── */
+  /* ── Inicio + detalle de Pliego MVCS + tarjetas Pliegos (hojas INDICADOR PRINCIPAL, MVCS y PLIEGOS) ── */
   (function(){
     var ind = window.INDICADORES || {};
     /* Indicador principal de Inicio: fila SECTOR de la hoja INDICADOR PRINCIPAL */
@@ -1842,13 +1843,14 @@
           filaPct("Proyectos", f.proyectos));
       }).join("");
     }
-    var ads = ind.adscritas || [];
-    if(ads.length){
-      document.getElementById("ent-grid").innerHTML = ads.map(function(a){
-        return '<div class="ent">' +
-          '<span class="top"><span class="name">' + a.nombre + '</span><span class="pct">' + pctTxt(a.pct) + '</span></span>' +
+    /* Tarjetas "Pliegos" (hoja PLIEGOS): la primera (MVCS) ocupa el ancho completo */
+    var pls = ind.pliegos || [];
+    if(pls.length){
+      document.getElementById("ent-grid").innerHTML = pls.map(function(a, i){
+        return '<div class="ent' + (i === 0 ? ' wide' : '') + '">' +
+          '<span class="top"><span class="name">' + a.nombre + '</span><span class="pct">' + Math.round(a.pct) + '%</span></span>' +
           '<span class="meter"><i style="width:' + Math.min(100, a.pct) + '%"></i></span>' +
-          '<span class="amt">S/ ' + fmtNum(Math.round(a.monto / 1000000)) + ' millones</span></div>';
+          '<span class="amt">S/ ' + fmtNum(Math.round(a.devengado / 1000000)) + ' M de S/ ' + fmtNum(Math.round(a.pim / 1000000)) + ' M</span></div>';
       }).join("");
     }
   })();

@@ -50,7 +50,7 @@ def fecha(v):
 
 
 def main():
-    wb = openpyxl.load_workbook(EXCEL, read_only=True)
+    wb = openpyxl.load_workbook(EXCEL, read_only=True, data_only=True)
     ws = wb[HOJA]
 
     proyectos = []
@@ -219,11 +219,25 @@ def main():
                 indicadores["principal"] = {"nombre": nombre, "pct": val}
                 break
 
-    # Pliego (hoja PLIEGO): fila PLIEGO = resumen del detalle de Pliego;
+    # Pliegos (hoja PLIEGOS): tarjetas de Inicio — entidad, PIM, devengado, % ejecución
+    if "PLIEGOS" in wb.sheetnames:
+        pliegos = []
+        for r in wb["PLIEGOS"].iter_rows(values_only=True):
+            nombre, pim, dev = limpio(r[2]), num(r[3]), num(r[4])
+            val = pct_celda(r[5])
+            if val is None and pim:          # la celda es fórmula: calcular
+                val = round((dev or 0) / pim * 100, 1)
+            if nombre and val is not None and nombre.upper() != "ENTIDAD":
+                pliegos.append({"nombre": nombre, "pim": pim, "devengado": dev, "pct": val})
+        if pliegos:
+            indicadores["pliegos"] = pliegos
+
+    # Detalle de Pliego MVCS (hoja MVCS, antes PLIEGO): fila PLIEGO = resumen;
     # las demás filas = un card por fila en el detalle
-    if "PLIEGO" in wb.sheetnames:
+    hoja_mvcs = "MVCS" if "MVCS" in wb.sheetnames else "PLIEGO"
+    if hoja_mvcs in wb.sheetnames:
         filas_pliego = []
-        for r in wb["PLIEGO"].iter_rows(values_only=True):
+        for r in wb[hoja_mvcs].iter_rows(values_only=True):
             nombre = limpio(r[1])
             todo = pct_celda(r[2])
             if not nombre or todo is None:
