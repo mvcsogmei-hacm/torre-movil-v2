@@ -248,7 +248,7 @@ def main():
                 "proyectos": pct_celda(r[4]),
             })
         if filas_pliego:
-            indicadores["pliego"] = filas_pliego
+            indicadores["mvcs"] = filas_pliego
 
     # Wasiymi (hojas INDICADORES WAYSIMI y POR REGION WAYSIMI — así escritas en el Excel)
     if "INDICADORES WAYSIMI" in wb.sheetnames:

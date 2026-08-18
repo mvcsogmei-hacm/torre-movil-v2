@@ -1829,7 +1829,7 @@
     if(ind.principal){
       document.getElementById("pliego-amount").textContent = Math.round(ind.principal.pct) + "%";
     }
-    var filasP = ind.pliego || [];
+    var filasP = ind.mvcs || [];
     if(filasP.length){
       var p0 = filasP[0];   /* fila PLIEGO */
       document.getElementById("pliegoD-amount").textContent = pctTxt(p0.todo);
