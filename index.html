@@ -651,6 +651,7 @@
   }
   .share-opt:active{ opacity:.7; }
   .badge{ color:#fff; font-size:11px; font-weight:600; border-radius:999px; padding:5px 11px; }
+  .badge.badge-est{ background:#4A4A52; }
 
   /* ─ Menú cristal: barra translúcida con desenfoque ──────────── */
   .bottom-nav{
@@ -1925,8 +1926,12 @@
   function pctTxt(n){ return String(n).replace(".", ",") + "%"; }
   function pctClass(n){ return n >= 60 ? "pct-ok" : (n >= 25 ? "pct-pr" : "pct-cr"); }
   function execColor(n){ return n >= 60 ? "#1FA23C" : (n >= 25 ? "#C98A00" : "#BF2E25"); }
-  /* Montos de la ficha: cifra completa en soles (sin abreviaturas M/MM) */
-  function fmtMonto(n){ return "S/ " + Number(n || 0).toLocaleString("es-PE"); }
+  /* Montos de la ficha y el PDF: en millones de soles, solo la cifra (la unidad
+     va en el título de la sección "(en millones de soles)"); 1 decimal */
+  function fmtMonto(n){
+    var m = Number(n || 0) / 1000000;
+    return "S/ " + m.toLocaleString("es-PE", { minimumFractionDigits:1, maximumFractionDigits:1 });
+  }
   function fmtSoles(n){ return "S/ " + Number(n || 0).toLocaleString("es-PE"); }
   function fmtNum(n){ return Number(n || 0).toLocaleString("es-PE"); }
   function txt(v){ return (v === 0 || v) && String(v) !== "" ? v : "—"; }
@@ -2566,7 +2571,7 @@
           ["Conexiones nuevas de agua", p.cxAgua ? fmtNum(p.cxAgua) : "—"],
           ["Conexiones nuevas de alcant./UBS", p.cxAlc ? fmtNum(p.cxAlc) : "—"]
       ]},
-      { id:"fin", titulo:"Información financiera 2026", filas:[
+      { id:"fin", titulo:"Información financiera (en millones de soles)", filas:[
           ["Costo de inversión", fmtMonto(p.monto || 0)],
           ["Devengado acumulado", fmtMonto(p.devAc || 0)],
           ["PIM 2026", fmtMonto(p.pim || 0)],
@@ -2585,15 +2590,18 @@
       ]});
     }
     Object.keys(p.carteras||{}).forEach(function(k){
-      secs.push({ id:k, titulo:CARTERAS[k].label, filas:carteraFilas(k, p.carteras[k]) });
+      secs.push({ id:k, titulo:CARTERAS[k].label + (k === "transferencias" ? " (en millones de soles)" : ""), filas:carteraFilas(k, p.carteras[k]) });
     });
     return secs;
   }
 
+  /* Estado situacional del proyecto para el chip: Estado SSP; si no hay, SSI */
+  function estadoChip(p){ return p.ssp || p.ssi || null; }
   function fichaBadges(p){
+    var est = estadoChip(p);
     return Object.keys(p.carteras||{}).map(function(k){
       return '<span class="badge" style="background:' + CARTERAS[k].color + '">' + CARTERAS[k].label + '</span>';
-    }).join("");
+    }).join("") + (est ? '<span class="badge badge-est">' + est + '</span>' : '');
   }
   function fichaSecciones(p){
     return fichaDatos(p).map(function(s){
@@ -2727,6 +2735,11 @@
     if(claves.length){
       y += 4;
       texto(M - 8, y, "Carteras: " + claves.map(function(k){ return CARTERAS[k].label; }).join("  ·  "), 8.5, "#6B6B6B", false);
+      y += 10;
+    }
+    if(estadoChip(p)){
+      if(!claves.length) y += 4;
+      texto(M - 8, y, "Estado: " + estadoChip(p), 8.5, "#6B6B6B", false);
       y += 10;
     }
     y += 4;
