@@ -2640,7 +2640,8 @@
     var ssp = String(p.ssp || "").trim();
     /* Solo manda ESTADO SSP (regla del usuario): si dice PRESET → Estado SSP + etapa de evaluación */
     if(ssp.toUpperCase() === "PRESET"){
-      var etapa = p.carteras && p.carteras.preset && p.carteras.preset.etapa;
+      /* Etapa de evaluación del propio proyecto (campo etapa, incluye FINANCIADO); respaldo: cartera PRESET */
+      var etapa = p.etapa || (p.carteras && p.carteras.preset && p.carteras.preset.etapa);
       etapa = String(etapa || "").trim();
       return [ssp].concat((etapa && etapa !== "-") ? [etapa] : []);
     }
