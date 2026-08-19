@@ -1412,7 +1412,7 @@
       </button>
       <div class="set-body" id="body-acerca" hidden>
         <p class="set-txt">La torre v2.0 — monitor de proyectos de inversión del sector Vivienda,
-        Construcción y Saneamiento: pliego, entidades adscritas, carteras (PRESET, obras directas,
+        Construcción y Saneamiento: pliego, entidades adscritas, carteras (PRESET,
         transferencias, paralizadas), títulos de propiedad, bonos habitacionales y Wasiymi.
         Fuente: Matriz Única de Monitoreo.</p>
       </div>
@@ -1948,7 +1948,6 @@
   var CARTERAS = {
     preset:         { label:"PRESET",              color:"#3D7EF7" },
     paralizadas:    { label:"Paralizadas",         color:"#F04438" },
-    obras:          { label:"Obras directas",      color:"#33B679" },
     transferencias: { label:"Transferencias 2026", color:"#8E5CD9" }
   };
 
@@ -2577,9 +2576,6 @@
               ["Hito de reactivación", txt(datos.hito)],
               ["Fecha estimada o real de reactivación", txt(datos.fecha)]];
     }
-    if(clave === "obras"){
-      return [["Modalidad", "Ejecución directa"], ["Avance físico", pctTxt(datos.avance || 0)]];
-    }
     if(clave === "transferencias"){
       var pctTr = datos.transferido > 0 ? Math.round((datos.ejecutado || 0) / datos.transferido * 1000) / 10 : null;
       return [["Monto transferido 2026", fmtMonto(datos.transferido || 0)],
@@ -2614,7 +2610,10 @@
           ["% Ejec. financiera 2026", p.pim > 0 ? pctTxt(Math.round((p.dev || 0) / p.pim * 1000) / 10) : "—"]
       ]}
     ];
-    if(!(p.carteras && p.carteras.preset)){
+    /* Módulo PRESET: si pertenece a la cartera PRESET o si ESTADO SSP = PRESET (aunque la etapa
+       sea FINANCIADO — regla del usuario 19-ago-2026). Sustituye a "Estado situacional". */
+    var esPreset = !!(p.carteras && p.carteras.preset) || String(p.ssp || "").trim().toUpperCase() === "PRESET";
+    if(!esPreset){
       secs.push({ id:"sit", titulo:"Estado situacional", filas:[
         ["Estado del expediente técnico", txt(p.estadoET)],
         ["Estado del proceso de selección", txt(p.procSel)],
@@ -2624,8 +2623,13 @@
         ["Fecha real de término de obra", txt(p.fTerm)]
       ]});
     }
+    if(esPreset){
+      var cp = (p.carteras && p.carteras.preset) || {};
+      secs.push({ id:"preset", titulo:CARTERAS.preset.label,
+                  filas:carteraFilas("preset", { etapa: p.etapa || cp.etapa, estado: p.estadoEval || cp.estado }) });
+    }
     Object.keys(p.carteras||{}).forEach(function(k){
-      if(k === "obras") return;   /* Obras directas: sin sección en la ficha ni en el PDF (18-ago-2026) */
+      if(!CARTERAS[k] || k === "preset") return;   /* Obras directas: nunca se muestra; PRESET ya se añadió arriba */
       secs.push({ id:k, titulo:CARTERAS[k].label, sub:(k === "transferencias" ? "En millones de soles" : null), filas:carteraFilas(k, p.carteras[k]) });
     });
     return secs;

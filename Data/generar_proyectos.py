@@ -91,6 +91,7 @@ def main():
             "subSsp": limpio(r[22]),
             "fTerm": fecha(r[23]),
             "etapa": limpio(r[17]),   # ETAPA DE EVALUACIÓN siempre (incluye FINANCIADO); la cartera PRESET sigue con su regla
+            "estadoEval": limpio(r[18]),   # ESTADO (de la evaluación), pareja de etapa
         }
 
         carteras = {}
