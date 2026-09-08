@@ -8,13 +8,13 @@ App móvil tipo fintech ("La torre") para monitoreo de proyectos de inversión p
 - **PWA instalable** (17-ago-2026): `manifest.json` + `sw.js` (red primero, caché de respaldo) + `iconos/` (torre blanca sobre rojo, generados con `Pillow`). El botón central del **BOT se retiró del menú** (la pantalla `screen-bot` queda para el futuro); el menú inferior tiene 4 botones. Cabecera del PDF: membrete izquierdo del MVCS y a la derecha "OGMEI / La torre de control".
 - Estética (desde 17-ago-2026): **colores institucionales del sector Vivienda / Estado peruano** — rojo institucional `#C8102E` (degradado a `#A50D23`) como color primario, texto blanco/rosado `#F7C8C2` sobre paneles rojos, fondos neutros cálidos. Fuente Space Grotesk, marco de teléfono en escritorio. OJO: las variables CSS conservan sus nombres históricos (`--lemon` = rojo institucional, `--mint` = rojo profundo del fondo); hay una nueva `--rosa`. El PDF descargable también usa el tema rojo. El tema anterior (menta/limón) sobrevive solo en `Propuestas/`.
 - Carpeta `Propuestas/`: variaciones aisladas (favicon, splash, menús, galerías), documentadas en `Propuestas/LEEME.md`.
-- Carpeta `Data/`: el Excel fuente (`31.07.2026 - Matriz Única de Monitoreo - Consolidado.xlsx`) y el `proyectos.js` generado desde él.
+- Carpeta `Data/`: el Excel fuente (`31.07.2026 - Matriz Única de Monitoreo - Consolidadov2.xlsx`, desde 08-sep-2026; el archivo sin "v2" es la versión anterior del 18-ago-2026) y el `proyectos.js` generado desde él.
 - Pantallas: Inicio, Inversiones, BOT, Actividades, Búsqueda + ficha de proyecto.
 - La pantalla Búsqueda funciona con **datos reales**: `index.html` carga `data/proyectos.js` (define `window.PROYECTOS`, 21,528 proyectos).
 
 ## Fechas de corte de la información (desde 18-ago-2026)
 
-Mapa `FECHAS_CORTE` en `index.html`: **Inicio 18/08/2026 · Inversiones 14/08/2026 · Actividades 14/08/2026 · Búsqueda 14/08/2026**. Cada pantalla se asigna a una vista principal en `CORTE_POR_PANTALLA` (las hijas heredan: Pliego MVCS, Ranking y Ajustes → Inicio; Recompensas/Orden → Inversiones; ficha de proyecto → Búsqueda). Se pinta como línea gris "Información al dd/mm/aaaa" bajo el título de la `topbar` (`.h1wrap` + `.corte`) y bajo el saludo de Inicio; el PDF muestra "Fecha de corte: 14 de agosto de 2026" en la banda roja usando la de Búsqueda (`fechaLarga`). Cuando cambien las fechas se editan solo en ese mapa (opción futura: hoja `FECHAS` en el Excel).
+Mapa `FECHAS_CORTE` en `index.html`: **Inicio 08/09/2026 (desde 08-sep-2026) · Inversiones 14/08/2026 · Actividades 14/08/2026 · Búsqueda 14/08/2026**. Cada pantalla se asigna a una vista principal en `CORTE_POR_PANTALLA` (las hijas heredan: Pliego MVCS, Ranking y Ajustes → Inicio; Recompensas/Orden → Inversiones; ficha de proyecto → Búsqueda). Se pinta como línea gris "Información al dd/mm/aaaa" bajo el título de la `topbar` (`.h1wrap` + `.corte`) y bajo el saludo de Inicio; el PDF muestra "Fecha de corte: 14 de agosto de 2026" en la banda roja usando la de Búsqueda (`fechaLarga`). Cuando cambien las fechas se editan solo en ese mapa (opción futura: hoja `FECHAS` en el Excel).
 
 ## Formato de cifras en soles (regla desde 18-ago-2026)
 
@@ -30,7 +30,7 @@ Objetivo (acordado 13-ago-2026): hacer funcional el buscador de proyectos con da
 
 ### Fuente de datos real
 
-`Data\31.07.2026 - Matriz Única de Monitoreo - Consolidado.xlsx`: una sola hoja **CONSOLIDADO**, 21,528 proyectos × 29 columnas. Es una **matriz plana consolidada**, no el modelo normalizado que se había diseñado (hoja UNIVERSAL + una hoja por cartera): las carteras vienen como columnas con "-" cuando no aplican, y las transferencias solo como totales 2026 (transferido/ejecutado), **no una fila por transferencia**.
+`Data\31.07.2026 - Matriz Única de Monitoreo - Consolidadov2.xlsx` (nombre en la constante `EXCEL` del generador; si el Excel cambia de nombre hay que actualizarla): una sola hoja **CONSOLIDADO**, 21,528 proyectos × 29 columnas. Es una **matriz plana consolidada**, no el modelo normalizado que se había diseñado (hoja UNIVERSAL + una hoja por cartera): las carteras vienen como columnas con "-" cuando no aplican, y las transferencias solo como totales 2026 (transferido/ejecutado), **no una fila por transferencia**.
 
 ### `Data/proyectos.js` (generado con `Data/generar_proyectos.py`)
 
