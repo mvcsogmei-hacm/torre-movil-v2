@@ -8,13 +8,13 @@ App móvil tipo fintech ("La torre") para monitoreo de proyectos de inversión p
 - **PWA instalable** (17-ago-2026): `manifest.json` + `sw.js` (red primero, caché de respaldo) + `iconos/` (torre blanca sobre rojo, generados con `Pillow`). El botón central del **BOT se retiró del menú** (la pantalla `screen-bot` queda para el futuro); el menú inferior tiene 4 botones. Cabecera del PDF: membrete izquierdo del MVCS y a la derecha "OGMEI / La torre de control".
 - Estética (desde 17-ago-2026): **colores institucionales del sector Vivienda / Estado peruano** — rojo institucional `#C8102E` (degradado a `#A50D23`) como color primario, texto blanco/rosado `#F7C8C2` sobre paneles rojos, fondos neutros cálidos. Fuente Space Grotesk, marco de teléfono en escritorio. OJO: las variables CSS conservan sus nombres históricos (`--lemon` = rojo institucional, `--mint` = rojo profundo del fondo); hay una nueva `--rosa`. El PDF descargable también usa el tema rojo. El tema anterior (menta/limón) sobrevive solo en `Propuestas/`.
 - Carpeta `Propuestas/`: variaciones aisladas (favicon, splash, menús, galerías), documentadas en `Propuestas/LEEME.md`.
-- Carpeta `Data/`: el Excel fuente (`31.07.2026 - Matriz Única de Monitoreo - Consolidadov2.xlsx`, desde 08-sep-2026; el archivo sin "v2" es la versión anterior del 18-ago-2026) y el `proyectos.js` generado desde él.
+- Carpeta `Data/`: los Excel fuente y el `proyectos.js` generado. **Desde 16-sep-2026 hay dos fuentes**: la matriz de proyectos sale de `04.09.2026 - Matriz Única de Monitoreo - Consolidado.xlsx` (hoja CONSOLIDADO, 158 columnas, cabecera en la fila 3; constante `EXCEL_CONSOLIDADO`) y las hojas de indicadores siguen saliendo de `31.07.2026 - Matriz Única de Monitoreo - Consolidadov2.xlsx` (constante `EXCEL_INDICADORES`; el archivo sin "v2" es la versión del 18-ago-2026). Si un Excel nuevo trae ambas cosas, se ponen las dos constantes con el mismo nombre.
 - Pantallas: Inicio, Inversiones, BOT, Actividades, Búsqueda + ficha de proyecto.
-- La pantalla Búsqueda funciona con **datos reales**: `index.html` carga `data/proyectos.js` (define `window.PROYECTOS`, 21,528 proyectos).
+- La pantalla Búsqueda funciona con **datos reales**: `index.html` carga `data/proyectos.js` (define `window.PROYECTOS`, 21,560 proyectos).
 
 ## Fechas de corte de la información (desde 18-ago-2026)
 
-Mapa `FECHAS_CORTE` en `index.html`: **Inicio 08/09/2026 (desde 08-sep-2026) · Inversiones 14/08/2026 · Actividades 14/08/2026 · Búsqueda 14/08/2026**. Cada pantalla se asigna a una vista principal en `CORTE_POR_PANTALLA` (las hijas heredan: Pliego MVCS, Ranking y Ajustes → Inicio; Recompensas/Orden → Inversiones; ficha de proyecto → Búsqueda). Se pinta como línea gris "Información al dd/mm/aaaa" bajo el título de la `topbar` (`.h1wrap` + `.corte`) y bajo el saludo de Inicio; el PDF muestra "Fecha de corte: 14 de agosto de 2026" en la banda roja usando la de Búsqueda (`fechaLarga`). Cuando cambien las fechas se editan solo en ese mapa (opción futura: hoja `FECHAS` en el Excel).
+Mapa `FECHAS_CORTE` en `index.html`: **Inicio 08/09/2026 (desde 08-sep-2026) · Inversiones 14/08/2026 · Actividades 14/08/2026 · Búsqueda 04/09/2026 (desde 16-sep-2026)**. Cada pantalla se asigna a una vista principal en `CORTE_POR_PANTALLA` (las hijas heredan: Pliego MVCS, Ranking y Ajustes → Inicio; Recompensas/Orden → Inversiones; ficha de proyecto → Búsqueda). Se pinta como línea gris "Información al dd/mm/aaaa" bajo el título de la `topbar` (`.h1wrap` + `.corte`) y bajo el saludo de Inicio; el PDF muestra "Fecha de corte: 4 de setiembre de 2026" en la banda roja usando la de Búsqueda (`fechaLarga`). Cuando cambien las fechas se editan solo en ese mapa (opción futura: hoja `FECHAS` en el Excel).
 
 ## Formato de cifras en soles (regla desde 18-ago-2026)
 
@@ -30,19 +30,23 @@ Objetivo (acordado 13-ago-2026): hacer funcional el buscador de proyectos con da
 
 ### Fuente de datos real
 
-`Data\31.07.2026 - Matriz Única de Monitoreo - Consolidadov2.xlsx` (nombre en la constante `EXCEL` del generador; si el Excel cambia de nombre hay que actualizarla): una sola hoja **CONSOLIDADO**, 21,528 proyectos × 29 columnas. Es una **matriz plana consolidada**, no el modelo normalizado que se había diseñado (hoja UNIVERSAL + una hoja por cartera): las carteras vienen como columnas con "-" cuando no aplican, y las transferencias solo como totales 2026 (transferido/ejecutado), **no una fila por transferencia**.
+Hoja **CONSOLIDADO** de `Data\04.09.2026 - Matriz Única de Monitoreo - Consolidado.xlsx` (desde 16-sep-2026; antes `31.07.2026 - …Consolidadov2.xlsx` con 29 columnas): 21,560 proyectos. Es una **matriz plana consolidada**, no el modelo normalizado que se había diseñado (hoja UNIVERSAL + una hoja por cartera): las carteras vienen como columnas con "-" cuando no aplican, y las transferencias solo como totales 2026 (transferido/ejecutado), **no una fila por transferencia**.
+
+**Ubicación de columnas por nombre (16-sep-2026).** El Excel del 04.09.2026 trae 158 columnas (grupos DATOS GENERALES, META 2026, INFORMACIÓN FINANCIERA, PRESET, ET, ACTOS PREVIOS, EN EJECUCIÓN, PARALIZADO, TRANSFERENCIAS por dispositivo legal, ALERTAS), con las filas 1-2 de numeración/grupos y la cabecera en la fila 3. El generador ya **no lee por posición**: el diccionario `COLUMNAS` (campo → nombres de cabecera aceptados, comparados sin tildes) y `ubicar_columnas()` localizan la fila cuya primera celda es "CUI" y cada una de las 29 columnas de la matriz; si falta alguna, aborta diciendo cuál. Alias confirmados comparando valores CUI a CUI con el archivo anterior: **"ESTADO ET" → "ESTADO2"** (grupo ET DIRECTAS) y **"ESTADO DEL PROCESO DE SELECCIÓN" → "ESTADO DEL PROCESO"** (grupo ACTOS PREVIOS). El resto de columnas del Excel se ignora. Las hojas de indicadores siguen leyéndose por posición desde `EXCEL_INDICADORES`.
+
+**Cambios de vocabulario en el Excel del 04.09.2026** (afectan reglas): (1) **ESTADO SSP ya no trae el valor "PRESET"**; esos proyectos vienen con SSP vacío y la columna nueva **BD PRESET = SI**. El generador reconstruye `ssp = "PRESET"` cuando BD PRESET = SI y SSP está vacío (regla verificada contra el archivo anterior: 21,525 de 21,528 coincidencias; 8,828 proyectos). (2) **ETAPA DE EVALUACIÓN**: "FINANCIADO" ahora es "FINANCIADO - APTO" / "FINANCIADO - NO APTO" y "ABANDONO" pasó a "ABANDONADO"; la regla de la cartera PRESET excluye todo lo que **empiece por** FINANCIADO. El % de PRESET en Inversiones sigue contando solo etapa = "APTO" exacto (752), no los "FINANCIADO - APTO". (3) El valor "---" en SSP se trata como vacío.
 
 ### `Data/proyectos.js` (generado con `Data/generar_proyectos.py`)
 
 - Regenerar con: `py generar_proyectos.py` desde la carpeta `Data/` (openpyxl vía `py`).
-- `window.PROYECTOS = [...]`, UTF-8, 21,528 proyectos, 0 CUIs duplicados.
+- `window.PROYECTOS = [...]`, UTF-8, 21,560 proyectos (desde 16-sep-2026; antes 21,528), 0 CUIs duplicados.
 - 24 campos comunes por proyecto: `cui, nombre, programa, uei, dep, prov, dist, modalidad, tipo, pobl, cxAgua, cxAlc, ssi, monto, devAc, pim, dev, fisico, estadoET, procSel, ssp, subSsp, fTerm, etapa, estadoEval` (25 campos; `etapa` = ETAPA DE EVALUACIÓN tal cual, **incluido FINANCIADO**, y `estadoEval` = columna ESTADO de la evaluación, añadido 19-ago-2026 para que el chip "PRESET + etapa" de la ficha funcione aunque el proyecto no pertenezca a la cartera PRESET — caso CUI 2441431, SSP PRESET con etapa FINANCIADO). Los vacíos ("-" en el Excel) van como `null`; `fisico` en % (el Excel lo guarda como fracción).
 - Objeto `carteras` según **reglas de pertenencia definidas por el usuario (16-ago-2026)**:
-  - `preset` (8,104): ETAPA DE EVALUACIÓN distinta de vacío y distinta de FINANCIADO → `{etapa, estado}`
-  - `obras` (2,864): MODALIDAD = DIRECTA → `{avance}` — **solo en datos**: desde 19-ago-2026 Obras directas **no existe en la interfaz bajo ningún motivo** (se quitó del catálogo `CARTERAS`, del filtro del buscador, de "Datos cargados", de "Acerca de", de la ficha y del PDF).
-  - `transferencias` (1,150): MONTO TOTAL TRANSFERIDO 2026 > 0 → `{transferido, ejecutado}` (el % de ejecución se calcula en la UI)
-  - `paralizadas` (247): ESTADO SSP = PARALIZADA o PARALIZADO → `{avance, hito, fecha}`
-- Programas: PNSR 10,542 · PMIB 7,541 · PNSU 3,317 · PNC 66 · PASLC 47 · SEDAPAL 9 · PGSU 3 · SENCICO 3.
+  - `preset` (7,278; antes 8,104): ETAPA DE EVALUACIÓN distinta de vacío y que no empiece por FINANCIADO → `{etapa, estado}`
+  - `obras` (2,876; antes 2,864): MODALIDAD = DIRECTA → `{avance}` — **solo en datos**: desde 19-ago-2026 Obras directas **no existe en la interfaz bajo ningún motivo** (se quitó del catálogo `CARTERAS`, del filtro del buscador, de "Datos cargados", de "Acerca de", de la ficha y del PDF).
+  - `transferencias` (1,238; antes 1,150): MONTO TOTAL TRANSFERIDO 2026 > 0 → `{transferido, ejecutado}` (el % de ejecución se calcula en la UI)
+  - `paralizadas` (238; antes 247): ESTADO SSP = PARALIZADA o PARALIZADO → `{avance, hito, fecha}`
+- Programas (16-sep-2026): PNSR 10,555 · PMIB 7,548 · PNSU 3,326 · PNC 68 · PASLC 47 · SEDAPAL 9 · PGSU 3 · SENCICO 3 · COFOPRI 1.
 
 ### Pantalla Inicio y detalle de Pliego (datos reales desde 17-ago-2026)
 
