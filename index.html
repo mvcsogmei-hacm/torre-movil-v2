@@ -2228,7 +2228,7 @@
     var filas = Object.keys(agg).sort(function(a, b){ return agg[b].n - agg[a].n; }).map(function(prog){
       var a = agg[prog], pc = Math.round(a.s / a.n * 10) / 10;
       var cls = pc >= 60 ? "ok" : (pc >= 25 ? "proc" : "crit");
-      var chip = pc >= 60 ? "Avance alto" : (pc >= 25 ? "Avance medio" : "Avance bajo");
+      var chip = pc >= 60 ? "Alto" : (pc >= 25 ? "Medio" : "Bajo");
       return '<div class="prog ' + cls + '"><span class="info">' +
         '<span class="name">' + prog + '</span>' +
         '<span class="meta">' + fmtNum(a.n) + (a.n === 1 ? ' obra · ' : ' obras · ') + 'avance físico promedio ' +
