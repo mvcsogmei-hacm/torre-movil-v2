@@ -1064,7 +1064,7 @@
     <div class="neu-card">
       <div class="neu-top" data-go="screen-ranking">
         <div class="cur">Pliego</div>
-        <div class="rate" id="pliego-rate">Vivienda, Construcción y Saneamiento</div>
+        <div class="rate" id="pliego-rate">Ministerio de Vivienda, Construcción y Saneamiento</div>
         <div class="amount" id="pliego-amount">—</div>
         <button class="detail-btn" data-go="screen-ranking">
           Ver ranking
@@ -1398,7 +1398,7 @@
     <div class="set-list">
       <button class="set-row" data-abre="body-datos">
         <span class="set-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></span>
-        <span class="info"><span class="name">Datos cargados</span><span class="sub">Matriz Única del 31/07/2026</span></span>
+        <span class="info"><span class="name">Datos cargados</span><span class="sub" id="datos-sub">Matriz Única de Monitoreo</span></span>
         <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
       </button>
       <div class="set-body" id="body-datos" hidden>
@@ -1412,9 +1412,9 @@
       </button>
       <div class="set-body" id="body-acerca" hidden>
         <p class="set-txt">La torre v2.0 — monitor de proyectos de inversión del sector Vivienda,
-        Construcción y Saneamiento: pliego, entidades adscritas, carteras (PRESET,
+        Construcción y Saneamiento: pliegos del sector, carteras (PRESET,
         transferencias, paralizadas), títulos de propiedad, bonos habitacionales y Wasiymi.
-        Fuente: Matriz Única de Monitoreo.</p>
+        Fuentes: Matriz Única de Monitoreo y Consulta Amigable del MEF.</p>
       </div>
     </div>
   </section>
@@ -1493,42 +1493,7 @@
         <span class="sub">Reactivación meta 2026</span>
         <span class="pctv pct-pr">41,2%</span>
       </div>
-      <div class="body"><div>
-      <div class="prog ok">
-        <span class="info">
-          <span class="name">PASLC</span>
-          <span class="meta">2 proyectos <span class="chip ok"><i></i>Completo</span></span>
-        </span>
-        <span class="pct">100%</span>
-      </div>
-      <div class="prog crit">
-        <span class="info">
-          <span class="name">PMIB</span>
-          <span class="meta">1 proyecto <span class="chip crit"><i></i>Sin avance</span></span>
-        </span>
-        <span class="pct">0%</span>
-      </div>
-      <div class="prog proc">
-        <span class="info">
-          <span class="name">PNSR</span>
-          <span class="meta">20 proyectos <span class="chip proc"><i></i>En proceso</span></span>
-        </span>
-        <span class="pct">40%</span>
-      </div>
-      <div class="prog proc">
-        <span class="info">
-          <span class="name">PNSU</span>
-          <span class="meta">21 proyectos <span class="chip proc"><i></i>En proceso</span></span>
-        </span>
-        <span class="pct">33%</span>
-      </div>
-      <div class="prog proc">
-        <span class="info">
-          <span class="name">SENCICO</span>
-          <span class="meta">3 proyectos <span class="chip proc"><i></i>En proceso</span></span>
-        </span>
-        <span class="pct">33%</span>
-      </div>
+      <div class="body"><div id="paraliz-card-body">
       </div></div>
     </div>
 
@@ -1844,6 +1809,8 @@
         wrap.appendChild(c);
       }
     });
+    var ds = document.getElementById("datos-sub");
+    if(ds) ds.textContent = "Matriz Única del " + FECHAS_CORTE.busqueda;
     var ci = document.querySelector('[data-corte="inicio"]');
     if(ci) ci.textContent = "Información al " + FECHAS_CORTE.inicio;
   })();
@@ -2246,6 +2213,31 @@
     cont.insertAdjacentHTML("afterbegin", filas);
   })();
 
+  /* ── Inversiones: desglose de Paralizadas por programa — calculado desde
+     PROYECTOS (n.º de obras paralizadas y avance físico promedio). El % de la
+     cabecera ("Reactivación meta 2026") sigue fijo: no sale de la matriz. ── */
+  (function(){
+    var cont = document.getElementById("paraliz-card-body");
+    if(!cont) return;
+    var agg = {};
+    PROYECTOS.forEach(function(p){
+      var c = p.carteras && p.carteras.paralizadas; if(!c) return;
+      var a = agg[p.programa] || (agg[p.programa] = { n:0, s:0 });
+      a.n++; a.s += (c.avance || 0);
+    });
+    var filas = Object.keys(agg).sort(function(a, b){ return agg[b].n - agg[a].n; }).map(function(prog){
+      var a = agg[prog], pc = Math.round(a.s / a.n * 10) / 10;
+      var cls = pc >= 60 ? "ok" : (pc >= 25 ? "proc" : "crit");
+      var chip = pc >= 60 ? "Avance alto" : (pc >= 25 ? "Avance medio" : "Avance bajo");
+      return '<div class="prog ' + cls + '"><span class="info">' +
+        '<span class="name">' + prog + '</span>' +
+        '<span class="meta">' + fmtNum(a.n) + (a.n === 1 ? ' obra · ' : ' obras · ') + 'avance físico promedio ' +
+          '<span class="chip ' + cls + '"><i></i>' + chip + '</span></span></span>' +
+        '<span class="pct">' + pctTxt(pc) + '</span></div>';
+    }).join("");
+    cont.insertAdjacentHTML("afterbegin", filas);
+  })();
+
   /* ── Inversiones: tarjeta Transferencias 2026 dinámica (% ejecutado sobre
      transferido, total y por programa) — calculada desde PROYECTOS ── */
   (function(){
@@ -2287,14 +2279,18 @@
     PROYECTOS.forEach(function(p){
       if(!p.carteras) return;
       Object.keys(CALC).forEach(function(nombre){
-        if(!p.carteras[CALC[nombre]]) return;
+        var c = p.carteras[CALC[nombre]]; if(!c) return;
         var a = agg[nombre] || (agg[nombre] = { n:0, m:0 });
-        a.n++; a.m += (p.monto || 0);
+        a.n++;
+        /* Transferencias: el monto del resumen es lo TRANSFERIDO (misma base que el %
+           de la tarjeta), no el costo de inversión de las obras */
+        a.m += (CALC[nombre] === "transferencias") ? (c.transferido || 0) : (p.monto || 0);
       });
     });
     Object.keys(agg).forEach(function(nombre){
       inv = inv.filter(function(x){ return x.nombre.toLowerCase() !== nombre; });
-      inv.push({ nombre: nombre, proyectos: agg[nombre].n, inversion: agg[nombre].m / 1e6 });
+      inv.push({ nombre: nombre, proyectos: agg[nombre].n, inversion: agg[nombre].m / 1e6,
+                 etiqueta: (CALC[nombre] === "transferencias") ? "Transferido" : "Inversión" });
     });
     if(!inv.length) return;
     var SUBT = { "preset": "Plataforma para evaluar Exp. Técnicos de los GSN" };
@@ -2308,7 +2304,7 @@
       subEl.className = "sub sub-inv";
       subEl.innerHTML = sub +
         '<span>' + fmtNum(d.proyectos) + (d.proyectos === 1 ? ' proyecto' : ' proyectos') + '</span>' +
-        '<span>Inversión: <b>S/ ' + fmtNum(Math.round(d.inversion || 0)) + '</b></span>';
+        '<span>' + (d.etiqueta || "Inversión") + ': <b>S/ ' + fmtNum(Math.round(d.inversion || 0)) + '</b></span>';
     });
   })();
 

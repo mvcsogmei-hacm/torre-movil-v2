@@ -70,8 +70,41 @@ COLUMNAS = {
     "ejecutado":   ["MONTO TOTAL EJECUTADO 2026"],
     # Opcional (solo en el Excel nuevo): sirve para reconstruir ESTADO SSP = PRESET.
     "bdPreset":    ["BD PRESET"],
+    # Opcional: estado del expediente técnico de las TRANSFERENCIAS (grupo "ET
+    # TRANSFERENCIAS"); respaldo de estadoET cuando ESTADO2 viene vacío (17-sep-2026).
+    "estadoETTr":  ["ESTADO Y SUB ESTADO"],
 }
-OPCIONALES = {"bdPreset"}
+OPCIONALES = {"bdPreset", "estadoETTr"}
+
+# Normalización de vocabulario que en el Excel llega con y sin tilde o con distinta
+# capitalización (17-sep-2026): así el mismo valor no aparece dos veces.
+TIPO_NORMAL = {
+    "EXPEDIENTE TECNICO": "EXPEDIENTE TÉCNICO",
+    "EXPEDIENTE TECNICO (SALDO)": "EXPEDIENTE TÉCNICO (SALDO)",
+}
+
+
+def normal_tipo(v):
+    v = limpio(v)
+    return TIPO_NORMAL.get(v.upper(), v) if v else v
+
+
+def normal_proc(v):
+    """'contratado' -> 'Contratado' (misma capitalización que el resto de valores)."""
+    v = limpio(v)
+    return v[0].upper() + v[1:] if v else v
+
+
+def estado_et(r):
+    """ESTADO2 (ET directas); si viene vacío, ESTADO Y SUB ESTADO (ET transferencias),
+    ignorando sus marcadores vacíos '---' y 'SIN ESTADO SSP'."""
+    v = limpio(r["estadoET"])
+    if v:
+        return v
+    alt = limpio(r.get("estadoETTr")) if "estadoETTr" in r else None
+    if alt and alt.upper() not in ("---", "SIN ESTADO SSP"):
+        return alt
+    return None
 
 
 def norm_cab(v):
@@ -186,7 +219,7 @@ def main():
             "prov": limpio(r["prov"]) or "",
             "dist": limpio(r["dist"]) or "",
             "modalidad": limpio(r["modalidad"]),
-            "tipo": limpio(r["tipo"]),
+            "tipo": normal_tipo(r["tipo"]),
             "pobl": num(r["pobl"]),
             "cxAgua": num(r["cxAgua"]),
             "cxAlc": num(r["cxAlc"]),
@@ -196,8 +229,8 @@ def main():
             "pim": num(r["pim"]),
             "dev": num(r["dev"]),
             "fisico": pct(r["fisico"]),
-            "estadoET": limpio(r["estadoET"]),
-            "procSel": limpio(r["procSel"]),
+            "estadoET": estado_et(r),
+            "procSel": normal_proc(r["procSel"]),
             "ssp": ssp,
             "subSsp": limpio(r["subSsp"]),
             "fTerm": fecha(r["fTerm"]),
