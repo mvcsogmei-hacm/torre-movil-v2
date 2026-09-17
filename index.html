@@ -1546,37 +1546,9 @@
         </span>
         <span class="name">Transferencias 2026</span>
         <span class="sub">Avance de ejecución transferido</span>
-        <span class="pctv pct-cr">18,2%</span>
+        <span class="pctv pct-cr" id="transf-card-pct">—</span>
       </div>
-      <div class="body"><div>
-      <div class="prog crit">
-        <span class="info">
-          <span class="name">PNSR</span>
-          <span class="meta">958 transferencias <span class="chip crit"><i></i>Crítico</span></span>
-        </span>
-        <span class="pct">24%</span>
-      </div>
-      <div class="prog proc">
-        <span class="info">
-          <span class="name">PMIB</span>
-          <span class="meta">291 transferencias <span class="chip proc"><i></i>En proceso</span></span>
-        </span>
-        <span class="pct">25%</span>
-      </div>
-      <div class="prog crit">
-        <span class="info">
-          <span class="name">PNSU</span>
-          <span class="meta">165 transferencias <span class="chip crit"><i></i>Crítico</span></span>
-        </span>
-        <span class="pct">9%</span>
-      </div>
-      <div class="prog proc">
-        <span class="info">
-          <span class="name">PNC</span>
-          <span class="meta">5 transferencias <span class="chip proc"><i></i>En proceso</span></span>
-        </span>
-        <span class="pct">34%</span>
-      </div>
+      <div class="body"><div id="transf-card-body">
       </div></div>
     </div>
 
@@ -1849,7 +1821,7 @@
   /* ── Fechas de corte de la información por vista principal (18-ago-2026).
      Las vistas hijas heredan la de su padre. Se pintan bajo el título de la
      topbar y bajo el saludo de Inicio; el PDF usa la de Búsqueda. ── */
-  var FECHAS_CORTE = { inicio:"08/09/2026", inversiones:"14/08/2026", actividades:"14/08/2026", busqueda:"04/09/2026" };
+  var FECHAS_CORTE = { inicio:"17/09/2026", inversiones:"14/08/2026", actividades:"14/08/2026", busqueda:"04/09/2026" };
   var CORTE_POR_PANTALLA = {
     "screen-home":"inicio", "screen-pliego":"inicio", "screen-ranking":"inicio", "screen-ajustes":"inicio",
     "screen-cuenta":"inversiones", "screen-recompensas":"inversiones", "screen-orden":"inversiones",
@@ -2274,10 +2246,56 @@
     cont.insertAdjacentHTML("afterbegin", filas);
   })();
 
-  /* ── Inversiones: resumen de cada tarjeta desde la hoja INVERSIONES
-     (n.º de proyectos e inversión en millones de soles, bajo el nombre) ── */
+  /* ── Inversiones: tarjeta Transferencias 2026 dinámica (% ejecutado sobre
+     transferido, total y por programa) — calculada desde PROYECTOS ── */
   (function(){
-    var inv = (window.INDICADORES || {}).inversiones || [];
+    var pctEl = document.getElementById("transf-card-pct");
+    var cont  = document.getElementById("transf-card-body");
+    if(!pctEl || !cont) return;
+    var agg = {}, T = 0, E = 0;
+    PROYECTOS.forEach(function(p){
+      var c = p.carteras && p.carteras.transferencias; if(!c) return;
+      var a = agg[p.programa] || (agg[p.programa] = { n:0, t:0, e:0 });
+      a.n++; a.t += (c.transferido || 0); a.e += (c.ejecutado || 0);
+      T += (c.transferido || 0); E += (c.ejecutado || 0);
+    });
+    var pctG = T ? Math.round(E / T * 1000) / 10 : 0;
+    pctEl.textContent = pctTxt(pctG);
+    pctEl.className = "pctv " + pctClass(pctG);
+    var filas = Object.keys(agg).sort(function(a, b){ return agg[b].n - agg[a].n; }).map(function(prog){
+      var a = agg[prog], pc = a.t ? Math.round(a.e / a.t * 1000) / 10 : 0;
+      var cls = pc >= 60 ? "ok" : (pc >= 25 ? "proc" : "crit");
+      var chip = pc >= 60 ? "Óptimo" : (pc >= 25 ? "En proceso" : "Crítico");
+      return '<div class="prog ' + cls + '"><span class="info">' +
+        '<span class="name">' + prog + '</span>' +
+        '<span class="meta">' + fmtNum(a.n) + (a.n === 1 ? ' proyecto ' : ' proyectos ') +
+          '<span class="chip ' + cls + '"><i></i>' + chip + '</span></span></span>' +
+        '<span class="pct">' + pctTxt(pc) + '</span></div>';
+    }).join("");
+    cont.insertAdjacentHTML("afterbegin", filas);
+  })();
+
+  /* ── Inversiones: resumen de cada tarjeta (n.º de proyectos e inversión en
+     millones de soles, bajo el nombre). Paralizadas, Transferencias 2026 y
+     PRESET se CALCULAN desde PROYECTOS (conteo de la cartera y suma del costo
+     de inversión); la hoja INVERSIONES del Excel queda solo para las carteras
+     que no están en la matriz (Cartera priorizada). ── */
+  (function(){
+    var inv = ((window.INDICADORES || {}).inversiones || []).slice();
+    var CALC = { "paralizadas": "paralizadas", "transferencias 2026": "transferencias", "preset": "preset" };
+    var agg = {};
+    PROYECTOS.forEach(function(p){
+      if(!p.carteras) return;
+      Object.keys(CALC).forEach(function(nombre){
+        if(!p.carteras[CALC[nombre]]) return;
+        var a = agg[nombre] || (agg[nombre] = { n:0, m:0 });
+        a.n++; a.m += (p.monto || 0);
+      });
+    });
+    Object.keys(agg).forEach(function(nombre){
+      inv = inv.filter(function(x){ return x.nombre.toLowerCase() !== nombre; });
+      inv.push({ nombre: nombre, proyectos: agg[nombre].n, inversion: agg[nombre].m / 1e6 });
+    });
     if(!inv.length) return;
     var SUBT = { "preset": "Plataforma para evaluar Exp. Técnicos de los GSN" };
     document.querySelectorAll("#screen-cuenta .cartera-card").forEach(function(card){

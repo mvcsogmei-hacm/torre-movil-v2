@@ -27,7 +27,7 @@ import openpyxl
 #    MVCS, RANKING…, INVERSIONES, TITULOS, BONOS, WAYSIMI). Si es el mismo
 #    archivo que el consolidado, basta con poner el mismo nombre.
 EXCEL_CONSOLIDADO = "04.09.2026 - Matriz Única de Monitoreo - Consolidado.xlsx"
-EXCEL_INDICADORES = "31.07.2026 - Matriz Única de Monitoreo - Consolidadov2.xlsx"
+EXCEL_INDICADORES = "Data.xlsx"
 SALIDA = "proyectos.js"
 HOJA = "CONSOLIDADO"
 
