@@ -409,6 +409,31 @@ def main():
         if inv:
             indicadores["inversiones"] = inv
 
+    # Paralizadas · reactivación meta 2026 (hoja PARALIZADAS META, 17-sep-2026):
+    # PROGRAMA | META 2026 | REACTIVADAS | % (opcional). Fila TOTAL opcional: si trae %,
+    # la cabecera de la tarjeta lo usa; si no, se calcula reactivadas ÷ meta.
+    if "PARALIZADAS META" in wb.sheetnames:
+        progs, total = [], None
+        for r in wb["PARALIZADAS META"].iter_rows(values_only=True):
+            nombre = limpio(r[0])
+            if not nombre or nombre.upper() == "PROGRAMA":
+                continue
+            meta, react, pc = num_celda(r[1]), num_celda(r[2]), pct_celda(r[3])
+            if pc is None and meta:
+                pc = round((react or 0) / meta * 100, 1)
+            fila = {"nombre": nombre, "meta": meta, "reactivadas": react, "pct": pc}
+            if nombre.upper() == "TOTAL":
+                total = fila
+            elif pc is not None:
+                progs.append(fila)
+        if progs:
+            if total is None or total["pct"] is None:
+                m = sum(p["meta"] or 0 for p in progs)
+                rct = sum(p["reactivadas"] or 0 for p in progs)
+                total = {"nombre": "TOTAL", "meta": m, "reactivadas": rct,
+                         "pct": round(rct / m * 100, 1) if m else 0}
+            indicadores["paralizadasMeta"] = {"total": total, "programas": progs}
+
     # Pliegos (hoja PLIEGOS): tarjetas de Inicio — entidad, PIM, devengado, % ejecución
     if "PLIEGOS" in wb.sheetnames:
         pliegos = []

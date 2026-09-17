@@ -1481,7 +1481,7 @@
       <button class="hd" aria-label="Mostrar u ocultar Paralizadas">
         <span class="hd-txt">
           <span class="t">Paralizadas</span>
-          <span class="s">Avance físico promedio de las obras</span>
+          <span class="s">Reactivación meta 2026</span>
         </span>
         <span class="caret"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
       </button>
@@ -1490,7 +1490,7 @@
           <svg viewBox="0 0 24 24" fill="#fff"><path fill-rule="evenodd" d="M12 2.8L22.4 21H1.6zM11.1 9.5h1.8v5.2h-1.8zm0 6.7h1.8v1.9h-1.8z"/></svg>
         </span>
         <span class="name">Paralizadas</span>
-        <span class="sub">Avance físico promedio de las obras</span>
+        <span class="sub">Reactivación meta 2026</span>
         <span class="pctv pct-pr" id="paraliz-card-pct">—</span>
       </div>
       <div class="body"><div id="paraliz-card-body">
@@ -2213,30 +2213,29 @@
     cont.insertAdjacentHTML("afterbegin", filas);
   })();
 
-  /* ── Inversiones: tarjeta Paralizadas dinámica — calculada desde PROYECTOS:
-     % de cabecera = avance físico promedio de todas las obras paralizadas;
-     desglose por programa = n.º de obras y su avance físico promedio. ── */
+  /* ── Inversiones: tarjeta Paralizadas — reactivación respecto a la meta 2026.
+     Fuente: hoja PARALIZADAS META de Data.xlsx (INDICADORES.paralizadasMeta), porque
+     la matriz no trae la meta. Cabecera = % total; filas = "N reactivadas de M" por
+     programa, ordenadas por meta. El avance físico NO se usa: no dice nada en una
+     obra parada (regla del usuario, 17-sep-2026). ── */
   (function(){
+    var pm = (window.INDICADORES || {}).paralizadasMeta;
     var pctEl = document.getElementById("paraliz-card-pct");
     var cont  = document.getElementById("paraliz-card-body");
-    if(!pctEl || !cont) return;
-    var agg = {}, tot = 0, suma = 0;
-    PROYECTOS.forEach(function(p){
-      var c = p.carteras && p.carteras.paralizadas; if(!c) return;
-      var a = agg[p.programa] || (agg[p.programa] = { n:0, s:0 });
-      a.n++; a.s += (c.avance || 0); tot++; suma += (c.avance || 0);
-    });
-    var pctG = tot ? Math.round(suma / tot * 10) / 10 : 0;
+    if(!pm || !pctEl || !cont) return;
+    var pctG = pm.total ? pm.total.pct : 0;
     pctEl.textContent = pctTxt(pctG);
     pctEl.className = "pctv " + pctClass(pctG);
-    var filas = Object.keys(agg).sort(function(a, b){ return agg[b].n - agg[a].n; }).map(function(prog){
-      var a = agg[prog], pc = Math.round(a.s / a.n * 10) / 10;
+    var filas = pm.programas.slice().sort(function(a, b){ return (b.meta || 0) - (a.meta || 0); }).map(function(f){
+      var pc = f.pct || 0;
       var cls = pc >= 60 ? "ok" : (pc >= 25 ? "proc" : "crit");
-      var chip = pc >= 60 ? "Alto" : (pc >= 25 ? "Medio" : "Bajo");
+      var chip = pc >= 100 ? "Completo" : (pc >= 60 ? "Alto" : (pc >= 25 ? "Medio" : (pc > 0 ? "Bajo" : "Sin avance")));
+      var det = (f.reactivadas != null && f.meta != null)
+        ? fmtNum(f.reactivadas) + (f.reactivadas === 1 ? ' reactivada de ' : ' reactivadas de ') + fmtNum(f.meta) + ' '
+        : (f.meta != null ? 'Meta ' + fmtNum(f.meta) + ' ' : '');
       return '<div class="prog ' + cls + '"><span class="info">' +
-        '<span class="name">' + prog + '</span>' +
-        '<span class="meta">' + fmtNum(a.n) + (a.n === 1 ? ' obra · ' : ' obras · ') + 'avance físico promedio ' +
-          '<span class="chip ' + cls + '"><i></i>' + chip + '</span></span></span>' +
+        '<span class="name">' + f.nombre + '</span>' +
+        '<span class="meta">' + det + '<span class="chip ' + cls + '"><i></i>' + chip + '</span></span></span>' +
         '<span class="pct">' + pctTxt(pc) + '</span></div>';
     }).join("");
     cont.insertAdjacentHTML("afterbegin", filas);
