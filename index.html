@@ -1063,7 +1063,7 @@
 
     <div class="neu-card">
       <div class="neu-top" data-go="screen-ranking">
-        <div class="cur">Sector</div>
+        <div class="cur">Pliego</div>
         <div class="rate" id="pliego-rate">Vivienda, Construcción y Saneamiento</div>
         <div class="amount" id="pliego-amount">—</div>
         <button class="detail-btn" data-go="screen-ranking">
@@ -1278,7 +1278,7 @@
     </header>
 
     <div class="balance-card">
-      <div class="cur">Sector</div>
+      <div class="cur">Pliego</div>
       <div class="amount" id="rank-amount">—</div>
       <div class="bar"><i id="rank-bar" style="width:0"></i></div>
       <div class="montos">
@@ -1854,7 +1854,7 @@
     /* Indicador principal de Inicio: fila SECTOR de la hoja INDICADOR PRINCIPAL */
     if(ind.principal){
       var pr = ind.principal;
-      document.getElementById("pliego-amount").textContent = Math.round(pr.pct) + "%";
+      document.getElementById("pliego-amount").textContent = pctTxt(pr.pct);
       /* pantalla Ranking: mismo indicador con barra, PIM y devengado */
       document.getElementById("rank-amount").textContent = pctTxt(pr.pct);
       document.getElementById("rank-bar").style.width = Math.min(100, pr.pct) + "%";

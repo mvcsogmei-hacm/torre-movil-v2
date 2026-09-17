@@ -8,9 +8,9 @@ formato que ya lee generar_proyectos.py. Las demás hojas del Excel no se tocan.
 Uso, desde la carpeta Data/:
     py scrapear_mef.py                 (año actual)
     py scrapear_mef.py 2025            (otro año)
-    py scrapear_mef.py --indicador sector
+    py scrapear_mef.py --indicador pliego
                                        (el indicador principal de Inicio con el
-                                        total del SECTOR 37 en vez del PLIEGO 037)
+                                        PLIEGO 037 en vez del total del SECTOR 37)
 Después:
     py generar_proyectos.py            (regenera proyectos.js)
 y actualizar FECHAS_CORTE.inicio en index.html con la fecha de descarga.
@@ -52,9 +52,10 @@ PAUSA = 2.5          # segundos entre consultas (el sitio tiene protección cont
 SECTOR = "37"        # Vivienda, Construcción y Saneamiento
 PLIEGO = "037"       # Ministerio de Vivienda, Construcción y Saneamiento
 
-# Indicador principal de Inicio: "pliego" = fila 037 del nivel Pliego (así venía en
-# el Excel histórico: PIM 3,865 M); "sector" = fila 37 del nivel Sector (incluye SBN,
-# SENCICO, OTASS y COFOPRI; es la misma cifra con la que Vivienda aparece en el ranking).
+# Indicador principal de Inicio: "sector" = fila 37 del nivel Sector (incluye SBN,
+# SENCICO, OTASS y COFOPRI; es la misma cifra con la que Vivienda aparece en el ranking;
+# elegido por el usuario el 17-sep-2026); "pliego" = fila 037 del nivel Pliego (así
+# venía en el Excel histórico: PIM 3,865 M).
 INDICADOR_PRINCIPAL = "pliego"
 
 # Nombre corto que muestra la app para cada pliego del sector (hoja PLIEGOS, en este orden)
