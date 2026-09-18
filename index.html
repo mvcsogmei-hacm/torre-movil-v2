@@ -1063,8 +1063,8 @@
 
     <div class="neu-card">
       <div class="neu-top" data-go="screen-ranking">
-        <div class="cur">Pliego</div>
-        <div class="rate" id="pliego-rate">Ministerio de Vivienda, Construcción y Saneamiento</div>
+        <div class="cur">Sector</div>
+        <div class="rate" id="pliego-rate">Vivienda, Construcción y Saneamiento</div>
         <div class="amount" id="pliego-amount">—</div>
         <button class="detail-btn" data-go="screen-ranking">
           Ver ranking
@@ -1818,10 +1818,13 @@
   /* ── Inicio + detalle de Pliego MVCS + tarjetas Pliegos (hojas INDICADOR PRINCIPAL, MVCS y PLIEGOS) ── */
   (function(){
     var ind = window.INDICADORES || {};
-    /* Indicador principal de Inicio: fila SECTOR de la hoja INDICADOR PRINCIPAL */
+    /* Indicador principal de Inicio: sector 37 (fila VIVIENDA de la hoja RANKING SECTOR,
+       incluye SBN, SENCICO, OTASS y COFOPRI); la pantalla Ranking sigue con el pliego 037 */
+    var sec37 = (ind.rankingSector || []).filter(function(r){ return r.cod === "37"; })[0];
+    if(sec37) document.getElementById("pliego-amount").textContent = pctTxt(sec37.pct);
+    /* Pantalla Ranking: pliego 037 (hoja INDICADOR PRINCIPAL) */
     if(ind.principal){
       var pr = ind.principal;
-      document.getElementById("pliego-amount").textContent = pctTxt(pr.pct);
       /* pantalla Ranking: mismo indicador con barra, PIM y devengado */
       document.getElementById("rank-amount").textContent = pctTxt(pr.pct);
       document.getElementById("rank-bar").style.width = Math.min(100, pr.pct) + "%";
